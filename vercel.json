@@ -1,0 +1,8 @@
+{
+  "functions": {
+    "api/stops.js": {
+      "includeFiles": "public/data/**"
+    }
+  },
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+}

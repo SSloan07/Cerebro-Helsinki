@@ -1,0 +1,2 @@
+# Empty trailing CSV fields in the HSL source extract are preserved verbatim.
+data/raw/*.txt whitespace=-blank-at-eol

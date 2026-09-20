@@ -1,46 +1,47 @@
-# Cerebro München
+# Cerebro Helsinki · Urban Intelligence & Digital Twin
 
-Cerebro München is an open-data territorial intelligence MVP. The first working vertical maps official Munich district boundaries and 2024 population, plus one institution location with publicly published coordinates. The application separates observed, derived and declared evidence and makes source limits visible in the interface.
+An evidence-led urban intelligence MVP for Helsinki, Espoo, Vantaa and Kauniainen. The current functional slice maps official 2025 municipal boundaries and observed HSL GTFS boarding-stop locations, with an optional server-side adapter for HSL's live GTFS-Realtime vehicle feed. Missing layers remain visibly pending or unavailable; no placeholder urban statistics are generated.
 
 ## Run locally
 
-Requirements: Node.js 20.19+ or 22.12+, npm, and Python 3.10+ for ETL.
+Requirements: Node.js 20.19+ (or 22.12+), npm, and Python 3.10+.
 
 ```sh
 npm install
 npm run dev
 ```
 
-The app is served at the Vite URL shown in the terminal. Map tiles use OpenStreetMap and therefore need a browser connection. Source data are checked into `public/data/`, so the rest of the interface loads offline.
+Vite serves the frontend and checked-in `/public/data` snapshots. The `/api/*` functions run on Vercel; Vite development does not emulate them, so realtime data will report unavailable locally. Static stops fall back to a viewport-filtered snapshot. OpenStreetMap tiles require a browser connection and retain visible attribution.
 
-## Data update
+## Reproducible data update
 
 ```sh
-python etl/run.py              # validate local raw data and regenerate normalized GeoJSON/report
-python etl/run.py --refresh    # try the published source URLs, then validate and regenerate
+python3 -m etl.helsinki.run                 # validate local inputs and publish derived files
+python3 -m etl.helsinki.run --refresh       # fetch Statistics Finland boundaries and current HSL GTFS
 npm test
 npm run build
 ```
 
-`--refresh` keeps the previous raw file if a download fails, records the error, and still attempts to normalize the last known-good snapshot. Output is idempotent. Review `public/data/update-report.json` after each run. Do not silently treat a failed source as an empty population or entity layer.
+The refresh downloads the complete HSL GTFS archive (about 82 MB zipped, over 1 GB expanded) temporarily, then keeps only `stops.txt` and `feed_info.txt`. It downloads only the four required municipal polygons from Statistics Finland. Failed downloads are recorded; existing snapshots are retained and the resulting report remains partial. Each ETL run writes checksums, counts, source status and a dated snapshot. Review `public/data/update-report.json` and `public/data/sources.json` before publishing.
 
-## Data flow
+## Data flow and architecture
 
 ```text
-Munich open-data CSV + ArcGIS GeoJSON
-        ↓  etl/run.py
-validation (schema, 25 unique districts, WGS84 bounds, population keys)
-        ↓
-versioned raw snapshots + normalized district GeoJSON + institution GeoJSON
-        ↓
-React static data adapter → MapLibre map → source registry and indicators
+Statistics Finland WFS ─┐
+HSL daily GTFS ZIP ──────┴→ etl/helsinki/run.py → validated raw tables → normalized GeoJSON + lineage
+HSL GTFS-Realtime ─────────→ api/live-mobility.js (Vercel proxy, 5s cache) → MapLibre live layer
+Versioned GeoJSON ─────────→ api/stops.js (bbox filter, 1h cache) → MapLibre clustered stop layer
+Helsinki official 3D viewer ───────────────────────────────────→ embedded streamed model (Helsinki only)
 ```
 
-`schema/postgis.sql` describes the future Postgres/PostGIS storage model. The current data adapter reads static GeoJSON and JSON; Vercel serves the Vite build and checked-in datasets. See [methodology](docs/methodology.md), [limitations report](docs/limitations.md), and [source registry](public/data/sources.json).
+Static files are the current storage adapter. `schema/postgis.sql` defines a Postgres/PostGIS target with source snapshots, spatial entities, observations and realtime event tables. See [architecture](docs/architecture.md), [source catalogue](docs/data-sources.md), [data contract](docs/data-contract.md), [quality](docs/data-quality.md), [licensing](docs/licensing.md), [methodology](docs/methodology.md), and [limitations](docs/limitations.md).
 
 ## Implemented and pending
 
-Implemented: responsive React/Vite interface; MapLibre map; population by district; 25 administrative units; 1,192 MVV stop points in the city boundary; one TUM campus point; district filtering, stop-name search, clustered markers, layer toggles and provenance popups; source registry; reproducible normalizer; data QA tests; PostGIS schema; Vercel SPA rewrite. The OpenStreetMap raster basemap updates live as users pan and zoom; thematic layers are checked-in source snapshots.
+Implemented: Helsinki product identity; responsive perspective navigation; MapLibre, OSM basemap and attribution; official Statistics Finland boundaries; 6,027 HSL boarding-stop records within the four municipalities; municipality and layer filters; stop clustering, popups, bbox retrieval and source lineage; source registry, update report and tests; Vercel same-origin proxies; official Helsinki 3D viewer embed.
 
-Pending: verified inventories of technology firms/startups, labs and research institutions; transit routes, schedules and accessibility analysis; publications, patents, grants, job postings and housing data; database/API deployment; automated scheduled refresh. MVV realtime departure integration is a candidate only: MVV reports closed-beta access and the production server requires an application request. The project has not accepted terms or received credentials, so it shows no departure estimates. The current evidence does not support missing counts, so the UI reports their status rather than inventing values.
-# Cerebro-Helsinki
+Pending: local building geometry and selectable 3D features; reliable live-feed response verification in a deployed runtime; HSL alerts, arrivals and route visualization; public service records pending response/license validation; climate, energy, housing, population, research and innovation datasets; hosted PostGIS and scheduled ETL. These sections communicate their integration status instead of showing empty-looking fake indicators.
+
+## Vercel
+
+The Vite build is static and `api/` contains Vercel Node functions. `api/stops.js` reads `public/data/transit_stops.geojson`; retain that file with the function bundle. No keys are required for the documented HSL raw GTFS-Realtime feed. Digitransit key-protected APIs are not called. Do not commit credentials or `.env` files. Vercel deployment and live production checks have not been performed.

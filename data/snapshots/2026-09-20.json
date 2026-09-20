@@ -1,0 +1,26 @@
+{
+  "generated_at": "2026-09-20T20:06:46.196587+00:00",
+  "status": "partial",
+  "inputs": {
+    "municipalities.geojson": {
+      "sha256": "479c6f0d45edff27ca5532259717150bfe763d8a0518a494e44775ada2eb4350",
+      "bytes": 40829
+    },
+    "hsl_stops.txt": {
+      "sha256": "69412111774fe1e0f1541926b184dbc81331602c77f7bd345debfebda2214e78",
+      "bytes": 1118778
+    }
+  },
+  "outputs": {
+    "municipalities.geojson": {
+      "sha256": "ba698927bf7b1a6da8388a22e958a6adfe7a5ca216307c255cd3fa43b3ba9ad0",
+      "record_count": 4
+    },
+    "transit_stops.geojson": {
+      "sha256": "95504d5020f297512265a3b3357c30247fc616849e1a18c7f8ec151bfdfbe117",
+      "record_count": 6027,
+      "invalid_record_count": 0
+    }
+  },
+  "change_from_previous_snapshot": null
+}

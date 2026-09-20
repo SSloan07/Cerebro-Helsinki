@@ -1,0 +1,38 @@
+{
+  "generated_at": "2026-09-20T20:06:46.196587+00:00",
+  "status": "partial",
+  "counts": {
+    "source_record_count": 8389,
+    "boarding_record_count": 8267,
+    "mapped_stop_count": 6027,
+    "invalid_coordinate_records": 0,
+    "outside_metro_records": 2240,
+    "stops_by_municipality": {
+      "049": 1787,
+      "091": 2601,
+      "092": 1560,
+      "235": 79
+    },
+    "service_period_start": "20260918",
+    "service_period_end": "20261116",
+    "feed_version": "2026-09-19 07:07:09",
+    "provider": "Helsingin seudun liikenne"
+  },
+  "errors": [],
+  "warnings": [
+    "HSL boarding stops outside the four selected municipalities excluded: 2240"
+  ],
+  "notes": [
+    "Population, buildings, local 3D tiles, services, climate, energy, innovation institutions and research are not counted unless integrated from verified sources.",
+    "HSL GTFS stop snapshots are static. The vehicle-position API adapter is implemented separately and depends on deployment runtime."
+  ],
+  "source_statuses": {
+    "fi-municipal-boundaries": "integrated",
+    "hsl-gtfs-stops": "integrated",
+    "hsl-gtfs-realtime-vehicles": "candidate",
+    "helsinki-3d-model": "integrated",
+    "helsinki-service-map": "candidate",
+    "osm-basemap": "integrated",
+    "osm-building-footprints": "failed"
+  }
+}
