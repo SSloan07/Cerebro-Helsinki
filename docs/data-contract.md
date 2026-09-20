@@ -10,7 +10,7 @@
 ## API
 
 * `GET /api/stops?bbox=west,south,east,north`: bbox-filtered static stop FeatureCollection, response count and snapshot time.
-* `GET /api/live-mobility?bbox=west,south,east,north`: HSL GTFS-Realtime positions decoded server-side. Success is explicitly `realtime`; source or decoder failure returns `unavailable` without a count.
+* `GET /api/live-mobility?bbox=west,south,east,north`: HSL GTFS-Realtime positions decoded server-side. Success returns `status: live`, feed timestamp, entity count, VehiclePosition count, positioned count, retrieval time, source, HTTP/content metadata and a GeoJSON FeatureCollection. Source or decoder failure returns `status: unavailable`, a reason, upstream HTTP status (0 means no HTTP response), retrieval time and source without a vehicle count.
 
 API geometry is EPSG:4326. Vercel caches stop snapshots for one hour and live responses for five seconds. Browser refresh is 15 seconds. The live response timestamp and fetch timestamp remain separate.
 

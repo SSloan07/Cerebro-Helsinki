@@ -11,7 +11,7 @@ npm install
 npm run dev
 ```
 
-Vite serves the frontend and checked-in `/public/data` snapshots. The `/api/*` functions run on Vercel; Vite development does not emulate them, so realtime data will report unavailable locally. Static stops fall back to a viewport-filtered snapshot. OpenStreetMap tiles require a browser connection and retain visible attribution.
+Vite serves the frontend, checked-in `/public/data` snapshots and a same-origin middleware that runs the exact `/api/*` handlers on the Node dev server. If Node can reach HSL, the local app displays the live feed; network errors and timeouts remain explicit. Vercel runs the same handlers in deployment. Static stops fall back to a viewport-filtered snapshot. OpenStreetMap tiles require a browser connection and retain visible attribution.
 
 ## Reproducible data update
 

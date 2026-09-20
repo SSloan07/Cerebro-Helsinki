@@ -4,6 +4,7 @@ import { readFile } from 'node:fs/promises'
 import { decodeVehiclePositions } from './utils/gtfsRealtime.js'
 import mobilityHandler from '../api/live-mobility.js'
 import stopsHandler from '../api/stops.js'
+import { createApiDevMiddleware } from '../api/devMiddleware.js'
 
 const readJson = path => readFile(new URL(path, import.meta.url), 'utf8').then(JSON.parse)
 const fieldVarint = (number, value) => [...encodeVarint((number << 3) | 0), ...encodeVarint(value)]
@@ -22,12 +23,12 @@ const floatField = (number, value) => {
   return [...encodeVarint((number << 3) | 5), ...new Uint8Array(buffer)]
 }
 function sampleVehicleFeed() {
-  const header = fieldVarint(3, 1_790_000_000)
+  const header = [...fieldBytes(1, utf8('2.0')), ...fieldVarint(3, 1_790_000_000)]
   const position = [...floatField(1, 60.171), ...floatField(2, 24.941)]
   const trip = fieldBytes(5, utf8('HSL:101'))
   const descriptor = fieldBytes(1, utf8('test-vehicle-1'))
-  const vehicle = [...fieldBytes(1, trip), ...fieldBytes(2, position), ...fieldBytes(4, utf8('stop-1')),
-    ...fieldVarint(6, 1_790_000_000), ...fieldBytes(8, descriptor)]
+  const vehicle = [...fieldBytes(1, trip), ...fieldBytes(2, position), ...fieldVarint(4, 1),
+    ...fieldVarint(5, 1_790_000_000), ...fieldBytes(7, utf8('stop-1')), ...fieldBytes(8, descriptor)]
   const entity = [...fieldBytes(1, utf8('entity-1')), ...fieldBytes(4, vehicle)]
   return new Uint8Array([...fieldBytes(1, header), ...fieldBytes(2, entity)])
 }
@@ -78,16 +79,26 @@ test('source registry is complete and missing urban layers have explicit non-suc
     assert.ok(acceptedStatuses.has(source.integration_status))
   }
   assert.equal(registry.sources.find(source => source.id === 'helsinki-3d-model').integration_status, 'integrated')
-  assert.equal(registry.sources.find(source => source.id === 'hsl-gtfs-realtime-vehicles').integration_status, 'candidate')
+  const realtime = registry.sources.find(source => source.id === 'hsl-gtfs-realtime-vehicles')
+  assert.equal(realtime.integration_status, 'integrated')
   assert.equal(registry.sources.find(source => source.id === 'osm-building-footprints').integration_status, 'failed')
   assert.equal(reportHasNoInventedCounts(await readJson('../public/data/update-report.json')), true)
-  const [snapshot, archive] = await Promise.all([
-    readJson('../data/snapshots/2026-09-20.json'), readJson('../data/metadata/hsl_gtfs_archive.json'),
+  const [snapshot, archive, probe] = await Promise.all([
+    readJson('../data/snapshots/2026-09-20.json'), readJson('../data/metadata/hsl_gtfs_archive.json'), readJson('../data/metadata/hsl_gtfsrt_probe.json'),
   ])
   assert.match(snapshot.inputs['hsl_stops.txt'].sha256, /^[a-f\d]{64}$/)
   assert.match(snapshot.outputs['transit_stops.geojson'].sha256, /^[a-f\d]{64}$/)
   assert.match(archive.archive_sha256, /^[a-f\d]{64}$/)
   assert.deepEqual(archive.retained_members, ['stops.txt', 'feed_info.txt'])
+  assert.equal(probe.status, 'live')
+  assert.equal(probe.http_status, 200)
+  assert.equal(probe.content_type, 'application/x-protobuf')
+  assert.equal(probe.decode_error, null)
+  assert.equal(probe.feed_version, '2.0')
+  assert.ok(probe.vehicle_count > 0)
+  assert.ok(probe.positioned_vehicle_count > 0)
+  assert.equal(realtime.record_count, probe.vehicle_count)
+  assert.equal(realtime.last_server_probe.feed_timestamp, probe.feed_timestamp)
 })
 
 function reportHasNoInventedCounts(report) {
@@ -100,6 +111,13 @@ test('GTFS-RT protobuf decoder returns observed vehicle position and provider ti
   assert.ok(Math.abs(decoded.features[0].geometry.coordinates[0] - 24.941) < 0.00001)
   assert.ok(Math.abs(decoded.features[0].geometry.coordinates[1] - 60.171) < 0.00001)
   assert.equal(decoded.features[0].properties.route_id, 'HSL:101')
+  assert.equal(decoded.features[0].properties.stop_id, 'stop-1')
+  assert.equal(decoded.features[0].properties.current_status, 1)
+  assert.equal(decoded.features[0].properties.observed_at, 1_790_000_000_000)
+  assert.equal(decoded.feedVersion, '2.0')
+  assert.equal(decoded.entityCount, 1)
+  assert.equal(decoded.vehicleEntityCount, 1)
+  assert.equal(decoded.invalidPositionCount, 0)
   assert.equal(decoded.providerTimestamp, 1_790_000_000_000)
 })
 
@@ -113,20 +131,45 @@ test('HSL live proxy applies bounding-box filtering and represents a feed failur
     json(value) { this.body = value; return this }
   }
   try {
-    globalThis.fetch = async () => new Response(sampleVehicleFeed(), { status: 200 })
+    globalThis.fetch = async () => new Response(sampleVehicleFeed(), { status: 200, headers: { 'content-type': 'application/x-protobuf' } })
     const response = new ResponseCapture()
     await mobilityHandler({ method: 'GET', query: { bbox: '24.9,60.16,25,60.18' } }, response)
     assert.equal(response.statusCode, 200)
-    assert.equal(response.body.status, 'realtime')
-    assert.equal(response.body.returnedVehicleCount, 1)
+    assert.equal(response.body.status, 'live')
+    assert.equal(response.body.entity_count, 1)
+    assert.equal(response.body.vehicle_count, 1)
+    assert.equal(response.body.positioned_vehicle_count, 1)
+    assert.equal(response.body.returned_vehicle_count, 1)
+    assert.equal(response.body.feed_version, '2.0')
+    assert.equal(response.body.feed_timestamp, '2026-09-21T14:13:20.000Z')
+    assert.equal(response.body.source, 'HSL GTFS-Realtime')
     assert.match(response.headers['Cache-Control'], /s-maxage=5/)
+
+    const localApi = createApiDevMiddleware()
+    const localResponse = new ResponseCapture()
+    localResponse.end = body => { localResponse.body = JSON.parse(body); localResponse.headersSent = true }
+    await localApi({ method: 'GET', url: '/api/live-mobility?bbox=24.9,60.16,25,60.18' }, localResponse, () => assert.fail('local API route was not handled'))
+    assert.equal(localResponse.statusCode, 200)
+    assert.equal(localResponse.body.status, 'live')
+    assert.equal(localResponse.body.vehicle_count, 1)
+    assert.match(localResponse.headers['Cache-Control'], /s-maxage=5/)
+
+    globalThis.fetch = async () => new Response(Uint8Array.from([0xff]), { status: 200, headers: { 'content-type': 'application/x-protobuf' } })
+    const undecodable = new ResponseCapture()
+    await mobilityHandler({ method: 'GET', query: {} }, undecodable)
+    assert.equal(undecodable.statusCode, 503)
+    assert.equal(undecodable.body.status, 'unavailable')
+    assert.equal(undecodable.body.reason, 'protobuf_decode_error')
+    assert.equal(undecodable.body.http_status, 200)
 
     globalThis.fetch = async () => { throw new Error('simulated source outage') }
     const unavailable = new ResponseCapture()
     await mobilityHandler({ method: 'GET', query: {} }, unavailable)
     assert.equal(unavailable.statusCode, 503)
     assert.equal(unavailable.body.status, 'unavailable')
-    assert.equal(Object.hasOwn(unavailable.body, 'totalVehicleCount'), false)
+    assert.equal(unavailable.body.http_status, 0)
+    assert.equal(unavailable.body.source, 'HSL GTFS-Realtime')
+    assert.equal(Object.hasOwn(unavailable.body, 'vehicle_count'), false)
   } finally {
     globalThis.fetch = originalFetch
   }

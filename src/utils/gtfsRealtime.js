@@ -53,31 +53,43 @@ function readFields(input) {
 const first = (fields, id) => fields.find(field => field.field === id)?.value
 const stringField = (fields, id) => {
   const bytes = first(fields, id)
-  return bytes ? decodeUtf8(bytes) : ''
+  if (bytes === undefined) return ''
+  if (!(bytes instanceof Uint8Array)) throw new Error(`GTFS-RT string field ${id} has a non-bytes wire type`)
+  return decodeUtf8(bytes)
 }
 
 export function decodeVehiclePositions(input) {
   const root = readFields(input)
   const headerBytes = first(root, 1)
+  if (!headerBytes) throw new Error('GTFS-RT FeedMessage is missing FeedHeader')
   const header = headerBytes ? readFields(headerBytes) : []
+  const feedVersion = stringField(header, 1)
+  if (feedVersion !== '2.0') throw new Error(`Unsupported GTFS-RT version: ${feedVersion || 'missing'}`)
   const timestamp = first(header, 3)
   const features = []
-  for (const item of root.filter(field => field.field === 2)) {
+  const entities = root.filter(field => field.field === 2)
+  let vehicleEntityCount = 0
+  let invalidPositionCount = 0
+  for (const item of entities) {
     const entity = readFields(item.value)
     const vehicleBytes = first(entity, 4)
     if (!vehicleBytes || first(entity, 2) === 1n) continue
+    vehicleEntityCount += 1
     const vehicle = readFields(vehicleBytes)
     const positionBytes = first(vehicle, 2)
-    if (!positionBytes) continue
+    if (!positionBytes) { invalidPositionCount += 1; continue }
     const position = readFields(positionBytes)
     const latitude = first(position, 1)
     const longitude = first(position, 2)
-    if (!Number.isFinite(latitude) || !Number.isFinite(longitude) || latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) continue
+    if (!Number.isFinite(latitude) || !Number.isFinite(longitude) || latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) {
+      invalidPositionCount += 1
+      continue
+    }
     const descriptorBytes = first(vehicle, 8)
     const descriptor = descriptorBytes ? readFields(descriptorBytes) : []
     const tripBytes = first(vehicle, 1)
     const trip = tripBytes ? readFields(tripBytes) : []
-    const vehicleTimestamp = first(vehicle, 6)
+    const vehicleTimestamp = first(vehicle, 5)
     features.push({
       type: 'Feature',
       id: stringField(entity, 1),
@@ -87,14 +99,15 @@ export function decodeVehiclePositions(input) {
         vehicle_id: stringField(descriptor, 1),
         label: stringField(descriptor, 2),
         route_id: stringField(trip, 5),
-        stop_id: stringField(vehicle, 4),
-        current_status: Number(first(vehicle, 5) ?? 0n),
+        stop_id: stringField(vehicle, 7),
+        current_status: Number(first(vehicle, 4) ?? 0n),
         observed_at: vehicleTimestamp ? Number(vehicleTimestamp) * 1000 : null,
         evidence_type: 'observed',
       },
     })
   }
-  return { type: 'FeatureCollection', features, providerTimestamp: timestamp ? Number(timestamp) * 1000 : null }
+  return { type: 'FeatureCollection', features, feedVersion, entityCount: entities.length,
+    vehicleEntityCount, invalidPositionCount, providerTimestamp: timestamp ? Number(timestamp) * 1000 : null }
 }
 
 export const gtfsRealtimeInternals = { readFields }

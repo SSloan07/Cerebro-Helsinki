@@ -1,6 +1,13 @@
 import { defineConfig } from 'vite'
+import { createApiDevMiddleware } from './api/devMiddleware.js'
 
 export default defineConfig({
+  plugins: [{
+    name: 'cerebro-same-origin-api',
+    configureServer(server) {
+      server.middlewares.use(createApiDevMiddleware())
+    },
+  }],
   build: {
     rollupOptions: {
       output: {

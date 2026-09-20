@@ -10,7 +10,7 @@ The displayed count (6,027) is a derived count of observed GTFS boarding-stop re
 
 ## Realtime adapter
 
-The same-origin Vercel function fetches HSL's documented raw GTFS-Realtime protobuf vehicle-position feed. A small decoder reads the feed header timestamp and vehicle entities, then the function filters by requested bounding box and returns the provider and retrieval timestamps separately. It caches for five seconds. The browser refresh is limited to 15 seconds. Invalid bounding boxes, source errors and decode errors return `unavailable`; no fallback to scheduled or cached points is labelled as live. A running deployed API response is still required before status changes from `candidate`.
+The same-origin Vercel function fetches HSL's documented raw GTFS-Realtime protobuf vehicle-position feed. A small decoder validates the GTFS-RT v2 header, reads the feed timestamp and VehiclePosition entities, then the function filters by requested bounding box and returns the provider and retrieval timestamps separately. Successful responses cache for five seconds and failures for two seconds. The browser refresh is limited to 15 seconds. Invalid bounding boxes, source errors and decode errors return `unavailable`; no fallback to scheduled or stale points is labelled as live. A recorded server-side probe confirms HTTP 200 with a protobuf response and positioned entities; this is a point-in-time observation, not a guarantee of future availability. The checked-in source registry records its timestamp and transport/decoder metrics. A deployed Vercel check remains outstanding.
 
 ## 3D and evidence classes
 

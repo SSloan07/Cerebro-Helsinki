@@ -206,6 +206,18 @@ def normalize_stops(boundaries: dict) -> tuple[dict, dict]:
 
 
 def source_registry(consulted_at: str, boundaries_sha: str, stops_sha: str, counts: dict, refresh_failures: list[str]) -> dict:
+    probe = None
+    try:
+        probe = json.loads((METADATA / "hsl_gtfsrt_probe.json").read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        pass
+    probe_is_integrated = bool(probe and probe.get("status") == "live" and probe.get("feed_version") == "2.0"
+                               and probe.get("decode_error") is None and (probe.get("vehicle_count") or 0) > 0
+                               and (probe.get("positioned_vehicle_count") or 0) > 0)
+    probe_summary = {key: probe.get(key) for key in (
+        "status", "proxy_http_status", "http_status", "content_type", "response_bytes", "response_ms", "decode_error",
+        "feed_version", "entity_count", "vehicle_count", "positioned_vehicle_count", "invalid_position_count",
+        "feed_timestamp", "retrieved_at", "reason") if probe and key in probe}
     sources = [
         {"id": "fi-municipal-boundaries", "dataset_name": "Kunnat 2025 (1:1,000,000)", "provider": "Statistics Finland",
          "url": "https://stat.fi/en/services/statistical-data-services/geographic-data/statistical-areas/municipality-based-statistical-units",
@@ -228,8 +240,11 @@ def source_registry(consulted_at: str, boundaries_sha: str, stops_sha: str, coun
          "geographic_coverage": "HSL region; client filters visible positions to the four municipal polygons",
          "license": "Creative Commons Attribution 4.0 International (HSL open-data terms)", "evidence_type": "observed", "confidence": "high",
          "transformation": "Serverless same-origin proxy fetches the official GTFS-RT protobuf feed, decodes VehiclePosition entities and caches responses for 5 seconds.",
-         "limitations": "HSL documents vehicle position feeds at 1-second update intervals. Browser refresh is throttled to 15 seconds. Feed availability can vary; no positions are returned as zero when the endpoint fails.",
-         "integration_status": "candidate", "record_count": None},
+         "limitations": "HSL documents vehicle position feeds at 1-second update intervals. Browser refresh is throttled to 15 seconds; proxy cache is 5 seconds. The server-side probe snapshot is an observation from one retrieval, not a permanent availability guarantee. An empty or failed future response is not represented as zero.",
+         "integration_status": "integrated" if probe_is_integrated else "candidate",
+         "record_count": probe.get("vehicle_count") if probe_is_integrated else None,
+         "record_count_context": "VehiclePosition entities in the last server-side probe; positions are not persisted locally.",
+         "last_server_probe": probe_summary},
         {"id": "helsinki-3d-model", "dataset_name": "Helsinki 3D Urban Data Model and 3D Mesh", "provider": "City of Helsinki, City Survey Services",
          "url": "https://www.hel.fi/en/decision-making/information-on-helsinki/maps-and-geospatial-data/helsinki-3d",
          "resource_url": "https://kartta.hel.fi/3d/", "consulted_at": consulted_at,
@@ -300,7 +315,7 @@ def main() -> None:
               "status": "failed" if counts is None else "partial" if errors or refresh_failures or any(s["integration_status"] in ("candidate", "failed", "not_available") for s in registry["sources"]) else "ok",
               "counts": counts, "errors": errors, "warnings": warnings,
               "notes": ["Population, buildings, local 3D tiles, services, climate, energy, innovation institutions and research are not counted unless integrated from verified sources.",
-                        "HSL GTFS stop snapshots are static. The vehicle-position API adapter is implemented separately and depends on deployment runtime."],
+                        "HSL GTFS stop snapshots are static. Realtime observations come only from the separate GTFS-RT protobuf endpoint."],
               "source_statuses": {source["id"]: source["integration_status"] for source in registry["sources"]}}
     (PUBLIC / "update-report.json").write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     snapshot_path = SNAPSHOTS / f"{consulted}.json"

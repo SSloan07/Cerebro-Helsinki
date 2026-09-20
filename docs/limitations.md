@@ -8,7 +8,7 @@ Statistics Finland boundaries are generalized to 1:1,000,000 and are not distric
 
 ## Live and 3D
 
-The HSL raw GTFS-Realtime vehicle adapter and decoder are implemented, but a binary response and current data volume have not been verified from a deployed Vercel function. The registry therefore calls it `candidate` until that integration is observed. Local Vite does not execute Vercel API functions. No scheduled positions are labelled live.
+The documented HSL raw GTFS-Realtime endpoint was queried through the actual proxy with Node: HTTP 200, `application/x-protobuf`, GTFS-RT v2.0 and 360 real VehiclePosition entities with valid coordinates in the latest recorded probe. The registry records that observation and does not imply constant availability. Vite runs the same handler through its development middleware. The Vercel function is not deployed from this workspace, so production runtime execution and cache headers still need a deployed check. No scheduled positions are labelled live.
 
 The official Helsinki 3D viewer is embedded as a remote viewer. It covers Helsinki only and may be unavailable independently of this app. The viewer is not a local, selectable city model; local CityGML/3D Tiles, building identifiers/heights and terrain are pending. Espoo, Vantaa and Kauniainen do not inherit Helsinki's model coverage.
 

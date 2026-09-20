@@ -6,4 +6,4 @@ Versioned GeoJSON is the initial storage layer. `etl/helsinki/run.py` handles do
 
 The Digital Twin view embeds Helsinki's remote 3D viewer; it does not download a massive model into the browser. Local CityGML/3D Tiles ingestion is pending. For future scale, retain viewport/bbox queries and move large geometry to simplified vector tiles or 3D Tiles with zoom-based loading. The target relational storage, lineage and event tables are in `schema/postgis.sql`.
 
-Vercel hosts the Vite static output and `api/` Node functions. Local Vite development only serves static assets; use a Vercel runtime (or `vercel dev`) to exercise serverless endpoints. No backend deployment, PostGIS instance or scheduled ETL is provisioned yet.
+Vercel hosts the Vite static output and `api/` Node functions. Local Vite mounts the same Node handlers as same-origin middleware, so the realtime path can be exercised without browser-side provider access. No backend deployment, PostGIS instance or scheduled ETL is provisioned yet.
