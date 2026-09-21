@@ -1,5 +1,5 @@
 {
-  "consulted_at": "2026-09-20",
+  "consulted_at": "2026-09-21",
   "sources": [
     {
       "id": "fi-municipal-boundaries",
@@ -7,7 +7,7 @@
       "provider": "Statistics Finland",
       "url": "https://stat.fi/en/services/statistical-data-services/geographic-data/statistical-areas/municipality-based-statistical-units",
       "resource_url": "https://geo.stat.fi/geoserver/tilastointialueet/wfs?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=tilastointialueet%3Akunta1000k_2025&OUTPUTFORMAT=application%2Fjson&SRSNAME=EPSG%3A4326&CQL_FILTER=kunta%20IN%20(%27049%27%2C%27091%27%2C%27092%27%2C%27235%27)",
-      "consulted_at": "2026-09-20",
+      "consulted_at": "2026-09-21",
       "period_covered": "Municipal division reference year 2025",
       "geographic_coverage": "Helsinki (091), Espoo (049), Vantaa (092), Kauniainen (235)",
       "license": "Creative Commons Attribution 4.0 International (CC BY 4.0)",
@@ -17,7 +17,7 @@
       "limitations": "This is a 1:1,000,000 generalized national statistical boundary product (not the city-scale survey boundary). It is not a neighborhood/district layer.",
       "integration_status": "integrated",
       "record_count": 4,
-      "sha256": "479c6f0d45edff27ca5532259717150bfe763d8a0518a494e44775ada2eb4350"
+      "sha256": "d22591423195b78bdc115dd1c0352412caeef517033bc173baf3fe769352afea"
     },
     {
       "id": "hsl-gtfs-stops",
@@ -25,7 +25,7 @@
       "provider": "Helsinki Region Transport (HSL)",
       "url": "https://www.hsl.fi/en/hsl/open-data",
       "resource_url": "https://infopalvelut.storage.hsldev.com/gtfs/hsl.zip",
-      "consulted_at": "2026-09-20",
+      "consulted_at": "2026-09-21",
       "period_covered": "GTFS validity 20260918–20261116; feed version 2026-09-19 07:07:09",
       "geographic_coverage": "HSL source network; map subset within four core municipal polygons",
       "license": "Creative Commons Attribution 4.0 International (CC BY 4.0)",
@@ -35,7 +35,7 @@
       "limitations": "The complete source archive is about 82 MB zipped and more than 1 GB expanded. It is downloaded only by ETL; only the 1.1 MB stops table is versioned. Mapped 6027 boarding stop records; excluded 2240 outside the four municipalities and 0 invalid coordinates. This static feed is refreshed daily by HSL, but a local checked-in snapshot is not live.",
       "integration_status": "integrated",
       "record_count": 6027,
-      "sha256": "69412111774fe1e0f1541926b184dbc81331602c77f7bd345debfebda2214e78",
+      "sha256": "20609f67a6f687d7fa2e1df29cb01d2a3b3ace115e3afc0706b1459322ef8eee",
       "counts_by_municipality": {
         "049": 1787,
         "091": 2601,
@@ -49,7 +49,7 @@
       "provider": "Helsinki Region Transport (HSL)",
       "url": "https://hsldevcom.github.io/gtfs_rt/",
       "resource_url": "https://realtime.hsl.fi/realtime/vehicle-positions/v2/hsl",
-      "consulted_at": "2026-09-20",
+      "consulted_at": "2026-09-21",
       "period_covered": "Live feed; feed timestamp returned with each response",
       "geographic_coverage": "HSL region; client filters visible positions to the four municipal polygons",
       "license": "Creative Commons Attribution 4.0 International (HSL open-data terms)",
@@ -83,7 +83,7 @@
       "provider": "City of Helsinki, City Survey Services",
       "url": "https://www.hel.fi/en/decision-making/information-on-helsinki/maps-and-geospatial-data/helsinki-3d",
       "resource_url": "https://kartta.hel.fi/3d/",
-      "consulted_at": "2026-09-20",
+      "consulted_at": "2026-09-21",
       "period_covered": "City model updated by Helsinki; viewer exposes model vintage, not a live operational feed",
       "geographic_coverage": "Helsinki municipality only; not Espoo, Vantaa or Kauniainen",
       "license": "Creative Commons Attribution 4.0 International (CC BY 4.0)",
@@ -100,7 +100,7 @@
       "provider": "City of Helsinki",
       "url": "https://www.hel.fi/palvelukarttaws/restpages/ver4.html",
       "resource_url": "https://www.hel.fi/palvelukarttaws/rest/v4/unit/",
-      "consulted_at": "2026-09-20",
+      "consulted_at": "2026-09-21",
       "period_covered": "Current API response; source does not declare a statistical period",
       "geographic_coverage": "API includes Helsinki, Espoo, Vantaa and Kauniainen",
       "license": "Unknown for redistribution through this application",
@@ -117,7 +117,7 @@
       "provider": "OpenStreetMap contributors / OpenStreetMap Foundation",
       "url": "https://www.openstreetmap.org/copyright",
       "resource_url": "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-      "consulted_at": "2026-09-20",
+      "consulted_at": "2026-09-21",
       "period_covered": "Tiles requested for current visible map extent",
       "geographic_coverage": "Global raster coverage",
       "license": "Open Database License (ODbL); attribution required",
@@ -134,7 +134,7 @@
       "provider": "OpenStreetMap contributors",
       "url": "https://www.openstreetmap.org/copyright",
       "resource_url": "https://overpass.private.coffee/api/interpreter",
-      "consulted_at": "2026-09-20",
+      "consulted_at": "2026-09-21",
       "period_covered": "Snapshot request failed; no building features ingested",
       "geographic_coverage": "Requested Helsinki core bounding box 24.90–24.98 E, 60.16–60.19 N",
       "license": "Open Database License (ODbL); attribution and share-alike apply to database derivatives",

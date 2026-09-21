@@ -1,11 +1,8 @@
 {
   "url": "https://infopalvelut.storage.hsldev.com/gtfs/hsl.zip",
-  "retrieved_at": "2026-09-20T19:33:00Z",
+  "retrieved_at": "2026-09-21T18:03:22.953596+00:00",
   "archive_bytes": 85663938,
   "archive_sha256": "73d253ce621fb24b7a14bd3c1707495eb755eaddcc533523b90a48d5331dd258",
-  "feed_version": "2026-09-19 07:07:09",
-  "feed_period_start": "20260918",
-  "feed_period_end": "20261116",
   "retained_members": [
     "stops.txt",
     "feed_info.txt"
