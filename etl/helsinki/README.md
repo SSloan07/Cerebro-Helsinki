@@ -9,3 +9,5 @@
 * `publish/`: versioned GeoJSON, snapshots and reports
 
 The raw archive is not retained: only HSL `stops.txt`, `feed_info.txt`, and the filtered Statistics Finland polygons are versioned. Refresh may temporarily download the complete HSL ZIP; checksum and retrieval metadata are written under `data/metadata/`.
+
+`python3 -m etl.helsinki.probe_candidates [--overture]` probes candidate sources for `catalogo/` without ingesting anything and writes the exact outcome of each request (HTTP status, counts, error text) to `data/metadata/candidate_probes.json`.

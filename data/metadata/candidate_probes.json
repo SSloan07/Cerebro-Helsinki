@@ -1,0 +1,292 @@
+{
+  "generated_at": "2026-09-21T18:49:32+00:00",
+  "user_agent": "CerebroHelsinki/0.1 (open-data ETL; contact configured in README)",
+  "probes": [
+    {
+      "id": "sf-paavo-2026",
+      "kind": "wfs_hits",
+      "url": "https://geo.stat.fi/geoserver/wfs?service=WFS&version=2.0.0&request=GetFeature&resultType=hits&typeNames=postialue:pno_tilasto_2026&CQL_FILTER=kunta%20IN%20(%27049%27,%27091%27,%27092%27,%27235%27)",
+      "probed_at": "2026-09-21T18:46:12+00:00",
+      "http_status": 200,
+      "content_type": "text/xml",
+      "bytes": 803,
+      "response_ms": 1147,
+      "number_matched": 167
+    },
+    {
+      "id": "sf-vaestoruutu-1km-2025",
+      "kind": "wfs_hits",
+      "url": "https://geo.stat.fi/geoserver/wfs?service=WFS&version=2.0.0&request=GetFeature&resultType=hits&typeNames=vaestoruutu:vaki2025_1km&CQL_FILTER=kunta%20IN%20(%27049%27,%27091%27,%27092%27,%27235%27)",
+      "probed_at": "2026-09-21T18:46:14+00:00",
+      "http_status": 200,
+      "content_type": "text/xml",
+      "bytes": 801,
+      "response_ms": 725,
+      "number_matched": 749
+    },
+    {
+      "id": "hsy-vaestotietoruudukko-2025",
+      "kind": "wfs_hits",
+      "url": "https://kartta.hsy.fi/geoserver/wfs?service=WFS&version=2.0.0&request=GetFeature&resultType=hits&typeNames=asuminen_ja_maankaytto:Vaestotietoruudukko_2025",
+      "probed_at": "2026-09-21T18:46:14+00:00",
+      "http_status": 200,
+      "content_type": "text/xml",
+      "bytes": 747,
+      "response_ms": 800,
+      "number_matched": 5826
+    },
+    {
+      "id": "hsy-rakennustietoruudukko-2025",
+      "kind": "wfs_hits",
+      "url": "https://kartta.hsy.fi/geoserver/wfs?service=WFS&version=2.0.0&request=GetFeature&resultType=hits&typeNames=asuminen_ja_maankaytto:Rakennustietoruudukko_2025",
+      "probed_at": "2026-09-21T18:46:15+00:00",
+      "http_status": 200,
+      "content_type": "text/xml",
+      "bytes": 749,
+      "response_ms": 623,
+      "number_matched": 8663
+    },
+    {
+      "id": "hsy-tyopaikkaruudukko-2024",
+      "kind": "wfs_hits",
+      "url": "https://kartta.hsy.fi/geoserver/wfs?service=WFS&version=2.0.0&request=GetFeature&resultType=hits&typeNames=asuminen_ja_maankaytto:Tyopaikkaruudukko_2024",
+      "probed_at": "2026-09-21T18:46:16+00:00",
+      "http_status": 200,
+      "content_type": "text/xml",
+      "bytes": 746,
+      "response_ms": 673,
+      "number_matched": 15445
+    },
+    {
+      "id": "hsy-rakennukset-paivittyva",
+      "kind": "wfs_hits",
+      "url": "https://kartta.hsy.fi/geoserver/wfs?service=WFS&version=2.0.0&request=GetFeature&resultType=hits&typeNames=asuminen_ja_maankaytto:pks_rakennukset_paivittyva",
+      "probed_at": "2026-09-21T18:46:16+00:00",
+      "http_status": 200,
+      "content_type": "text/xml",
+      "bytes": 751,
+      "response_ms": 692,
+      "number_matched": 154154
+    },
+    {
+      "id": "hsy-aurinkosahkopotentiaali",
+      "kind": "wfs_hits",
+      "url": "https://kartta.hsy.fi/geoserver/wfs?service=WFS&version=2.0.0&request=GetFeature&resultType=hits&typeNames=ilmasto_ja_energia:rakennukset_aurinkosahkopotentiaali",
+      "probed_at": "2026-09-21T18:46:17+00:00",
+      "http_status": 200,
+      "content_type": "text/xml",
+      "bytes": 756,
+      "response_ms": 625,
+      "number_matched": 154586
+    },
+    {
+      "id": "hsy-rakennukset-polttoaine",
+      "kind": "wfs_hits",
+      "url": "https://kartta.hsy.fi/geoserver/wfs?service=WFS&version=2.0.0&request=GetFeature&resultType=hits&typeNames=ilmasto_ja_energia:rakennukset_polttoaine",
+      "probed_at": "2026-09-21T18:46:18+00:00",
+      "http_status": 200,
+      "content_type": "text/xml",
+      "bytes": 743,
+      "response_ms": 644,
+      "number_matched": 154586
+    },
+    {
+      "id": "hsy-ilmanlaatu-nyt",
+      "kind": "wfs_hits",
+      "url": "https://kartta.hsy.fi/geoserver/wfs?service=WFS&version=2.0.0&request=GetFeature&resultType=hits&typeNames=ilmanlaatu:Ilmanlaatu_nyt",
+      "probed_at": "2026-09-21T18:46:18+00:00",
+      "http_status": 200,
+      "content_type": "text/xml",
+      "bytes": 723,
+      "response_ms": 641,
+      "number_matched": 13
+    },
+    {
+      "id": "hsy-energiankulutus-pks",
+      "kind": "http",
+      "url": "https://avoidatastr.blob.core.windows.net/avoindata/AvoinData/3_Ilmanlaatu_ja_ilmasto/Ilmasto/Energiankulutus/Paakaupunkiseudun_energiankulutus_1990_ja_2000-2025.xlsx",
+      "probed_at": "2026-09-21T18:46:19+00:00",
+      "http_status": 200,
+      "content_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "bytes": 128415,
+      "response_ms": 1413
+    },
+    {
+      "id": "hsy-sahkonkulutus-pks",
+      "kind": "http",
+      "url": "https://avoidatastr.blob.core.windows.net/avoindata/AvoinData/3_Ilmanlaatu_ja_ilmasto/Ilmasto/S%C3%A4hkonkulutus/Sahkonkulutus_PKS_1990_2000-2025.xlsx",
+      "probed_at": "2026-09-21T18:46:20+00:00",
+      "http_status": 200,
+      "content_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "bytes": 29799,
+      "response_ms": 881
+    },
+    {
+      "id": "hel-energia-ilmastoatlas",
+      "kind": "http",
+      "url": "https://www.hel.fi/hel2/tietokeskus/data/helsinki/kaupunginkanslia/3D-malli/data_atlas.xlsx",
+      "probed_at": "2026-09-21T18:46:21+00:00",
+      "http_status": 200,
+      "content_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "bytes": 8050709,
+      "response_ms": 2319
+    },
+    {
+      "id": "hel-3d-citydb-wfs",
+      "kind": "http",
+      "url": "https://kartta.hel.fi/3d/citydb-wfs/wfs?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetCapabilities",
+      "probed_at": "2026-09-21T18:46:24+00:00",
+      "http_status": 0,
+      "error": "URLError: <urlopen error timed out>",
+      "response_ms": 45282
+    },
+    {
+      "id": "hel-3d-citygml-kalasatama",
+      "kind": "http",
+      "url": "https://3d.hel.ninja/data/citygml/Helsinki3D_CityGML_Kalasatama_20190326.zip",
+      "probed_at": "2026-09-21T18:47:09+00:00",
+      "http_status": 206,
+      "content_type": "application/zip",
+      "bytes": 1024,
+      "response_ms": 923
+    },
+    {
+      "id": "hel-avoindata-wfs",
+      "kind": "http",
+      "url": "https://kartta.hel.fi/ws/geoserver/avoindata/wfs?service=WFS&version=2.0.0&request=GetCapabilities",
+      "probed_at": "2026-09-21T18:47:10+00:00",
+      "http_status": 0,
+      "error": "URLError: <urlopen error timed out>",
+      "response_ms": 45087
+    },
+    {
+      "id": "hel-nuuka-energia",
+      "kind": "json_count",
+      "url": "https://helsinki-openapi.nuuka.cloud/api/v1.0/Property/List",
+      "probed_at": "2026-09-21T18:47:55+00:00",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "bytes": 254203,
+      "response_ms": 1633,
+      "record_count": 1810
+    },
+    {
+      "id": "hel-servicemap-v2",
+      "kind": "json_count",
+      "url": "https://api.hel.fi/servicemap/v2/unit/?page_size=1",
+      "probed_at": "2026-09-21T18:47:57+00:00",
+      "http_status": 200,
+      "content_type": "application/json",
+      "bytes": 2957,
+      "response_ms": 737,
+      "record_count": 21508
+    },
+    {
+      "id": "prh-ytj-v3",
+      "kind": "json_count",
+      "url": "https://avoindata.prh.fi/opendata-ytj-api/v3/companies?location=Helsinki",
+      "probed_at": "2026-09-21T18:47:57+00:00",
+      "http_status": 200,
+      "content_type": "application/json",
+      "bytes": 264648,
+      "response_ms": 2087,
+      "record_count": 89816
+    },
+    {
+      "id": "fmi-open-data",
+      "kind": "http",
+      "url": "https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=getFeature&storedquery_id=fmi::observations::weather::simple&place=helsinki&parameters=t2m&maxlocations=1",
+      "probed_at": "2026-09-21T18:47:59+00:00",
+      "http_status": 200,
+      "content_type": "text/xml; charset=UTF-8",
+      "bytes": 44639,
+      "response_ms": 1371
+    },
+    {
+      "id": "statfin-ashi-13mu",
+      "kind": "http",
+      "url": "https://pxdata.stat.fi/PxWeb/api/v1/en/StatFin/ashi/13mu.px",
+      "probed_at": "2026-09-21T18:48:01+00:00",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "bytes": 70895,
+      "response_ms": 2084
+    },
+    {
+      "id": "digitraffic-tms",
+      "kind": "json_count",
+      "url": "https://tie.digitraffic.fi/api/tms/v1/stations",
+      "probed_at": "2026-09-21T18:48:03+00:00",
+      "http_status": 200,
+      "content_type": "application/json;charset=UTF-8",
+      "bytes": 209371,
+      "response_ms": 804,
+      "record_count": 520
+    },
+    {
+      "id": "ms-global-ml-buildings",
+      "kind": "http",
+      "url": "https://minedbuildings.z5.web.core.windows.net/global-buildings/dataset-links.csv",
+      "probed_at": "2026-09-21T18:48:04+00:00",
+      "http_status": 200,
+      "content_type": "application/vnd.ms-excel",
+      "bytes": 7171802,
+      "response_ms": 2480,
+      "finland_tiles": 352
+    },
+    {
+      "id": "google-open-buildings",
+      "kind": "http",
+      "url": "https://sites.research.google/gr/open-buildings/",
+      "probed_at": "2026-09-21T18:48:06+00:00",
+      "http_status": 200,
+      "content_type": "text/html; charset=utf-8",
+      "bytes": 107643,
+      "response_ms": 601,
+      "mentions_finland_or_europe": false
+    },
+    {
+      "id": "mml-maastotietokanta",
+      "kind": "http",
+      "url": "https://avoin-paikkatieto.maanmittauslaitos.fi/maastotiedot/features/v1/collections/rakennus/items?limit=1",
+      "probed_at": "2026-09-21T18:48:07+00:00",
+      "http_status": 401,
+      "error": "HTTPError: 401 Unauthorized",
+      "response_ms": 880
+    },
+    {
+      "id": "eubucco",
+      "kind": "http",
+      "url": "https://eubucco.com/",
+      "probed_at": "2026-09-21T18:48:08+00:00",
+      "http_status": 0,
+      "error": "URLError: <urlopen error [Errno -2] Name or service not known>",
+      "response_ms": 40
+    },
+    {
+      "id": "hri-ckan-api",
+      "kind": "http",
+      "url": "https://hri.fi/data/api/3/action/package_search?q=energiankulutus&rows=1",
+      "probed_at": "2026-09-21T18:48:08+00:00",
+      "http_status": 403,
+      "error": "HTTPError: 403 Forbidden",
+      "response_ms": 707
+    },
+    {
+      "id": "overture-buildings",
+      "kind": "duckdb",
+      "release": "2026-08-19.0",
+      "bbox": [
+        24.5,
+        60.1,
+        25.26,
+        60.42
+      ],
+      "probed_at": "2026-09-21T18:48:08+00:00",
+      "buildings_in_bbox": 258743,
+      "with_height": 171492,
+      "with_num_floors": 88615,
+      "max_height_m": 150.0
+    }
+  ]
+}
