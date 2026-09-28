@@ -78,6 +78,28 @@ Las API CKAN de HRI (`hri.fi/data/api/3`) y avoindata.fi responden **403 Forbidd
 navegador, y 200 a `curl/8`. El sondeo lo registra tal cual (`hri-ckan-api`: 403). Los archivos enlazados desde HRI (blob de Azure,
 hel.fi) sí se descargan con el User-Agent del ETL. Para catalogar desde CKAN habrá que decidir, y dejar escrito, qué User-Agent se usa.
 
+## Aviso: hay dos catálogos en el repo (2026-09-28)
+
+Este catálogo (`catalogo/*.md` + `etl/helsinki/probe_candidates.py`) y el de `docs/catalogo/fuentes.json` +
+`scripts/probar_fuentes.py` se escribieron en paralelo y **cubren en parte las mismas fuentes**. No chocan en git porque
+están en rutas distintas, pero el grupo tiene que decidir cuál queda antes de la entrega: dos catálogos que se contradicen
+son exactamente lo que la rúbrica llama «vitrina».
+
+- `docs/catalogo/fuentes.json`: 49 fuentes, más familias, con `licencia_verificada_en` por fuente y fichas generadas por script.
+- `catalogo/`: 26 fuentes con el sondeo realmente ejecutado y guardado en `data/metadata/candidate_probes.json`.
+
+Discrepancias que hay que resolver, no ocultar:
+
+| Punto | `docs/catalogo/fuentes.json` | `catalogo/` |
+|---|---|---|
+| Paavo | capa `pno_tilasto_2025`, 168 áreas | capa `pno_tilasto_2026`, 167 áreas (probada 2026-09-21) |
+| Edificios HSY (`pks_rakennukset_paivittyva`) | semáforo 🟢 verde | 🟡 amarillo: trae dirección por edificio, que en casas unifamiliares describe un hogar |
+| Overture edificios | licencia ODbL; prueba = listar releases en S3 | licencia ODbL (coincide); prueba = consulta real con DuckDB: 258.743 edificios, 66 % con altura |
+
+Y un dato que afecta a los dos scripts: el User-Agent de `scripts/probar_fuentes.py`
+(`CerebroHelsinki-catalog-probe/0.1 ...`) también recibe **403** de la API CKAN de HRI (probado 2026-09-28), igual que el
+del ETL. Si se quiere catalogar desde CKAN, hay que resolver el User-Agent en el script que quede.
+
 ## Bitácora de IA de este rastreo (2026-09-21)
 
 | Herramienta | Qué se encargó | Qué entregó | Qué se corrigió |
