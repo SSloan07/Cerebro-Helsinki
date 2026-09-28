@@ -10,9 +10,9 @@
 | **probado** | 2026-09-21 (`python3 -m etl.helsinki.probe_candidates`, ver `data/metadata/candidate_probes.json`) |
 | Estado | candidata · probada OK tras corrección |
 | Resultado de la prueba | Primer intento HTTP 406 «Use of gzip compression is required»; con `Accept-Encoding: gzip` → HTTP 200 · 520 estaciones (toda Finlandia) |
-| Licencia | Por verificar |
+| Licencia | CC BY 4.0 — verificado 2026-09-28 en https://www.digitraffic.fi/en/terms-of-service/ |
 | **personas** | No. |
-| Semáforo | 🟡 amarillo (licencia sin confirmar) |
+| Semáforo | 🟢 verde (licencia confirmada 2026-09-28; antes 🟡 por licencia sin confirmar) |
 | Vigencia | Viva |
 | Qué pregunta ayuda a responder | Tráfico vial junto al transporte público HSL. |
 | Límites y trampas | Filtrar a los 4 municipios por polígono. |

@@ -10,9 +10,9 @@
 | **probado** | 2026-09-21 (`python3 -m etl.helsinki.probe_candidates`, ver `data/metadata/candidate_probes.json`) |
 | Estado | candidata · probada OK |
 | Resultado de la prueba | HTTP 200 · 71 observaciones de `t2m` para place=helsinki |
-| Licencia | Por verificar en la página de FMI |
+| Licencia | CC BY 4.0 — verificado 2026-09-28 en https://en.ilmatieteenlaitos.fi/open-data-licence |
 | **personas** | No. |
-| Semáforo | 🟡 amarillo (licencia sin confirmar) |
+| Semáforo | 🟢 verde (licencia confirmada 2026-09-28; antes 🟡 por licencia sin confirmar) |
 | Vigencia | Observaciones en tiempo casi real |
 | Qué pregunta ayuda a responder | Clima para la vista Climate & Energy. |
 | Límites y trampas | Sin llave. |

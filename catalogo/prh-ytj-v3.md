@@ -10,7 +10,7 @@
 | **probado** | 2026-09-21 (`python3 -m etl.helsinki.probe_candidates`, ver `data/metadata/candidate_probes.json`) |
 | Estado | candidata · probada OK |
 | Resultado de la prueba | HTTP 200 · `totalResults` 89.816 para location=Helsinki |
-| Licencia | Por verificar en avoindata.prh.fi |
+| Licencia | CC BY 4.0 — verificado 2026-09-28 en https://avoindata.prh.fi/en |
 | **personas** | **Sí**: incluye empresarios individuales (toiminimi), cuyo nombre comercial suele ser el nombre de una persona. |
 | Semáforo | 🔴 rojo para registros · 🟡 para conteos agregados |
 | Vigencia | Registro vivo |
