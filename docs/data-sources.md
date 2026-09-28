@@ -1,5 +1,7 @@
 # Data sources
 
+> Full source catalogue (49 candidates tested on 2026-09-28, including failed and rejected sources with the reason for each): [catalogo-fuentes.md](catalogo-fuentes.md). The table below lists only what the app currently uses.
+
 The machine-readable registry at `public/data/sources.json` records dataset, provider, source URLs, consultation date, period, geography, license, evidence type, confidence, transformation, limitations and integration state.
 
 | Dataset | Source | Current state | Coverage |
