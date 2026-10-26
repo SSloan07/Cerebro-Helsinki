@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><title>Lámina de anuario · boceto</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=Archivo+Narrow:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#f3f5f6;--ink:#132033;--blue:#1f5fa8;--r1:#e4eef7;--r2:#c6dbef;--r3:#9cc3e4;--r4:#6aa2d2;--r5:#3f7fbe;--r6:#1f5fa8;--r7:#123f75;--red:#d2352b;--rule:#c9d1d8}
+*{box-sizing:border-box;margin:0}body{width:1440px;height:900px;overflow:hidden;background:var(--paper);color:var(--ink);font-family:Archivo,sans-serif}
+header{height:64px;display:flex;align-items:stretch;border-bottom:2px solid var(--ink);padding:0 32px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:22px;font-stretch:112%;letter-spacing:-.4px;padding-right:32px;border-right:1px solid var(--rule)}
+.brand small{font:700 12px 'Archivo Narrow';letter-spacing:1.6px;text-transform:uppercase;color:#4b5b6d}
+nav{display:flex;margin-left:24px}
+.tab{display:flex;flex-direction:column;justify-content:center;padding:0 22px;border-right:1px solid var(--rule);min-width:220px}
+.tab b{font-size:15px;font-weight:700}.tab.on{background:var(--ink);color:#fff}
+.cov{display:flex;gap:2px;margin-top:6px}.cov i{height:5px;flex:1;background:var(--blue)}.cov i.gap{background:repeating-linear-gradient(45deg,#8795a3 0 1px,transparent 1px 4px)}.tab.on .cov i{background:#9cc3e4}
+.meta{margin-left:auto;display:flex;align-items:center;font:500 13px 'Archivo Narrow';color:#4b5b6d}
+main{display:grid;grid-template-columns:1fr 470px;height:calc(900px - 64px - 92px)}
+.plate{padding:22px 32px 0;border-right:1px solid var(--rule);position:relative}
+.plate h1{font-size:40px;font-weight:800;font-stretch:88%;letter-spacing:-1px;line-height:1}
+.plate h1 sup{color:var(--red);font-size:20px;margin-left:2px}
+.sub{font-size:15px;color:#4b5b6d;margin-top:8px;max-width:680px}
+.controls{display:flex;gap:8px;margin-top:16px}
+.seg{border:1px solid var(--ink);display:flex}.seg span{padding:8px 14px;font-size:14px;font-weight:600}.seg .on{background:var(--ink);color:#fff}
+.btn{border:2px solid var(--blue);color:var(--blue);padding:7px 14px;font-weight:700;font-size:14px}
+.map{position:absolute;left:32px;right:32px;top:190px;bottom:20px;border:1px solid var(--rule);background:#e8edf1;overflow:hidden}
+.blk{position:absolute;border:1px solid #fff;transform:skewY(-14deg)}
+.blk::after{content:"";position:absolute;left:0;right:0;bottom:100%;height:var(--h);background:inherit;filter:brightness(1.12);border:1px solid #fff}
+.hatch{background:repeating-linear-gradient(45deg,#7d8a96 0 1.5px,#e8edf1 1.5px 6px)!important}
+.pin{position:absolute;background:var(--red);color:#fff;font:700 13px 'Archivo Narrow';padding:3px 7px}
+.ramp{position:absolute;right:14px;bottom:14px;background:var(--paper);border:1px solid var(--rule);padding:10px 12px;font:500 12px 'Archivo Narrow'}
+.ramp div{display:flex;margin:6px 0}.ramp i{width:26px;height:12px}
+aside{padding:22px 26px 0;display:flex;flex-direction:column}
+aside h2{font:700 13px 'Archivo Narrow';letter-spacing:1.4px;text-transform:uppercase;color:#4b5b6d}
+.cmp{display:grid;grid-template-columns:1fr 1fr;border:2px solid var(--ink);margin-top:10px}
+.cmp>div{padding:12px 14px}.cmp>div+div{border-left:1px solid var(--ink)}
+.cmp .k{font:700 12px 'Archivo Narrow';letter-spacing:1px}.cmp .v{font-size:30px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.6px}.cmp .n{font-size:13px;color:#4b5b6d}
+table{width:100%;border-collapse:collapse;margin-top:18px;font-variant-numeric:tabular-nums}
+th{font:700 12px 'Archivo Narrow';letter-spacing:1px;text-transform:uppercase;text-align:left;border-bottom:2px solid var(--ink);padding:6px 4px}
+td{font-size:14px;padding:7px 4px;border-bottom:1px solid var(--rule)}td.num{text-align:right;font-weight:600}
+tr.sel td{background:#fff;font-weight:700}tr.sel td:first-child{box-shadow:inset 4px 0 var(--red)}
+.sym{color:#6b7886;font-weight:700}
+footer{height:92px;border-top:2px solid var(--ink);padding:12px 32px;display:grid;grid-template-columns:repeat(3,1fr);gap:24px;font-size:13px;color:#33424f}
+footer p sup{color:var(--red);font-weight:700;margin-right:4px}footer p.hot{background:#fff;outline:1px solid var(--red);padding:2px 6px}
+.demo{position:absolute;top:12px;right:16px;font:700 12px 'Archivo Narrow';letter-spacing:1px;color:var(--red)}
+</style></head><body>
+<header>
+ <div class="brand">Cerebro Helsinki <small>¿Me mudo?</small></div>
+ <nav>
+  <div class="tab on"><b>1 · Ingreso por zona</b><div class="cov"><i></i><i></i><i></i><i></i><i class="gap"></i></div></div>
+  <div class="tab"><b>2 · Oportunidades</b><div class="cov"><i></i><i></i><i></i><i class="gap"></i><i class="gap"></i></div></div>
+  <div class="tab"><b>3 · Trayectoria</b><div class="cov"><i></i><i class="gap"></i><i class="gap"></i><i class="gap"></i><i class="gap"></i></div></div>
+  <div class="tab" style="min-width:150px"><b>Fuentes y huecos</b><div class="cov"><i></i></div></div>
+ </nav>
+ <div class="meta">Lago · probado 2026-09-21</div>
+</header>
+<main>
+ <section class="plate">
+  <span class="demo">CIFRAS ILUSTRATIVAS · NO SON DATOS</span>
+  <h1>Ingreso medio de residentes por área postal<sup>1</sup></h1>
+  <p class="sub">167 áreas de Helsinki, Espoo, Vantaa y Kauniainen. El ingreso de quienes viven en cada zona no es el salario de un puesto.</p>
+  <div class="controls">
+   <div class="seg"><span class="on">Por habitante</span><span>Por hogar</span><span>% alquiler</span><span>% educación superior</span></div>
+   <div class="btn">Comparar dos zonas</div>
+  </div>
+  <div class="map">
+   <div class="blk" style="left:330px;top:300px;width:90px;height:70px;background:var(--r6);--h:120px"></div>
+   <div class="blk" style="left:420px;top:330px;width:80px;height:60px;background:var(--r4);--h:70px"></div>
+   <div class="blk" style="left:250px;top:350px;width:80px;height:70px;background:var(--r7);--h:150px"></div>
+   <div class="blk" style="left:510px;top:280px;width:110px;height:80px;background:var(--r3);--h:50px"></div>
+   <div class="blk" style="left:140px;top:400px;width:110px;height:80px;background:var(--r5);--h:95px"></div>
+   <div class="blk hatch" style="left:620px;top:250px;width:90px;height:70px;--h:0px"></div>
+   <div class="blk" style="left:700px;top:330px;width:120px;height:90px;background:var(--r2);--h:35px"></div>
+   <div class="blk" style="left:430px;top:420px;width:120px;height:70px;background:var(--r3);--h:45px"></div>
+   <div class="blk" style="left:560px;top:380px;width:120px;height:80px;background:var(--r1);--h:20px"></div>
+   <div class="blk" style="left:60px;top:300px;width:90px;height:90px;background:var(--r6);--h:110px"></div>
+   <div class="pin" style="left:262px;top:150px">A · 02100 Tapiola</div>
+   <div class="pin" style="left:430px;top:215px">B · 00530 Kallio</div>
+   <div class="ramp">Ingreso medio, €/año<div><i style="background:var(--r1)"></i><i style="background:var(--r2)"></i><i style="background:var(--r3)"></i><i style="background:var(--r4)"></i><i style="background:var(--r5)"></i><i style="background:var(--r6)"></i><i style="background:var(--r7)"></i></div><span class="sym">..</span> dato protegido por la fuente</div>
+  </div>
+ </section>
+ <aside>
+  <h2>Comparación A · B</h2>
+  <div class="cmp">
+   <div><div class="k">A · 02100 TAPIOLA</div><div class="v">38 400 €</div><div class="n">+21 % sobre el promedio</div></div>
+   <div><div class="k">B · 00530 KALLIO</div><div class="v">29 100 €</div><div class="n">−8 % bajo el promedio</div></div>
+  </div>
+  <table>
+   <tr><th>Área postal</th><th>Municipio</th><th style="text-align:right">€/hab.<sup>1</sup></th><th style="text-align:right">% alq.<sup>2</sup></th></tr>
+   <tr><td>02700 Kauniainen</td><td>Kauniainen</td><td class="num">46 900</td><td class="num">24</td></tr>
+   <tr class="sel"><td>02100 Tapiola</td><td>Espoo</td><td class="num">38 400</td><td class="num">41</td></tr>
+   <tr><td>00100 Keskusta</td><td>Helsinki</td><td class="num">37 800</td><td class="num">58</td></tr>
+   <tr class="sel"><td>00530 Kallio</td><td>Helsinki</td><td class="num">29 100</td><td class="num">71</td></tr>
+   <tr><td>01300 Tikkurila</td><td>Vantaa</td><td class="num">27 300</td><td class="num">52</td></tr>
+   <tr><td>(área con poca población)</td><td>Vantaa</td><td class="num sym">..</td><td class="num sym">..</td></tr>
+  </table>
+ </aside>
+</main>
+<footer>
+ <p class="hot"><sup>1</sup>Statistics Finland, Paavo 2026, campo hr_ktu. Año de referencia por confirmar. Probado 2026-09-21 · CC BY 4.0</p>
+ <p><sup>2</sup>Paavo 2026, te_vuok_as: hogares en vivienda de alquiler. Probado 2026-09-21</p>
+ <p><span class="sym">..</span> = la fuente suprime el dato por baja población. No cuenta en el promedio.</p>
+</footer>
+</body></html>

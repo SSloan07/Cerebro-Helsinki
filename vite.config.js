@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import { createApiDevMiddleware } from './api/devMiddleware.js'
 
 export default defineConfig({
+  esbuild: { jsx: 'automatic' },
   plugins: [{
     name: 'cerebro-same-origin-api',
     configureServer(server) {

@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><title>Diagrama de metro nocturno · boceto</title>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--night:#0e1a3a;--porc:#f2f2ef;--red:#e0323a;--cob:#2f5fd0;--amb:#f2a81d;--grn:#2e9b5a}
+*{box-sizing:border-box;margin:0}body{width:1440px;height:900px;overflow:hidden;background:var(--night);color:var(--porc);font-family:'Hanken Grotesk',sans-serif}
+header{height:70px;display:flex;align-items:center;padding:0 32px;gap:26px;border-bottom:1px solid #26345c}
+.brand{font-weight:800;font-size:24px}
+nav{display:flex;gap:22px;font-weight:600;font-size:15px}nav span{display:flex;align-items:center;gap:8px}nav i{width:28px;height:6px;border-radius:3px}
+nav .on{border-bottom:3px solid var(--porc);padding-bottom:4px}
+.stage{position:relative;height:620px}
+.ln{position:absolute;height:12px;border-radius:6px}.lv{position:absolute;width:12px;border-radius:6px}
+.st{position:absolute;width:26px;height:26px;border-radius:50%;background:var(--porc);border:5px solid var(--night);box-shadow:0 0 0 3px var(--porc)}
+.ix{width:38px;height:38px}
+.lab{position:absolute;font-weight:600;font-size:15px;white-space:nowrap}
+.lab b{display:block;font-size:24px;font-weight:800}
+h1{position:absolute;left:32px;top:24px;font-size:40px;font-weight:800;letter-spacing:-.6px;max-width:600px;line-height:1.05}
+.demo{position:absolute;right:32px;top:24px;font-weight:600;font-size:13px;color:var(--amb)}
+.panel{position:absolute;right:32px;top:90px;width:380px;background:var(--porc);color:var(--night);border-radius:12px;padding:20px}
+.panel h2{font-size:22px;font-weight:800}.panel p{font-size:14px;margin-top:6px;color:#33415f}
+.panel .v{font-size:34px;font-weight:800;margin-top:12px}
+.minimap{margin-top:14px;height:120px;border-radius:8px;background:repeating-linear-gradient(0deg,#dfe3ea 0 1px,transparent 1px 16px),repeating-linear-gradient(90deg,#dfe3ea 0 1px,#eef0f4 1px 16px)}
+.gap{position:absolute;border:2px dashed #6f7ea8;border-radius:6px;padding:10px 14px;font-size:14px;color:#aab6d6}
+footer{position:absolute;bottom:0;left:0;right:0;height:210px;border-top:1px solid #26345c;padding:22px 32px;display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+footer h3{font-size:15px;font-weight:800;display:flex;gap:8px;align-items:center}footer h3 i{width:22px;height:6px;border-radius:3px}
+footer p{font-size:14px;color:#b9c3dc;margin-top:8px}
+</style></head><body>
+<header><div class="brand">Cerebro Helsinki</div>
+<nav><span class="on"><i style="background:var(--red)"></i>Línea 1 · Zonas</span><span><i style="background:var(--cob)"></i>Línea 2 · Oportunidades</span><span><i style="background:var(--amb)"></i>Línea 3 · Trayectoria</span></nav></header>
+<div class="stage">
+ <h1>Tu ruta por el área metropolitana</h1>
+ <span class="demo">CIFRAS ILUSTRATIVAS</span>
+ <div class="ln" style="left:80px;top:330px;width:820px;background:var(--red)"></div>
+ <div class="ln" style="left:380px;top:200px;width:520px;background:var(--cob)"></div>
+ <div class="lv" style="left:520px;top:200px;height:300px;background:var(--cob)"></div>
+ <div class="ln" style="left:520px;top:490px;width:400px;background:var(--amb)"></div>
+ <div class="st" style="left:120px;top:323px"></div><div class="lab" style="left:96px;top:360px">02700<b>Kauniainen</b></div>
+ <div class="st" style="left:290px;top:323px"></div><div class="lab" style="left:262px;top:360px">02100<b>Tapiola</b></div>
+ <div class="st ix" style="left:508px;top:317px"></div><div class="lab" style="left:560px;top:290px">00100<b>Keskusta</b></div>
+ <div class="st" style="left:700px;top:323px"></div><div class="lab" style="left:680px;top:360px">00530<b>Kallio</b></div>
+ <div class="st" style="left:870px;top:323px"></div><div class="lab" style="left:850px;top:360px">01300<b>Tikkurila</b></div>
+ <div class="st" style="left:700px;top:193px"></div><div class="lab" style="left:680px;top:140px">Sector J<b>Información</b></div>
+ <div class="gap" style="left:760px;top:520px">Estación sin datos: empleo por lengua materna</div>
+ <div class="panel"><h2>00530 Kallio</h2><p>Ingreso medio de residentes · Paavo 2026</p><div class="v">29 100 € / año</div><div class="minimap"></div><p>Toca la estación para ver la zona en el mapa geográfico.</p></div>
+</div>
+<footer>
+ <div><h3><i style="background:var(--red)"></i>Zonas</h3><p>167 áreas postales como estaciones, ordenadas por ingreso de residentes.</p></div>
+ <div><h3><i style="background:var(--cob)"></i>Oportunidades</h3><p>Sectores TOL como líneas; cruzan las zonas donde hay más empleo.</p></div>
+ <div><h3><i style="background:var(--amb)"></i>Trayectoria</h3><p>Tramos punteados donde no hay fuente abierta.</p></div>
+</footer>
+</body></html>
