@@ -68,3 +68,4 @@ Formato: fecha · quién · fuente · qué se hizo · **qué se corrigió** · c
     - **Borrar el lago y reconstruirlo:** se borraron `public/data` y `data/processed`, se corrió el ETL sin red y los 4 archivos publicados volvieron con el mismo sha256.
     - `npm test`: 8 de 8. `npm run build`: OK.
   - **Lo que NO se verificó:** los mapas de áreas no se pudieron ver en el navegador. La extensión de Chrome estaba desconectada, y Chrome headless no termina de dibujar MapLibre (tampoco el mapa que ya funcionaba). Las gráficas SVG, las tablas y las notas al pie sí se revisaron en capturas headless. **Pendiente: abrir Habitar 1, Investigar 1 y Aprender 1 en un navegador real y probar el botón 3D.**
+- **2026-10-27 · Claude (sesión de Alejo) · corrección propia:** el commit `c0ae801` dejó fuera `etl/helsinki/run.py`, así que el ETL subido no llamaba a los módulos nuevos. Se corrigió en `84cd609`. Lección: revisar `git status` después de `git add` y antes de hacer push.
