@@ -334,3 +334,61 @@ button { cursor: pointer; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+/* Pliegos con áreas postales (Paavo) */
+.controles-mapa { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; margin-bottom: 14px; }
+.segmentado { display: inline-flex; border: 1.5px solid var(--tinta); border-radius: 999px; overflow: hidden; }
+.segmentado button { border: 0; background: var(--papel); padding: 7px 14px; font-size: 14px; font-weight: 600; }
+.segmentado button + button { border-left: 1px solid var(--regla); }
+.segmentado button[aria-pressed="true"] { background: var(--tinta); color: var(--papel); }
+.selector { display: inline-flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; }
+.selector select { max-width: min(340px, 62vw); padding: 7px 34px 7px 12px; border: 1px solid var(--regla); border-radius: 3px; background: var(--papel) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%2325332b' stroke-width='1.5'%3E%3Cpath d='m1 1 5 5 5-5'/%3E%3C/svg%3E") no-repeat right 12px center; appearance: none; font-size: 14px; font-weight: 400; }
+.controles-mapa .interruptor { margin-left: auto; }
+.leyenda-rampa { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; margin-top: 14px; font-size: 13px; font-variant-numeric: tabular-nums; }
+.leyenda-pasos { display: inline-flex; }
+.leyenda-pasos i { width: 26px; height: 12px; }
+.leyenda-trama { display: inline-flex; align-items: center; gap: 7px; margin-left: auto; color: var(--tinta-2); }
+.leyenda-trama i { width: 18px; height: 12px; background: var(--gris-placa) repeating-linear-gradient(135deg, rgb(37 51 43 / .45) 0 1px, transparent 1px 5px); }
+
+.comparacion { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 24px; max-width: 58ch; }
+.zona { position: relative; padding: 14px 16px 14px 48px; border: 1.5px solid var(--tinta); border-radius: 3px; background: var(--papel); }
+.zona.vacia { border-style: dashed; border-color: var(--tinta-2); color: var(--tinta-2); font-size: 14px; }
+.zona-letra { position: absolute; left: 14px; top: 14px; display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--tinta); color: var(--papel); font-size: 13px; font-weight: 600; }
+.zona.vacia .zona-letra { background: none; border: 1.5px dashed var(--tinta-2); color: var(--tinta-2); }
+.zona-quitar { position: absolute; right: 10px; top: 10px; border: 0; background: none; padding: 2px 4px; font-size: 12px; font-weight: 600; color: var(--tinta-2); text-decoration: underline; text-underline-offset: 3px; }
+.zona-nombre { font: 500 22px/1.15 var(--serif); padding-right: 44px; }
+.zona-codigo { font-size: 13px; color: var(--tinta-2); margin-top: 2px; }
+.zona-valor { margin-top: 10px; font-size: 20px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.zona-diferencia { font-size: 13px; color: var(--tinta-2); }
+
+.ranking { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 26px; max-width: 58ch; }
+.tabla-ranking { width: 100%; border-collapse: collapse; font-size: 14px; }
+.tabla-ranking.ancha { max-width: 58ch; margin-top: 22px; }
+.tabla-ranking caption { text-align: left; padding-bottom: 6px; font-size: 12px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--tinta-2); }
+.tabla-ranking th { padding: 7px 10px 7px 0; border-top: 1px solid var(--regla); text-align: left; font-weight: 400; }
+.tabla-ranking th small { display: block; font-size: 12px; color: var(--tinta-2); }
+.tabla-ranking td { padding: 7px 0; border-top: 1px solid var(--regla); text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; vertical-align: top; }
+.tabla-ranking tr.elegida th, .tabla-ranking tr.elegida td { background: color-mix(in srgb, var(--c) 35%, transparent); }
+
+.grafica { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+.enjambre, .dispersion { width: 100%; height: auto; overflow: visible; }
+.punto-area { fill: var(--c-fuerte); fill-opacity: .55; stroke: var(--papel); stroke-width: 1; cursor: pointer; transition: fill-opacity 160ms; }
+.punto-area.encima { fill-opacity: 1; stroke: var(--tinta); stroke-width: 2; }
+.punto-area.elegido { fill: var(--tinta); fill-opacity: 1; stroke: var(--papel); stroke-width: 2; }
+.linea-referencia { stroke: var(--tinta); stroke-width: 1.2; stroke-dasharray: 4 4; }
+.texto-referencia, .texto-eje { font: 600 12px var(--sans); fill: var(--tinta-2); }
+.eje { stroke: var(--tinta); stroke-width: 1.2; }
+.rejilla { stroke: var(--regla); stroke-width: 1; }
+.barras.sectores { max-width: none; }
+.barras.sectores th { width: auto; min-width: 240px; }
+.barras.sectores .barra { width: 40%; }
+.barras.sectores .barra span { background: var(--c); }
+.barras.sectores tr.resaltado .barra span { background: var(--c-fuerte); }
+.barras .valor.tenue { color: var(--tinta-2); font-weight: 400; }
+
+@media (max-width: 760px) {
+  .comparacion, .ranking { grid-template-columns: 1fr; }
+  .barras.sectores th { min-width: 0; }
+  .barras.sectores .barra { width: 30%; }
+  .leyenda-trama { margin-left: 0; }
+}

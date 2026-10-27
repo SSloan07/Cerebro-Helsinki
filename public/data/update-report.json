@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-21T18:03:24.053142+00:00",
+  "generated_at": "2026-10-27T22:33:39.661474+00:00",
   "status": "partial",
   "counts": {
     "source_record_count": 8389,
@@ -16,14 +16,30 @@
     "service_period_start": "20260918",
     "service_period_end": "20261116",
     "feed_version": "2026-09-19 07:07:09",
-    "provider": "Helsingin seudun liikenne"
+    "provider": "Helsingin seudun liikenne",
+    "postal_area_count": 167,
+    "postal_areas_by_municipality": {
+      "049": 45,
+      "091": 84,
+      "092": 37,
+      "235": 1
+    },
+    "postal_area_suppressed_values": 9,
+    "postal_area_reference_year": 2024,
+    "population_reference_date": "2025-12-31",
+    "population_by_municipality": {
+      "049": 325716,
+      "091": 694392,
+      "092": 252956,
+      "235": 10318
+    }
   },
   "errors": [],
   "warnings": [
     "HSL boarding stops outside the four selected municipalities excluded: 2240"
   ],
   "notes": [
-    "Population, buildings, local 3D tiles, services, climate, energy, innovation institutions and research are not counted unless integrated from verified sources.",
+    "Buildings, local 3D tiles, services, climate, energy, innovation institutions and research are not counted unless integrated from verified sources.",
     "HSL GTFS stop snapshots are static. Realtime observations come only from the separate GTFS-RT protobuf endpoint."
   ],
   "source_statuses": {
@@ -33,6 +49,8 @@
     "helsinki-3d-model": "integrated",
     "helsinki-service-map": "candidate",
     "osm-basemap": "integrated",
-    "osm-building-footprints": "failed"
+    "osm-building-footprints": "failed",
+    "stat-fi-postal-areas-paavo": "integrated",
+    "statfin-population-11ra": "integrated"
   }
 }

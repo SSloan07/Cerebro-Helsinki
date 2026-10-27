@@ -1,6 +1,6 @@
 # Guía de implementación del front · «Biblioteca de una nueva vida»
 
-Para el grupo y para la IA de cada uno. Estado al **2026-10-26**.
+Para el grupo y para la IA de cada uno. Estado al **2026-10-27** (Paavo y StatFin 11ra integradas; ver `docs/registro-integracion.md`).
 Este documento explica qué hay construido, cómo está organizado y, sobre todo, **cómo conectar los datos reales sin romper las reglas del taller**.
 
 > **Si eres una IA leyendo esto:** antes de tocar código, lee en este orden:
@@ -39,18 +39,19 @@ La metáfora viene del Figma del grupo («Cerebro Helsinki — Biblioteca de una
 | Libro | # | Pliego | Tipo | Fuente / qué falta |
 |---|---|---|---|---|
 | Llegar | 1 | Cuatro municipios (mapa + lista) | **datos** | `municipalities.geojson` |
-| Llegar | 2 | Población por municipio | pendiente | `statfin-population-11ra` |
-| Habitar | 1 | Ingreso de residentes, mapa 3D | pendiente | `sf-paavo-2026` (campo `hr_ktu`) |
-| Habitar | 2 | Distribución de las 167 áreas | pendiente | Paavo |
-| Habitar | 3 | Ingreso × % alquiler | pendiente | Paavo (`te_vuok_as`) |
+| Llegar | 2 | Población por municipio | **datos** | `population.json` (`statfin-population-11ra`, 31-12-2025) |
+| Habitar | 1 | Ingreso disponible por área: mapa 2D/3D, comparación A·B y ranking | **datos** | `postal_areas.geojson` (`stat-fi-postal-areas-paavo`, 2024) |
+| Habitar | 2 | Distribución de las 167 áreas | **datos** | Paavo |
+| Habitar | 3 | Ingreso × % alquiler | **datos** | Paavo (`rented_share`) |
 | Habitar | 4 | Moverse: paradas por municipio y zona, vehículos en vivo | **datos** | `update-report.json`, `transit_stops.geojson`, `/api/live-mobility` |
 | Habitar | 5 | Salario y alquiler | hueco | ver `fuentes-por-consultar.md` filas 1–2 |
-| Investigar | 1 | Empleo por sector en el mapa | pendiente | `hsy-tyopaikkaruudukko-2024` |
-| Investigar | 2 | Peso de cada sector | pendiente | misma rejilla |
-| Investigar | 3 | Empresas por sector | pendiente | `prh-ytj-v3` (solo conteos) |
-| Investigar | 4 | Expansión 2016 → 2024 | pendiente | `hsy-land-cover` |
-| Investigar | 5 | Innovación, vacantes, 15 minutos | hueco | filas 5, 6 y 10 |
-| Aprender | 1 | Nivel educativo por zona | pendiente | Paavo (`ko_*`) |
+| Investigar | 1 | Empleo por sector en el mapa (3D) | **datos** | Paavo (`jobs_by_sector`, en lugar de la rejilla HSY) |
+| Investigar | 2 | Peso de cada sector | **datos** | Paavo |
+| Investigar | 3 | Desempleo por área | **datos** | Paavo (`unemployment_rate`) |
+| Investigar | 4 | Empresas por sector | pendiente | `prh-ytj-companies` (solo conteos) |
+| Investigar | 5 | Expansión 2016 → 2024 | pendiente | `hsy-land-cover` |
+| Investigar | 6 | Innovación, vacantes, 15 minutos | hueco | filas 5, 6 y 10 |
+| Aprender | 1 | Nivel educativo por zona | **datos** | Paavo (`higher_education_share`) |
 | Aprender | 2 | Oferta educativa | pendiente | `vipunen-education` |
 | Aprender | 3 | Empleo por lengua materna | hueco | filas 3–4 |
 | Aprender | 4 | Lo que estos datos no pueden decirte | texto | — |
@@ -58,10 +59,10 @@ La metáfora viene del Figma del grupo («Cerebro Helsinki — Biblioteca de una
 | Fuentes | 2 | Todas las fichas (tabla con filtros) | **datos** | `docs/catalogo/fuentes.json` |
 | Fuentes | 3 | Lo que decidimos no mostrar | texto | — |
 
-**Prioridad recomendada:**
-1. Paavo, porque desbloquea 5 pliegos.
-2. La rejilla de empleo de HSY.
-3. StatFin 11ra.
+**Prioridad recomendada (lo que queda):**
+1. ~~Paavo~~ y ~~StatFin 11ra~~: integradas el 2026-10-27.
+2. ~~La rejilla de empleo de HSY~~: la reemplaza Paavo `tp_*`.
+3. Rastreo de P1 y P3 (`fuentes-por-consultar.md` §1).
 4. La cobertura del suelo.
 5. PRH.
 6. Vipunen.
@@ -141,6 +142,13 @@ Las barritas bajo cada lomo y el texto de la portada («pliegos con datos: 1 de 
 
 ## 5. Receta: pasar un pliego de `pendiente` a `datos` (ejemplo: Paavo → Habitar 1)
 
+> **Ya está hecho para Paavo y StatFin 11ra: úsalos como implementación de referencia.**
+> - `etl/helsinki/sources/paavo.py`: ingesta, supresión → `null` y registro.
+> - `verificar.py`.
+> - `src/biblioteca/pliegosAreas.jsx`: vistas, comparación A·B y `MapaAreas` 2D/3D.
+>
+> Para la próxima fuente: copia `paavo.py`, súmala a `EXTRA_SOURCES` en `run.py` y reclámala en `docs/registro-integracion.md`.
+
 ### 5.1 Ingesta (tramo «Contrato y lago»)
 
 1. **Descargar en `etl/helsinki/run.py`** (o mejor en `etl/helsinki/sources/` y `transform/`, que ya están reservados):
@@ -164,7 +172,7 @@ Las barritas bajo cada lomo y el texto de la portada («pliegos con datos: 1 de 
 
 ### 5.2 Verificación (tramo «Verificación»)
 
-1. En `verificar.py` (todavía no existe; créalo en la raíz), comprobar:
+1. En `verificar.py` (en la raíz; ya comprueba municipios, paradas, Paavo y 11ra), añadir las comprobaciones de la fuente nueva, por ejemplo:
    - Hay 167 áreas, o el número que se documente.
    - Todos los `municipality_code` pertenecen a los 4 municipios.
    - Ningún ingreso es negativo.
@@ -268,11 +276,11 @@ Al terminar:
 
 | Prioridad | Tarea | Notas |
 |---|---|---|
-| Alta | Ingerir Paavo + `verificar.py` + Habitar 1–3 en 3D | Receta §5 |
+| Alta | **Ver los mapas de áreas en un navegador real** (Habitar 1, Investigar 1, Aprender 1 y el botón 3D) | No se pudo verificar visualmente el 2026-10-27; ver `registro-integracion.md` |
 | Alta | **Nombres del grupo** en el pie (`App.jsx`, «Grupo: nombres por confirmar») | Lo exige la rúbrica |
 | Alta | Refrescar GTFS antes del 16 nov | §8 |
 | Alta | Rastrear las fuentes de P1 y P3 | `fuentes-por-consultar.md` §1 |
-| Media | Rejilla de empleo HSY → Investigar 1–2 | Agregar antes de publicar |
+| Media | PRH (conteos por sector), cobertura del suelo y Vipunen | Reclamar en `registro-integracion.md` |
 | Media | «Mi perfil» (carné: sector, educación, lenguas) que resalte lo propio en las figuras | Está en el brief y **no está implementado**. Solo URL y memoria. |
 | Media | Unificar los catálogos | §8 |
 | Media | Desplegar en Vercel y probar en un teléfono real | Piso técnico |

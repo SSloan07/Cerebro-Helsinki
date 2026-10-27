@@ -14,7 +14,7 @@ export function Ref({ n }) {
 function lineaDeFuente(datos) {
   if (!datos) return 'Fuente sin ficha en el catálogo.'
   const prueba = datos.probado ? `Probado el ${fecha(datos.probado)}.` : datos.revisionCatalogo ? `Sin prueba con fecha propia; catálogo revisado el ${fecha(datos.revisionCatalogo)}.` : 'Sin fecha de prueba.'
-  return `${datos.productor} · ${datos.nombre}. Vigencia: ${datos.vigencia || 'sin declarar'}. ${prueba} ${datos.licencia || 'Licencia sin declarar'}.`
+  return `${datos.productor} · ${datos.nombre}. Vigencia: ${(datos.vigencia || 'sin declarar').replace(/\.\s*$/, '')}. ${prueba} ${datos.licencia || 'Licencia sin declarar'}.`
 }
 
 function PieDeNotas({ notas }) {
@@ -54,7 +54,7 @@ export function Pliego({ libro, indice, figura, titulo, children, notas, ancho =
   </article>
 }
 
-function Placa({ libro, rotulo, gris = false, trama = false, children }) {
+export function Placa({ libro, rotulo, gris = false, trama = false, children }) {
   return <div className={`placa ${gris ? 'gris' : ''} ${trama ? 'trama' : ''}`} data-color={libro.color}>
     <div className="placa-contenido">{children}</div>
     <span className="placa-rotulo">{rotulo}</span>

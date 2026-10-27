@@ -198,3 +198,26 @@ test('static HSL stop endpoint rejects invalid extents and returns only the requ
   }))
   assert.match(response.headers['Cache-Control'], /s-maxage=3600/)
 })
+
+test('Paavo postal areas keep lineage, null suppression and sector totals', async () => {
+  const [areas, report, registry] = await Promise.all([
+    readJson('../public/data/postal_areas.geojson'), readJson('../public/data/update-report.json'), readJson('../public/data/sources.json'),
+  ])
+  assert.equal(areas.features.length, report.counts.postal_area_count)
+  assert.ok(registry.sources.some(source => source.id === 'stat-fi-postal-areas-paavo' && source.integration_status === 'integrated'))
+  for (const { id, properties: p } of areas.features) {
+    assert.match(id, /^\d{5}$/)
+    assert.ok(['049', '091', '092', '235'].includes(p.municipality_code))
+    for (const field of ['income_mean', 'income_median', 'jobs_total', 'residents']) assert.ok(p[field] === null || p[field] >= 0, `${id} ${field}`)
+    if (!p.residents) assert.equal(p.income_mean, null, `${id} has income without residents`)
+    const sectors = Object.values(p.jobs_by_sector)
+    if (p.jobs_total !== null && !sectors.includes(null)) assert.equal(sectors.reduce((a, b) => a + b, 0), p.jobs_total)
+  }
+})
+
+test('StatFin population covers the four municipalities with positive totals', async () => {
+  const population = await readJson('../public/data/population.json')
+  assert.deepEqual(Object.keys(population.population_by_municipality).sort(), ['049', '091', '092', '235'])
+  assert.ok(Object.values(population.population_by_municipality).every(value => Number.isInteger(value) && value > 0))
+  assert.equal(population.source_id, 'statfin-population-11ra')
+})

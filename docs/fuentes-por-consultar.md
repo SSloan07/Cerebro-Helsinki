@@ -30,13 +30,13 @@ En la app, cada fila de este documento tiene su página en blanco («hueco decla
 
 ## 2. Ya probadas: falta ingerirlas
 
+> **Integradas el 2026-10-27** (salieron de esta tabla): `stat-fi-postal-areas-paavo` (Paavo 2026, año de referencia 2024) y `statfin-population-11ra`. Detalle en `registro-integracion.md`.
+
 Estas tienen ficha y prueba. Lo que falta es ingesta, contrato y `verificar.py`.
 
 | Fuente (id) | Probada | Resultado de la prueba | Qué alimenta en la app | Siguiente paso |
 |---|---|---|---|---|
-| `sf-paavo-2026` | 2026-09-21 | HTTP 200 · 167 áreas postales | Habitar 1–3 (ingreso, distribución, alquiler) · Aprender 1 (educación) | **Primera ingesta.** Confirmar `hr_ktu`, `tr_ktu`, `te_vuok_as` y `ko_*`, con el año de referencia de cada uno, y cómo se suprimen las áreas con poca población. |
-| `statfin-population-11ra` | catálogo revisado el 2026-09-28 | sin prueba con fecha propia | Llegar 2 (población) | Probar con fecha y luego ingerir. Cruzar por código municipal. |
-| `hsy-tyopaikkaruudukko-2024` | 2026-09-21 | HTTP 200 · 15.445 celdas | Investigar 1–2 (empleo por sector) | Agregar a 1 km o a área postal antes de publicar. `-1` es supresión, nunca cero. |
+| `hsy-tyopaikkaruudukko-2024` | 2026-09-21 | HTTP 200 · 15.445 celdas | Ya no hace falta para Investigar 1–2 (lo cubre Paavo `tp_*`). Queda como alternativa de 250 m. | Si se usa: agregar antes de publicar; `-1` es supresión, nunca cero. |
 | `prh-ytj-v3` | 2026-09-21 | HTTP 200 · 89.816 para `location=Helsinki` | Investigar 3 (empresas por sector) | Confirmar la licencia en avoindata.prh.fi. El script guarda solo conteos y no pasa nombres a la IA. |
 | `hsy-land-cover` | catálogo revisado el 2026-09-28 | sin prueba con fecha propia | Investigar 4 (expansión 2016 → 2024) | Probar los dos cortes y elegir la variable (superficie impermeable). |
 | `hsy-rakennukset-paivittyva` | 2026-09-21 | HTTP 200 · 154.154 edificios | Edificación por década (aún sin pliego) | Licencia de esta capa por confirmar. Solo agregados por área postal. |

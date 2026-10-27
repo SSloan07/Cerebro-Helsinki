@@ -1,0 +1,8 @@
+{
+  "source_id": "statfin-population-11ra",
+  "url": "https://pxdata.stat.fi/PxWeb/api/v1/en/StatFin/vaerak/11ra.px",
+  "retrieved_at": "2026-10-27T22:23:23.308805+00:00",
+  "raw_file": "data/raw/statfin_11ra.json",
+  "bytes": 3337,
+  "sha256": "2243ed101842b00b464d50a2bd1da69d5ab5dc5dde96d568e0d3ac406b9cb568"
+}

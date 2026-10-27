@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { LIBROS, coberturaDe } from './libros.js'
 import { useLago, numero } from './datos.js'
 import { Flecha, Icono } from './iconos.jsx'
 import { FichaFuente, Hueco, Notas, Pendiente, VISTAS } from './pliegos.jsx'
+import { SECTORES, Seleccion, VISTAS_AREAS } from './pliegosAreas.jsx'
 
 const SIN_MOVIMIENTO = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
@@ -14,10 +15,27 @@ function leerUrl() {
   return { libro: libro?.id || null, leer: p.get('leer') === '1', pliego }
 }
 
+const ZONA = /^\d{5}$/
+function leerSeleccion() {
+  const p = new URLSearchParams(window.location.search)
+  return { zonas: [p.get('a'), p.get('b')].filter(z => z && ZONA.test(z)), sector: SECTORES[p.get('sector')] ? p.get('sector') : 'J' }
+}
+
+// La selección vive en la URL (y en memoria), nunca en un servidor ni en localStorage.
+function escribirSeleccion({ zonas, sector }) {
+  const p = new URLSearchParams(window.location.search)
+  for (const clave of ['a', 'b']) p.delete(clave)
+  zonas.forEach((zona, i) => p.set('ab'[i], zona))
+  p.set('sector', sector)
+  window.history.replaceState(null, '', `?${p}`)
+}
+
 function escribirUrl({ libro, leer, pliego }, reemplazar = false) {
   const p = new URLSearchParams()
   if (libro) p.set('libro', libro)
   if (libro && leer) { p.set('leer', '1'); p.set('pliego', String(pliego)) }
+  const previa = new URLSearchParams(window.location.search)
+  for (const clave of ['a', 'b', 'sector']) if (previa.get(clave)) p.set(clave, previa.get(clave))
   const destino = p.toString() ? `?${p}` : window.location.pathname
   window.history[reemplazar ? 'replaceState' : 'pushState'](null, '', destino)
 }
@@ -29,6 +47,12 @@ export function App() {
   const [abriendo, setAbriendo] = useState(false)
   const [nota, setNota] = useState(null)
   const [ficha, setFicha] = useState(null)
+  const [seleccion, setSeleccion] = useState(leerSeleccion)
+  const contextoSeleccion = useMemo(() => ({
+    ...seleccion,
+    setZonas: cambio => setSeleccion(previa => { const nueva = { ...previa, zonas: typeof cambio === 'function' ? cambio(previa.zonas) : cambio }; escribirSeleccion(nueva); return nueva }),
+    setSector: sector => setSeleccion(previa => { const nueva = { ...previa, sector }; escribirSeleccion(nueva); return nueva }),
+  }), [seleccion])
 
   const ir = useCallback((siguiente, reemplazar, subir = true) => {
     escribirUrl(siguiente, reemplazar)
@@ -64,7 +88,7 @@ export function App() {
   const libro = LIBROS.find(item => item.id === ruta.libro)
   const contextoNotas = { activa: nota, setActiva: setNota, abrir: setFicha, registro: lago.registro || [] }
 
-  return <Notas.Provider value={contextoNotas}>
+  return <Seleccion.Provider value={contextoSeleccion}><Notas.Provider value={contextoNotas}>
     <div className="biblioteca" data-color={libro?.color}>
       <header className="encabezado">
         <button type="button" className="marca" onClick={() => ir({ libro: null, leer: false, pliego: 1 })}>Cerebro<br />Helsinki</button>
@@ -86,7 +110,7 @@ export function App() {
       </footer>
       {ficha && <FichaFuente id={ficha} registro={lago.registro || []} onCerrar={() => setFicha(null)} />}
     </div>
-  </Notas.Provider>
+  </Notas.Provider></Seleccion.Provider>
 }
 
 function Lomo({ libro, numeroVol, estado, onSacar }) {
@@ -165,7 +189,7 @@ function Lectura({ libro, indice, lago, onPliego, onLibro, onVolver }) {
     if (arriba < 0) marco.current.scrollIntoView({ block: 'start', behavior: SIN_MOVIMIENTO ? 'auto' : 'smooth' })
   }, [indice])
 
-  const Vista = pliego.tipo === 'pendiente' ? Pendiente : pliego.tipo === 'hueco' ? Hueco : VISTAS[pliego.vista]
+  const Vista = pliego.tipo === 'pendiente' ? Pendiente : pliego.tipo === 'hueco' ? Hueco : VISTAS[pliego.vista] || VISTAS_AREAS[pliego.vista]
   return <section className="lectura-pagina">
     <div className="lectura-barra">
       <button type="button" className="volver" onClick={onVolver}><Flecha izquierda /> Devolver al estante</button>

@@ -1,0 +1,40 @@
+{
+  "generated_at": "2026-10-27T22:33:39.661474+00:00",
+  "status": "partial",
+  "inputs": {
+    "municipalities.geojson": {
+      "sha256": "d22591423195b78bdc115dd1c0352412caeef517033bc173baf3fe769352afea",
+      "bytes": 40829
+    },
+    "hsl_stops.txt": {
+      "sha256": "20609f67a6f687d7fa2e1df29cb01d2a3b3ace115e3afc0706b1459322ef8eee",
+      "bytes": 1127168
+    }
+  },
+  "outputs": {
+    "municipalities.geojson": {
+      "sha256": "ba698927bf7b1a6da8388a22e958a6adfe7a5ca216307c255cd3fa43b3ba9ad0",
+      "record_count": 4
+    },
+    "transit_stops.geojson": {
+      "sha256": "95504d5020f297512265a3b3357c30247fc616849e1a18c7f8ec151bfdfbe117",
+      "record_count": 6027,
+      "invalid_record_count": 0
+    },
+    "postal_areas.geojson": {
+      "sha256": "b293621b6be86c68a1961bdebd33fad36d5edb4d1edb0fb7d0211bcb6b11ee20",
+      "record_count": 167
+    },
+    "population.json": {
+      "sha256": "f955b0a2447b65000b35e2e11d71b42811c1a1d885658a22ab729c9d162b9b82",
+      "record_count": 4
+    }
+  },
+  "change_from_previous_snapshot": {
+    "snapshot_date": "2026-09-21",
+    "municipality_count_delta": 0,
+    "hsl_stop_count_delta": 0,
+    "municipality_geometry_changed": false,
+    "stops_dataset_changed": false
+  }
+}

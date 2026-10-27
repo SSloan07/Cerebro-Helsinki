@@ -64,7 +64,7 @@
       "llave": "ninguna",
       "personas": "Agregados por área postal (población, edad, ingreso, hogares). No hay registros individuales.",
       "proteccion": "Revisar códigos de supresión de celdas pequeñas antes de mostrar cifras; un valor suprimido nunca es cero.",
-      "estado": "candidata",
+      "estado": "integrada",
       "semaforo": "verde",
       "uso_potencial": "Escala intraurbana (debajo del municipio) para población, ingreso y hogares.",
       "razon": "Única escala intraurbana oficial que cubre los cuatro municipios con la misma metodología; reemplaza a los distritos de kartta.hel.fi, que no responde. Corrección 2026-09-28: la versión anterior de esta ficha usaba pno_tilasto_2025 (168 áreas); la vigente es pno_tilasto_2026 (167 áreas), como registró catalogo/sf-paavo-2026.md.",
@@ -80,7 +80,14 @@
           "vuosi": 2026
         }
       },
-      "ficha_catalogo": "catalogo/sf-paavo-2026.md"
+      "ficha_catalogo": "catalogo/sf-paavo-2026.md",
+      "integracion": {
+        "fecha": "2026-10-27",
+        "salida": "public/data/postal_areas.geojson",
+        "script": "etl/helsinki/sources/paavo.py",
+        "verificacion": "verificar.py",
+        "registro": "docs/registro-integracion.md"
+      }
     },
     {
       "id": "stat-fi-population-grid-1km",
@@ -557,7 +564,7 @@
       "llave": "ninguna",
       "personas": "No. Agregados municipales.",
       "proteccion": "Ninguna.",
-      "estado": "candidata",
+      "estado": "integrada",
       "semaforo": "verde",
       "uso_potencial": "Población oficial de cada municipio (cifra de referencia para cualquier tasa).",
       "razon": "Fuente oficial de la población. Es la que se debe citar; Eurostat y Wikidata la repiten con rezago o sin garantía.",
@@ -615,6 +622,13 @@
           },
           "actualizado": "2026-05-29T05:00:00Z"
         }
+      },
+      "integracion": {
+        "fecha": "2026-10-27",
+        "salida": "public/data/population.json",
+        "script": "etl/helsinki/sources/poblacion.py",
+        "verificacion": "verificar.py",
+        "registro": "docs/registro-integracion.md"
       }
     },
     {

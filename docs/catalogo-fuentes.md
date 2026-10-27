@@ -12,6 +12,7 @@ Este es el **índice único** del catálogo. Une dos rastreos que se hicieron en
 Las 12 fuentes que aparecían en los dos rastreos se conciliaron. Cada diferencia quedó anotada en la §7. La columna **Ficha** enlaza la ficha detallada de `catalogo/` cuando existe.
 
 - **Resultado:** 63 fuentes en 7 familias (territorio, población, economía, movilidad, ambiente, servicios, catálogos): **5 integradas · 25 candidatas · 8 condicionadas · 6 caídas · 17 descartadas · 2 no existen para la ciudad**.
+- **Actualización 2026-10-27:** `stat-fi-postal-areas-paavo` (Paavo 2026) y `statfin-population-11ra` pasaron de candidatas a **integradas**: ahora son **7 integradas · 23 candidatas**. El detalle de ETL, verificación y correcciones está en [`registro-integracion.md`](registro-integracion.md). Las filas de abajo conservan el resultado de la prueba del 09-28.
 - **Versión para máquina:** [catalogo/fuentes.json](catalogo/fuentes.json). Trae los mismos campos, `ficha_catalogo`, el recurso probado (`prueba`) y el resultado observado (`ultima_prueba`). Si se cambia una fuente, hay que actualizar este documento, el JSON y la ficha de `catalogo/` si la tiene.
 - **Regla:** ninguna fuente entra al catálogo solo porque la IA la propuso. Si no se abrió o no respondió, figura como caída con su error exacto. Si la licencia no se leyó en la fuente, dice **por verificar**.
 

@@ -23,7 +23,7 @@ function leerFichaMd(texto) {
   return ficha
 }
 
-const FICHAS_MD = Object.fromEntries(Object.values(fichasMd).map(leerFichaMd).filter(ficha => ficha.id).map(ficha => [ficha.id, ficha]))
+const FICHAS_MD = Object.fromEntries(Object.entries(fichasMd).map(([ruta, texto]) => [ruta.split('/').pop().replace(/\.md$/, ''), leerFichaMd(texto)]))
 const FICHAS_JSON = Object.fromEntries(catalogo.fuentes.map(fuente => [fuente.id, fuente]))
 export const PRUEBAS = Object.fromEntries(pruebas.probes.map(prueba => [prueba.id, prueba]))
 export const CATALOGO = catalogo
@@ -37,10 +37,13 @@ const normalizarEstado = valor => ESTADOS.find(([texto]) => (valor || '').toLowe
 export const ETIQUETA_ESTADO = { integrada: 'Integrada', candidata: 'Candidata', condicionada: 'Condicionada', caida: 'Caída', descartada: 'Descartada', no_existe: 'No existe para Helsinki' }
 
 // Une lo que se sabe de una fuente: ficha del catálogo, prueba con fecha y, si está integrada, el registro del lago.
+// El índice unificado (docs/catalogo/fuentes.json) manda; su campo ficha_catalogo apunta a la ficha detallada.
 export function ficha(id, registro = []) {
-  const md = FICHAS_MD[id]
   const json = FICHAS_JSON[id]
-  const prueba = PRUEBAS[id]
+  const archivoMd = json?.ficha_catalogo?.split('/').pop().replace(/\.md$/, '') || id
+  const md = FICHAS_MD[archivoMd]
+  const prueba = PRUEBAS[archivoMd]
+  const ultima = json?.ultima_prueba
   const lago = registro.find(fuente => fuente.id === id)
   if (!md && !json && !lago) return null
   return {
@@ -50,15 +53,15 @@ export function ficha(id, registro = []) {
     estado: normalizarEstado(lago?.integration_status === 'integrated' ? 'integrada' : md?.estado || json?.estado),
     semaforo: normalizarSemaforo(md?.semaforo || json?.semaforo),
     licencia: md?.licencia || json?.licencia || lago?.license,
-    vigencia: vigenciaGtfs(lago?.period_covered) || md?.vigencia || json?.vigencia || lago?.period_covered,
-    probado: lago?.consulted_at || prueba?.probed_at?.slice(0, 10) || null,
-    probadoEn: lago ? 'registro del lago' : prueba ? 'prueba de candidatas' : null,
-    resultado: md?.resultado || describirPrueba(prueba),
+    vigencia: vigenciaGtfs(lago?.period_covered) || lago?.periodo || md?.vigencia || json?.vigencia || lago?.period_covered,
+    probado: lago?.consulted_at || ultima?.probado?.slice(0, 10) || prueba?.probed_at?.slice(0, 10) || null,
+    probadoEn: lago ? 'descarga de la ingesta' : ultima ? 'prueba del catálogo' : prueba ? 'prueba de candidatas' : null,
+    resultado: md?.resultado || describirUltima(ultima) || describirPrueba(prueba),
     personas: md?.personas || json?.personas,
-    limites: md?.limites || json?.proteccion || json?.razon || lago?.limitations,
+    limites: lago?.limitaciones || md?.limites || json?.proteccion || json?.razon || lago?.limitations,
     documentacion: md?.documentacion || json?.documentacion || lago?.url,
-    catalogo: md ? `catalogo/${id}.md` : json ? 'docs/catalogo/fuentes.json' : 'public/data/sources.json',
-    revisionCatalogo: !md && json ? catalogo.revisado : null,
+    catalogo: md ? `catalogo/${archivoMd}.md` : json ? 'docs/catalogo/fuentes.json' : 'public/data/sources.json',
+    revisionCatalogo: json ? catalogo.revisado : null,
   }
 }
 
@@ -66,6 +69,12 @@ export function ficha(id, registro = []) {
 function vigenciaGtfs(texto) {
   const rango = texto?.match(/(\d{8})\s*[–-]\s*(\d{8})/)
   return rango ? `Horario válido del ${fecha(rango[1])} al ${fecha(rango[2])}` : null
+}
+
+function describirUltima(ultima) {
+  if (!ultima) return null
+  const evidencia = Object.entries(ultima.evidencia || {}).filter(([, valor]) => typeof valor === 'number')
+  return `HTTP ${ultima.http ?? '—'} · ${ultima.resultado}${evidencia.length ? ` · ${evidencia.map(([clave, valor]) => `${clave} ${numero(valor)}`).join(', ')}` : ''}`
 }
 
 function describirPrueba(prueba) {
@@ -107,14 +116,21 @@ export function useLago() {
   return lago
 }
 
-export function useParadas() {
-  const [paradas, setParadas] = useState({ cargando: true })
+// Un archivo del lago con sus tres estados: cargando, error o datos. Se guarda en memoria entre pliegos.
+const memoria = new Map()
+function useArchivo(ruta) {
+  const [estado, setEstado] = useState(() => memoria.get(ruta) || { cargando: true })
   useEffect(() => {
+    if (memoria.has(ruta)) return
     let vivo = true
-    pedir('/data/transit_stops.geojson')
-      .then(datos => vivo && setParadas({ cargando: false, datos }))
-      .catch(error => vivo && setParadas({ cargando: false, error: error.message }))
+    pedir(ruta)
+      .then(datos => { const listo = { cargando: false, datos }; memoria.set(ruta, listo); if (vivo) setEstado(listo) })
+      .catch(error => vivo && setEstado({ cargando: false, error: error.message }))
     return () => { vivo = false }
-  }, [])
-  return paradas
+  }, [ruta])
+  return estado
 }
+
+export const useParadas = () => useArchivo('/data/transit_stops.geojson')
+export const useAreas = () => useArchivo('/data/postal_areas.geojson')
+export const usePoblacion = () => useArchivo('/data/population.json')
