@@ -9,8 +9,9 @@ python3 -m etl.helsinki.probe_candidates --overture
 
 (`--overture` necesita `duckdb` en el entorno de Python; sin él se omite solo esa prueba.)
 
-Las 7 fuentes de la fase anterior (límites de Statistics Finland, GTFS y GTFS-RT de HSL, visor 3D, Service Map v4,
-teselas OSM, Overpass) siguen registradas en `public/data/sources.json`; falta pasarlas a fichas de este formato.
+**Índice unificado:** este directorio tiene las fichas detalladas de 26 fuentes. El índice completo, con 63 fuentes, está en
+[`docs/catalogo-fuentes.md`](../docs/catalogo-fuentes.md) (versión para máquina: [`docs/catalogo/fuentes.json`](../docs/catalogo/fuentes.json)).
+Ese índice incluye las fuentes de la fase anterior, las caídas y las descartadas, enlaza a estas fichas y registra en su §7 cómo se concilió cada diferencia.
 
 **Nada de lo de abajo está integrado en el lago todavía.** Son candidatas probadas el 2026-09-21.
 
@@ -32,7 +33,7 @@ teselas OSM, Overpass) siguen registradas en `public/data/sources.json`; falta p
 | [hsy-sahkonkulutus-pks](hsy-sahkonkulutus-pks.md) | Ambiental / energía | descargada | 🟢 | electricidad por sector |
 | [hsy-aurinkosahkopotentiaali](hsy-aurinkosahkopotentiaali.md) | Ambiental / energía | probada OK | 🟢 | potencial solar (modelado) |
 | [hsy-rakennukset-polttoaine](hsy-rakennukset-polttoaine.md) | Ambiental / energía | probada OK | 🟡 | combustible de calefacción |
-| [hsy-ilmanlaatu-nyt](hsy-ilmanlaatu-nyt.md) | Ambiental / regional | probada OK | 🟡 | calidad del aire en vivo |
+| [hsy-ilmanlaatu-nyt](hsy-ilmanlaatu-nyt.md) | Ambiental / regional | probada OK | 🟢 | calidad del aire en vivo |
 | [hel-nuuka-energia](hel-nuuka-energia.md) | Municipal | probada OK | 🟢 | energía medida de edificios públicos |
 | [hel-servicemap-v2](hel-servicemap-v2.md) | Municipal | probada OK | 🟡 | servicios públicos |
 | [hel-energia-ilmastoatlas](hel-energia-ilmastoatlas.md) | Municipal | descartada (0,5 % con clase energética) | 🟡 | — |
@@ -40,8 +41,8 @@ teselas OSM, Overpass) siguen registradas en `public/data/sources.json`; falta p
 | [hel-3d-citydb-wfs](hel-3d-citydb-wfs.md) | Municipal | **caída** (timeout) | ⚪ | alturas oficiales de Helsinki |
 | [hel-avoindata-wfs](hel-avoindata-wfs.md) | Municipal | **caída** (timeout) | ⚪ | — |
 | [prh-ytj-v3](prh-ytj-v3.md) | Registro empresarial | probada OK | 🔴 registros / 🟡 conteos | tejido empresarial |
-| [fmi-open-data](fmi-open-data.md) | Meteorología | probada OK | 🟡 | clima |
-| [digitraffic-tms](digitraffic-tms.md) | Transporte | OK tras corrección | 🟡 | tráfico vial |
+| [fmi-open-data](fmi-open-data.md) | Meteorología | probada OK | 🟢 | clima |
+| [digitraffic-tms](digitraffic-tms.md) | Transporte | OK tras corrección | 🟢 | tráfico vial |
 | [overture-buildings](overture-buildings.md) | Comunitaria / global | probada OK | 🟡 (ODbL) | **altura de edificios** |
 | [ms-global-ml-buildings](ms-global-ml-buildings.md) | Comunitaria / global | descartada (ya está en Overture) | 🟢 | — |
 | [google-open-buildings](google-open-buildings.md) | Comunitaria / global | **no existe para Finlandia** | ⚪ | — |
@@ -78,27 +79,24 @@ Las API CKAN de HRI (`hri.fi/data/api/3`) y avoindata.fi responden **403 Forbidd
 navegador, y 200 a `curl/8`. El sondeo lo registra tal cual (`hri-ckan-api`: 403). Los archivos enlazados desde HRI (blob de Azure,
 hel.fi) sí se descargan con el User-Agent del ETL. Para catalogar desde CKAN habrá que decidir, y dejar escrito, qué User-Agent se usa.
 
-## Aviso: hay dos catálogos en el repo (2026-09-28)
+## Catálogos unificados (2026-09-28)
 
-Este catálogo (`catalogo/*.md` + `etl/helsinki/probe_candidates.py`) y el de `docs/catalogo/fuentes.json` +
-`scripts/probar_fuentes.py` se escribieron en paralelo y **cubren en parte las mismas fuentes**. No chocan en git porque
-están en rutas distintas, pero el grupo tiene que decidir cuál queda antes de la entrega: dos catálogos que se contradicen
-son exactamente lo que la rúbrica llama «vitrina».
+Este catálogo y el de `docs/` se escribieron en paralelo. Se unificaron así:
 
-- `docs/catalogo/fuentes.json`: 49 fuentes, más familias, con `licencia_verificada_en` por fuente y fichas generadas por script.
-- `catalogo/`: 26 fuentes con el sondeo realmente ejecutado y guardado en `data/metadata/candidate_probes.json`.
+- **Índice único:** [`docs/catalogo-fuentes.md`](../docs/catalogo-fuentes.md) (63 fuentes) y su JSON [`docs/catalogo/fuentes.json`](../docs/catalogo/fuentes.json), con el campo `ficha_catalogo` apuntando a estas fichas.
+- **Fichas detalladas:** siguen aquí; el índice no las duplica.
+- **Se eliminó `scripts/probar_fuentes.py`.** El único script de sondeo es `etl/helsinki/probe_candidates.py`.
 
-Discrepancias que hay que resolver, no ocultar:
+Resolución de las discrepancias que se habían señalado (detalle en la §7 del índice):
 
-| Punto | `docs/catalogo/fuentes.json` | `catalogo/` |
-|---|---|---|
-| Paavo | capa `pno_tilasto_2025`, 168 áreas | capa `pno_tilasto_2026`, 167 áreas (probada 2026-09-21) |
-| Edificios HSY (`pks_rakennukset_paivittyva`) | semáforo 🟢 verde | 🟡 amarillo: trae dirección por edificio, que en casas unifamiliares describe un hogar |
-| Overture edificios | licencia ODbL; prueba = listar releases en S3 | licencia ODbL (coincide); prueba = consulta real con DuckDB: 258.743 edificios, 66 % con altura |
-
-Y un dato que afecta a los dos scripts: el User-Agent de `scripts/probar_fuentes.py`
-(`CerebroHelsinki-catalog-probe/0.1 ...`) también recibe **403** de la API CKAN de HRI (probado 2026-09-28), igual que el
-del ETL. Si se quiere catalogar desde CKAN, hay que resolver el User-Agent en el script que quede.
+| Punto | Decisión |
+|---|---|
+| Paavo | Se adopta `pno_tilasto_2026` (167 áreas), reprobada el 2026-09-28 |
+| Edificios HSY | 🟡: solo agregados, como en esta ficha |
+| Overture | Se adopta la prueba con DuckDB de esta ficha |
+| Rejilla HSY 250 m | 🟢 con el `99` → nulo, como en esta ficha. Regla común: un centinela va al contrato, no baja el semáforo |
+| HRI / avoindata | El 403 depende del User-Agent, como se registró aquí. Se corrigió el índice, que los tenía como caídos |
+| Licencias «por verificar» | FMI, Digitraffic, HSY aire, PRH y edificios HSY quedaron verificadas el 2026-09-28; las fichas se actualizaron |
 
 ## Bitácora de IA de este rastreo (2026-09-21)
 

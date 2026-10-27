@@ -1,5 +1,5 @@
 {
-  "descripcion": "Catálogo de fuentes candidatas para Cerebro Helsinki (Helsinki, Espoo, Vantaa, Kauniainen). Cada entrada es una ficha; el resultado de la prueba lo agrega scripts/probar_fuentes.py en docs/catalogo/pruebas/. Editar aquí y regenerar las fichas; no editar docs/catalogo/fichas/ a mano.",
+  "descripcion": "Índice unificado de fuentes de Cerebro Helsinki (Helsinki, Espoo, Vantaa, Kauniainen), versión legible por máquina de docs/catalogo-fuentes.md. Une las pruebas del 2026-09-28 (docs/) con las fichas de catalogo/ (2026-09-21, etl/helsinki/probe_candidates.py). 'ficha_catalogo' enlaza la ficha detallada cuando existe; 'prueba' es el recurso probado y 'ultima_prueba' el resultado observado.",
   "revisado": "2026-09-28",
   "vocabulario": {
     "estado": {
@@ -13,7 +13,8 @@
     "semaforo": {
       "verde": "Licencia abierta verificada, sin datos de personas o solo agregados, acceso sin llave.",
       "amarillo": "Se puede usar con una condición escrita en la ficha.",
-      "rojo": "No se puede usar tal como está (llave, licencia restrictiva, personas sin tratar, fuente no confiable)."
+      "rojo": "No se puede usar tal como está (llave, licencia restrictiva, personas sin tratar, fuente no confiable).",
+      "regla": "El semáforo mide permiso (licencia y personas). Un valor centinela de supresión (-1, 99, 999999999) es un problema de calidad: va al contrato de datos y a verificar.py, no baja el semáforo. Si hay que quitar campos o publicar solo agregados para no exponer personas, el semáforo es amarillo."
     }
   },
   "fuentes": [
@@ -37,21 +38,27 @@
       "uso_potencial": "Marco territorial del mapa y llave de cruce (código municipal).",
       "razon": "Productor estadístico oficial, licencia abierta, código territorial estable. Limitación: generalización 1:1.000.000, no sirve para barrios.",
       "prueba": {
-        "url": "https://geo.stat.fi/geoserver/tilastointialueet/wfs?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=tilastointialueet%3Akunta1000k_2025&OUTPUTFORMAT=application%2Fjson&PROPERTYNAME=kunta,nimi&CQL_FILTER=kunta%20IN%20(%27049%27%2C%27091%27%2C%27092%27%2C%27235%27)",
-        "evidencia": "json_ruta",
-        "arg": "numberMatched"
+        "url": "https://geo.stat.fi/geoserver/tilastointialueet/wfs?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=tilastointialueet%3Akunta1000k_2025&OUTPUTFORMAT=application%2Fjson&PROPERTYNAME=kunta,nimi&CQL_FILTER=kunta%20IN%20(%27049%27%2C%27091%27%2C%27092%27%2C%27235%27)"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-28T17:46:06Z",
+        "resultado": "ok",
+        "http": 200,
+        "evidencia": {
+          "numberMatched": 4
+        }
       }
     },
     {
       "id": "stat-fi-postal-areas-paavo",
-      "nombre": "Áreas de código postal con estadística Paavo 2025 (pno_tilasto_2025)",
+      "nombre": "Áreas de código postal con estadística Paavo 2026 (pno_tilasto_2026)",
       "familia": "territorio",
       "productor": "Statistics Finland (Tilastokeskus)",
       "tipo_fuente": "primaria",
       "documentacion": "https://stat.fi/en/services/statistical-data-services/open-data-and-interfaces",
       "formato": "WFS 2.0 / GeoJSON",
-      "cobertura": "168 áreas postales en los cuatro municipios (filtro por código municipal)",
-      "vigencia": "Campo vuosi = 2025 en la capa",
+      "cobertura": "167 áreas postales en los cuatro municipios (filtro por código municipal)",
+      "vigencia": "Campo vuosi = 2026; cada variable tiene su propio año de referencia (leerlo en la documentación de Paavo)",
       "licencia": "CC BY 4.0",
       "licencia_verificada_en": "https://stat.fi/en/about-us/get-to-know-statistics-finland/legislation/terms-of-use",
       "llave": "ninguna",
@@ -60,12 +67,20 @@
       "estado": "candidata",
       "semaforo": "verde",
       "uso_potencial": "Escala intraurbana (debajo del municipio) para población, ingreso y hogares.",
-      "razon": "Única escala intraurbana oficial que cubre los cuatro municipios con la misma metodología; resuelve que kartta.hel.fi (distritos de Helsinki) no respondió.",
+      "razon": "Única escala intraurbana oficial que cubre los cuatro municipios con la misma metodología; reemplaza a los distritos de kartta.hel.fi, que no responde. Corrección 2026-09-28: la versión anterior de esta ficha usaba pno_tilasto_2025 (168 áreas); la vigente es pno_tilasto_2026 (167 áreas), como registró catalogo/sf-paavo-2026.md.",
       "prueba": {
-        "url": "https://geo.stat.fi/geoserver/wfs?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=postialue:pno_tilasto_2025&OUTPUTFORMAT=application/json&PROPERTYNAME=postinumeroalue,kunta,vuosi&CQL_FILTER=kunta%20IN%20(%27091%27,%27049%27,%27092%27,%27235%27)",
-        "evidencia": "json_ruta",
-        "arg": "numberMatched"
-      }
+        "url": "https://geo.stat.fi/geoserver/wfs?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=postialue:pno_tilasto_2026&OUTPUTFORMAT=application/json&PROPERTYNAME=postinumeroalue,kunta,vuosi&CQL_FILTER=kunta%20IN%20(%27091%27,%27049%27,%27092%27,%27235%27)"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-28T18:10:00Z",
+        "resultado": "ok",
+        "http": 200,
+        "evidencia": {
+          "numberMatched": 167,
+          "vuosi": 2026
+        }
+      },
+      "ficha_catalogo": "catalogo/sf-paavo-2026.md"
     },
     {
       "id": "stat-fi-population-grid-1km",
@@ -75,22 +90,29 @@
       "tipo_fuente": "primaria",
       "documentacion": "https://stat.fi/en/services/statistical-data-services/open-data-and-interfaces",
       "formato": "WFS 2.0 / GeoJSON",
-      "cobertura": "Nacional; se recorta con los polígonos municipales",
+      "cobertura": "749 celdas en los cuatro municipios (filtro por código municipal); 96.904 en todo el país",
       "vigencia": "Año de referencia 2025 (nombre de la capa)",
       "licencia": "CC BY 4.0",
       "licencia_verificada_en": "https://stat.fi/en/about-us/get-to-know-statistics-finland/legislation/terms-of-use",
       "llave": "ninguna",
-      "personas": "Agregados por celda de 1 km². Celdas con pocos habitantes pueden llevar atributos suprimidos.",
-      "proteccion": "Tratar los códigos de supresión como nulos.",
+      "personas": "Agregados por celda de 1 km². Celdas con poca población traen -1 en los desgloses (sexo, edad): dato protegido, no cero.",
+      "proteccion": "Convertir -1 a nulo en la ingesta; verificar.py debe fallar si un -1 llega a una cifra.",
       "estado": "candidata",
       "semaforo": "verde",
       "uso_potencial": "Densidad comparable entre los cuatro municipios; alternativa a la grilla HSY de 250 m.",
       "razon": "Misma entidad y licencia que los límites; permite comparar con la grilla HSY (dos fuentes para el mismo fenómeno).",
       "prueba": {
-        "url": "https://geo.stat.fi/geoserver/wfs?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=vaestoruutu:vaki2025_1km&COUNT=1&OUTPUTFORMAT=application/json",
-        "evidencia": "json_ruta",
-        "arg": "numberMatched"
-      }
+        "url": "https://geo.stat.fi/geoserver/wfs?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=vaestoruutu:vaki2025_1km&RESULTTYPE=hits&CQL_FILTER=kunta%20IN%20(%27091%27,%27049%27,%27092%27,%27235%27)"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-28T18:10:00Z",
+        "resultado": "ok",
+        "http": 200,
+        "evidencia": {
+          "numberMatched": 749
+        }
+      },
+      "ficha_catalogo": "catalogo/sf-vaestoruutu-1km-2025.md"
     },
     {
       "id": "hsy-population-grid-250m",
@@ -102,20 +124,27 @@
       "formato": "WFS 2.0 / GeoJSON, EPSG:3879",
       "cobertura": "Área metropolitana de Helsinki (HSY)",
       "vigencia": "Capa 2025; campo paivitys_pvm = 2026-08-05 en la muestra",
-      "licencia": "CC BY 4.0",
-      "licencia_verificada_en": "https://www.hsy.fi/en/environmental-information/open-data/",
+      "licencia": "CC BY 4.0 (ficha HRI modificada 2026-07-16, según catalogo/hsy-vaestotietoruudukko-2025.md)",
+      "licencia_verificada_en": "https://hri.fi/data/fi/dataset/vaestotietoruudukko",
       "llave": "ninguna",
-      "personas": "Agregados por celda de 250 m. En la muestra, una celda con asukkaita=6 trae todos los grupos de edad en 99: es código de supresión, no 99 personas.",
+      "personas": "Agregados por celda de 250 m. En la muestra (2026-09-28), una celda con asukkaita=6 trae los nueve grupos de edad en 99: imposible como conteo (9 × 99 > 6), así que 99 es un valor centinela de supresión, no 99 personas.",
       "proteccion": "Convertir 99 a nulo en la ingesta y no mostrar celdas con supresión; verificar.py debe fallar si aparece un 99 como valor.",
-      "estado": "condicionada",
-      "semaforo": "amarillo",
+      "estado": "candidata",
+      "semaforo": "verde",
       "uso_potencial": "Densidad fina de población y estructura por edad.",
-      "razon": "Fuente oficial y abierta, pero trae un código centinela (99) que, sin tratar, se leería como dato. Es el mismo tipo de error que el caso Lima (una variable en cero).",
+      "razon": "Fuente oficial y abierta. El 99 es una supresión del productor (protege a las personas); es un problema de calidad que va al contrato y a verificar.py, no de permiso. Corrección 2026-09-28: estaba en amarillo/condicionada; se unificó con catalogo/ bajo la regla del semáforo. No trae código municipal: cruce espacial con los polígonos.",
       "prueba": {
-        "url": "https://kartta.hsy.fi/geoserver/wfs?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=asuminen_ja_maankaytto:Vaestotietoruudukko_2025&COUNT=1&OUTPUTFORMAT=application/json&PROPERTYNAME=asukkaita,paivitys_pvm",
-        "evidencia": "json_ruta",
-        "arg": "numberMatched"
-      }
+        "url": "https://kartta.hsy.fi/geoserver/wfs?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=asuminen_ja_maankaytto:Vaestotietoruudukko_2025&COUNT=1&OUTPUTFORMAT=application/json&PROPERTYNAME=asukkaita,paivitys_pvm"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-28T17:46:09Z",
+        "resultado": "ok",
+        "http": 200,
+        "evidencia": {
+          "numberMatched": 5826
+        }
+      },
+      "ficha_catalogo": "catalogo/hsy-vaestotietoruudukko-2025.md"
     },
     {
       "id": "hsy-buildings",
@@ -126,21 +155,28 @@
       "documentacion": "https://www.hsy.fi/en/environmental-information/open-data/",
       "formato": "WFS 2.0 / GeoJSON, EPSG:3879",
       "cobertura": "Helsinki, Espoo, Vantaa, Kauniainen",
-      "vigencia": "Capa que se actualiza continuamente (paivittyva); fecha por registro a confirmar en la ingesta",
-      "licencia": "CC BY 4.0",
-      "licencia_verificada_en": "https://www.hsy.fi/en/environmental-information/open-data/",
+      "vigencia": "Extracción 2024-04-19 en la muestra (poimintapvm); verificar si varía por municipio",
+      "licencia": "CC BY 4.0 (ficha HRI «Pääkaupunkiseudun rakennukset», modificada 2026-04-02)",
+      "licencia_verificada_en": "https://hri.fi/data/fi/dataset/paakaupunkiseudun-rakennukset",
       "llave": "ninguna",
-      "personas": "No trae nombres. Trae dirección y atributos del edificio.",
-      "proteccion": "Mostrar agregados por área; no publicar listados por dirección de viviendas unifamiliares.",
-      "estado": "candidata",
-      "semaforo": "verde",
+      "personas": "Indirectamente: dirección (katu, osno1), código postal e identificador permanente de edificio (vtj_prt) junto a calefacción, año y material. En una casa unifamiliar eso describe un hogar identificable.",
+      "proteccion": "Solo agregados por rejilla o código postal; no publicar polígonos con dirección. 999999999 = sin dato → nulo.",
+      "estado": "condicionada",
+      "semaforo": "amarillo",
       "uso_potencial": "Reemplaza el intento fallido con Overpass/OSM para huellas de edificios; año de construcción, uso, pisos.",
-      "razon": "Fuente oficial regional que cubre los cuatro municipios en una sola capa; mejor que OSM (colaborativa) y que las WFS municipales separadas.",
+      "razon": "Fuente oficial regional con los cuatro municipios en una capa; mejor que OSM y que las WFS municipales. Corrección 2026-09-28: estaba en verde; pasa a amarillo como en catalogo/hsy-rakennukset-paivittyva.md, porque la dirección por edificio expone hogares.",
       "prueba": {
-        "url": "https://kartta.hsy.fi/geoserver/wfs?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=asuminen_ja_maankaytto:pks_rakennukset_paivittyva&COUNT=1&OUTPUTFORMAT=application/json&PROPERTYNAME=kunta",
-        "evidencia": "json_ruta",
-        "arg": "numberMatched"
-      }
+        "url": "https://kartta.hsy.fi/geoserver/wfs?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=asuminen_ja_maankaytto:pks_rakennukset_paivittyva&COUNT=1&OUTPUTFORMAT=application/json&PROPERTYNAME=kunta"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-28T17:46:10Z",
+        "resultado": "ok",
+        "http": 200,
+        "evidencia": {
+          "numberMatched": 154154
+        }
+      },
+      "ficha_catalogo": "catalogo/hsy-rakennukset-paivittyva.md"
     },
     {
       "id": "hsy-land-cover",
@@ -162,9 +198,15 @@
       "uso_potencial": "Verde urbano y superficie impermeable por área; serie de cinco cortes para ver cambio.",
       "razon": "Más reciente y más fina que Copernicus Urban Atlas 2021 para la misma pregunta.",
       "prueba": {
-        "url": "https://kartta.hsy.fi/geoserver/wfs?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=asuminen_ja_maankaytto:maanpeite_puusto_2_10m_2024&COUNT=1&OUTPUTFORMAT=application/json&PROPERTYNAME=luokka",
-        "evidencia": "json_ruta",
-        "arg": "numberMatched"
+        "url": "https://kartta.hsy.fi/geoserver/wfs?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=asuminen_ja_maankaytto:maanpeite_puusto_2_10m_2024&COUNT=1&OUTPUTFORMAT=application/json"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-28T17:48:21Z",
+        "resultado": "ok",
+        "http": 200,
+        "evidencia": {
+          "numberMatched": 1394558
+        }
       }
     },
     {
@@ -177,20 +219,27 @@
       "formato": "WFS 2.0 / GeoJSON",
       "cobertura": "Estaciones de medición HSY",
       "vigencia": "Tiempo casi real",
-      "licencia": "CC BY 4.0",
-      "licencia_verificada_en": "https://www.hsy.fi/en/environmental-information/open-data/",
+      "licencia": "CC BY 4.0 (ficha HRI «Reaaliaikainen ilmanlaatu HSY:n mittausasemilla», modificada 2026-03-26)",
+      "licencia_verificada_en": "https://hri.fi/data/fi/dataset/reaaliaikainen-ilmanlaatu-hsyn-ilmanlaadun-mittausasemilla",
       "llave": "ninguna",
       "personas": "No.",
       "proteccion": "Ninguna.",
       "estado": "candidata",
       "semaforo": "verde",
       "uso_potencial": "Índice de calidad del aire por estación. Segunda herramienta/fuente frente a FMI para el mismo dato.",
-      "razon": "HSY es quien mide; FMI redistribuye. Tener las dos permite contrastar y elegir.",
+      "razon": "HSY es quien mide; FMI redistribuye. Tener las dos permite contrastar y elegir. La hora viene en texto finés en hora local (campo Aika): convertir a ISO con zona.",
       "prueba": {
-        "url": "https://kartta.hsy.fi/geoserver/wfs?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=ilmanlaatu:Ilmanlaatu_nyt&OUTPUTFORMAT=application/json",
-        "evidencia": "json_ruta",
-        "arg": "numberMatched"
-      }
+        "url": "https://kartta.hsy.fi/geoserver/wfs?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=ilmanlaatu:Ilmanlaatu_nyt&OUTPUTFORMAT=application/json"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-28T17:46:12Z",
+        "resultado": "ok",
+        "http": 200,
+        "evidencia": {
+          "numberMatched": 13
+        }
+      },
+      "ficha_catalogo": "catalogo/hsy-ilmanlaatu-nyt.md"
     },
     {
       "id": "helsinki-city-wfs",
@@ -210,12 +259,16 @@
       "estado": "caida",
       "semaforo": "amarillo",
       "uso_potencial": "Distritos oficiales de Helsinki (osa-alueet) y capas temáticas de la ciudad.",
-      "razon": "Sin respuesta desde Colombia: curl (28) timeout a los 15 s y 40 s en tres intentos (2026-09-28), y ECONNREFUSED 137.163.182.125:443 desde un segundo host (WebFetch). Posible restricción geográfica. Se reemplaza por áreas postales de Statistics Finland para la escala intraurbana. Mismo host sirve el visor 3D embebido (ver helsinki-3d-model).",
+      "razon": "Sin respuesta: timeout en 2026-09-21 (40 s curl, 45 s script, catalogo/hel-avoindata-wfs.md) y en 2026-09-28 (cinco intentos de 15 a 40 s; ECONNREFUSED 137.163.182.125:443 desde otro host). Dos fases seguidas: posible restricción geográfica. Se reemplaza por áreas postales y Aluesarjat. El mismo host sirve el visor 3D embebido y el WFS CityGML (hel-3d-citydb-wfs).",
       "prueba": {
-        "url": "https://kartta.hel.fi/ws/geoserver/avoindata/wfs?SERVICE=WFS&REQUEST=GetCapabilities&VERSION=2.0.0",
-        "evidencia": "regex_cuenta",
-        "arg": "<FeatureType>"
-      }
+        "url": "https://kartta.hel.fi/ws/geoserver/avoindata/wfs?SERVICE=WFS&REQUEST=GetCapabilities&VERSION=2.0.0"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-28T17:48:22Z",
+        "resultado": "falla",
+        "error": "timeout tras 30 s"
+      },
+      "ficha_catalogo": "catalogo/hel-avoindata-wfs.md"
     },
     {
       "id": "helsinki-3d-model",
@@ -237,8 +290,12 @@
       "uso_potencial": "Vista 3D de Helsinki.",
       "razon": "Hallazgo: el iframe de src/main.jsx apunta a https://kartta.hel.fi/3d/, que no respondió desde Colombia (timeout). Si la presentación en clase se hace desde Colombia, la pestaña 3D puede quedar vacía. Queda integrada pero en amarillo hasta probar desde el teléfono y la red de la universidad.",
       "prueba": {
-        "url": "https://kartta.hel.fi/3d/",
-        "evidencia": "estado"
+        "url": "https://kartta.hel.fi/3d/"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-28T17:46:43Z",
+        "resultado": "falla",
+        "error": "timeout tras 30 s"
       }
     },
     {
@@ -261,9 +318,15 @@
       "uso_potencial": "Planes urbanos y direcciones de Espoo.",
       "razon": "El servicio lista capas abiertas y restringidas mezcladas; la capacidad (GetCapabilities) no distingue cuáles se pueden usar. Redundante con HSY para edificios regionales.",
       "prueba": {
-        "url": "https://kartat.espoo.fi/teklaogcweb/wfs.ashx?SERVICE=WFS&REQUEST=GetCapabilities",
-        "evidencia": "regex_cuenta",
-        "arg": "<FeatureType>"
+        "url": "https://kartat.espoo.fi/teklaogcweb/wfs.ashx?SERVICE=WFS&REQUEST=GetCapabilities"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-28T17:48:52Z",
+        "resultado": "ok",
+        "http": 200,
+        "evidencia": {
+          "capas": 256
+        }
       }
     },
     {
@@ -276,8 +339,8 @@
       "formato": "WFS 2.0 / GeoJSON, EPSG:3879",
       "cobertura": "Solo Vantaa (edificios, direcciones, distritos, planes)",
       "vigencia": "Edificios actualizados semanalmente según la ficha del conjunto",
-      "licencia": "CC BY 4.0",
-      "licencia_verificada_en": "https://avoindata.suomi.fi/data/fi/dataset/vantaan-rakennukset",
+      "licencia": "CC BY 4.0 (ficha HRI modificada 2024-05-24)",
+      "licencia_verificada_en": "https://hri.fi/data/fi/dataset/vantaan-rakennukset",
       "llave": "ninguna",
       "personas": "La capa gis:rakennukset trae identificador de predio (kiinteistötunnus) y dirección por edificio. No trae propietarios, pero el identificador permite buscarlos en otros registros.",
       "proteccion": "No publicar kiinteistötunnus junto a la dirección; agregar por distrito.",
@@ -286,9 +349,15 @@
       "uso_potencial": "Distritos de Vantaa (indeksit:kaupunginosat) y edificios.",
       "razon": "Abierta y oficial, pero cubre un solo municipio: para la región se prefiere HSY. Ejemplo de 'público no es inocuo': el identificador de predio está abierto.",
       "prueba": {
-        "url": "https://gis.vantaa.fi/geoserver/wfs?SERVICE=WFS&REQUEST=GetCapabilities",
-        "evidencia": "regex_cuenta",
-        "arg": "<FeatureType>"
+        "url": "https://gis.vantaa.fi/geoserver/wfs?SERVICE=WFS&REQUEST=GetCapabilities"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-28T17:49:06Z",
+        "resultado": "ok",
+        "http": 200,
+        "evidencia": {
+          "capas": 28
+        }
       }
     },
     {
@@ -311,9 +380,15 @@
       "uso_potencial": "Topografía y nombres geográficos.",
       "razon": "HTTP 401 sin llave en OGC API Features y en WMTS (2026-09-28). La llave es gratuita, pero exige registro y guardar un secreto, y lo que aporta ya lo cubren Statistics Finland y HSY sin llave.",
       "prueba": {
-        "url": "https://avoin-paikkatieto.maanmittauslaitos.fi/geographic-names/features/v1/collections",
-        "evidencia": "estado"
-      }
+        "url": "https://avoin-paikkatieto.maanmittauslaitos.fi/geographic-names/features/v1/collections"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-28T17:47:18Z",
+        "resultado": "falla",
+        "http": 401,
+        "error": "HTTP 401 Unauthorized"
+      },
+      "ficha_catalogo": "catalogo/mml-maastotietokanta.md"
     },
     {
       "id": "osm-basemap",
@@ -335,8 +410,12 @@
       "uso_potencial": "Mapa base.",
       "razon": "Solo fondo visual; ninguna cifra del sistema sale de aquí.",
       "prueba": {
-        "url": "https://tile.openstreetmap.org/10/583/296.png",
-        "evidencia": "estado"
+        "url": "https://tile.openstreetmap.org/10/583/296.png"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-28T17:47:19Z",
+        "resultado": "ok",
+        "http": 200
       }
     },
     {
@@ -359,9 +438,15 @@
       "uso_potencial": "Huellas de edificios.",
       "razon": "La consulta de edificios hizo timeout en 2026-09-21 (registro previo). Hoy el endpoint de estado responde (4 cupos libres), pero es un servicio compartido sin garantía y el resultado cambia en cada consulta: no sirve para 'borrar el lago y que vuelva igual'. Para edificios queda HSY (oficial); si se necesita OSM, usar el extracto fechado de Geofabrik.",
       "prueba": {
-        "url": "https://overpass-api.de/api/status",
-        "evidencia": "regex_ultimo",
-        "arg": "(\\d+) slots available now"
+        "url": "https://overpass-api.de/api/status"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-28T17:47:19Z",
+        "resultado": "ok",
+        "http": 200,
+        "evidencia": {
+          "cupos_libres": 2
+        }
       }
     },
     {
@@ -385,8 +470,16 @@
       "razon": "Archivo fechado y reproducible, a diferencia de Overpass. Colaborativa: sirve para contrastar, no como fuente de cifras oficiales.",
       "prueba": {
         "url": "https://download.geofabrik.de/europe/finland-latest.osm.pbf",
-        "metodo": "HEAD",
-        "evidencia": "cabeceras"
+        "metodo": "HEAD"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-28T17:47:19Z",
+        "resultado": "ok",
+        "http": 200,
+        "evidencia": {
+          "content_length": "768215090",
+          "last_modified": "Sun, 27 Sep 2026 23:42:12 GMT"
+        }
       }
     },
     {
@@ -398,7 +491,7 @@
       "documentacion": "https://docs.overturemaps.org/attribution/",
       "formato": "GeoParquet en S3 público",
       "cobertura": "Mundial",
-      "vigencia": "Release mensual; el último listado en S3 da la versión",
+      "vigencia": "Release 2026-09-23.1 (listado S3, 2026-09-28); la prueba con DuckDB usó 2026-08-19.0",
       "licencia": "CDLA-Permissive-2.0 o ODbL 1.0 según el tema (edificios ODbL por incluir OSM); cada registro trae la licencia de su fuente",
       "licencia_verificada_en": "https://docs.overturemaps.org/attribution/",
       "llave": "ninguna",
@@ -407,12 +500,19 @@
       "estado": "candidata",
       "semaforo": "amarillo",
       "uso_potencial": "Herramienta del tramo Rastreo: comparar edificios/lugares con HSY y OSM usando DuckDB.",
-      "razon": "Agregador (mezcla OSM, Microsoft, Meta, etc.): útil para explorar y contrastar, no como fuente primaria de una cifra.",
+      "razon": "Agregador (OSM, Esri, Microsoft): útil para explorar y contrastar, no como fuente primaria de una cifra. Prueba con DuckDB (catalogo/overture-buildings.md, 2026-09-21): 258.743 edificios en el bbox, 171.492 con altura (66 %), altura media ≈ 5 m, sospechosa (anexos). Revisar la distribución antes de mostrar alturas.",
       "prueba": {
-        "url": "https://overturemaps-us-west-2.s3.amazonaws.com/?list-type=2&prefix=release/&delimiter=/",
-        "evidencia": "regex_ultimo",
-        "arg": "<Prefix>release/([^<]+)/</Prefix>"
-      }
+        "url": "https://overturemaps-us-west-2.s3.amazonaws.com/?list-type=2&prefix=release/&delimiter=/"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-28T17:47:21Z",
+        "resultado": "ok",
+        "http": 200,
+        "evidencia": {
+          "ultimo_release": "2026-09-23.1"
+        }
+      },
+      "ficha_catalogo": "catalogo/overture-buildings.md"
     },
     {
       "id": "copernicus-urban-atlas",
@@ -434,8 +534,12 @@
       "uso_potencial": "Uso del suelo comparable con otras ciudades europeas.",
       "razon": "La página responde, pero el dato más reciente es 2021 y la descarga pasa por otro portal que no se probó. HSY maanpeite 2024 responde la misma pregunta con dato más nuevo y más fino. Se reconsidera solo si la pregunta exige comparar con otras ciudades europeas.",
       "prueba": {
-        "url": "https://land.copernicus.eu/en/products/urban-atlas",
-        "evidencia": "estado"
+        "url": "https://land.copernicus.eu/en/products/urban-atlas"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-28T17:47:21Z",
+        "resultado": "ok",
+        "http": 200
       }
     },
     {
@@ -460,9 +564,57 @@
       "prueba": {
         "url": "https://pxdata.stat.fi/PxWeb/api/v1/en/StatFin/vaerak/11ra.px",
         "metodo": "POST",
-        "cuerpo": {"query": [{"code": "alue_23_20260101", "selection": {"filter": "item", "values": ["KU091", "KU049", "KU092", "KU235"]}}, {"code": "contentscode", "selection": {"filter": "item", "values": ["vaerak-vaesto"]}}, {"code": "timeperiod_y", "selection": {"filter": "item", "values": ["2025"]}}], "response": {"format": "json-stat2"}},
-        "evidencia": "jsonstat",
-        "arg": "alue_23_20260101"
+        "cuerpo": {
+          "query": [
+            {
+              "code": "alue_23_20260101",
+              "selection": {
+                "filter": "item",
+                "values": [
+                  "KU091",
+                  "KU049",
+                  "KU092",
+                  "KU235"
+                ]
+              }
+            },
+            {
+              "code": "contentscode",
+              "selection": {
+                "filter": "item",
+                "values": [
+                  "vaerak-vaesto"
+                ]
+              }
+            },
+            {
+              "code": "timeperiod_y",
+              "selection": {
+                "filter": "item",
+                "values": [
+                  "2025"
+                ]
+              }
+            }
+          ],
+          "response": {
+            "format": "json-stat2"
+          }
+        }
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-28T17:47:24Z",
+        "resultado": "ok",
+        "http": 200,
+        "evidencia": {
+          "valores_2025": {
+            "Espoo": 325716,
+            "Helsinki": 694392,
+            "Kauniainen": 10318,
+            "Vantaa": 252956
+          },
+          "actualizado": "2026-05-29T05:00:00Z"
+        }
       }
     },
     {
@@ -485,8 +637,15 @@
       "uso_potencial": "Serie temporal por área postal (la WFS solo trae el corte del año).",
       "razon": "Mismo dato que la WFS pno_tilasto pero con serie histórica: son dos vías (herramientas) para la misma fuente.",
       "prueba": {
-        "url": "https://pxdata.stat.fi/PxWeb/api/v1/en/Postinumeroalueittainen_avoin_tieto/uusin",
-        "evidencia": "json_largo"
+        "url": "https://pxdata.stat.fi/PxWeb/api/v1/en/Postinumeroalueittainen_avoin_tieto/uusin"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-28T17:47:25Z",
+        "resultado": "ok",
+        "http": 200,
+        "evidencia": {
+          "tablas": 10
+        }
       }
     },
     {
@@ -509,8 +668,15 @@
       "uso_potencial": "Vivienda, ingreso, empleo y proyección de población por distrito.",
       "razon": "Da la escala de distrito que kartta.hel.fi no entregó. Licencia confirmada solo por la ficha del catálogo nacional (vía resultado de búsqueda: avoindata.suomi.fi dio 403 a la prueba directa).",
       "prueba": {
-        "url": "https://stat.hel.fi/api/v1/fi/Aluesarjat/vrm",
-        "evidencia": "json_largo"
+        "url": "https://stat.hel.fi/api/v1/fi/Aluesarjat/vrm"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-28T17:47:26Z",
+        "resultado": "ok",
+        "http": 200,
+        "evidencia": {
+          "temas": 6
+        }
       }
     },
     {
@@ -533,8 +699,17 @@
       "uso_potencial": "Comparación con otras ciudades europeas (la lámina Pregunta pide una comparación).",
       "razon": "Sirve solo para comparar entre ciudades: para Helsinki su último dato (674.500, 2024) va un año detrás de StatFin (694.392 al 31-12-2025). La cifra propia debe salir de StatFin.",
       "prueba": {
-        "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/urb_cpop1?cities=FI001C&indic_ur=DE1001V&format=JSON&lang=EN",
-        "evidencia": "eurostat_ultimo"
+        "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/urb_cpop1?cities=FI001C&indic_ur=DE1001V&format=JSON&lang=EN"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-28T17:47:27Z",
+        "resultado": "ok",
+        "http": 200,
+        "evidencia": {
+          "periodo": "2024",
+          "valor": 674500,
+          "actualizado": "2026-09-23T23:00:00+0200"
+        }
       }
     },
     {
@@ -557,8 +732,15 @@
       "uso_potencial": "Salud, bienestar, servicios sociales por municipio.",
       "razon": "Oficial, abierta y con código municipal. Ojo: el id interno de región no es el código municipal; cruzar por el campo code.",
       "prueba": {
-        "url": "https://sotkanet.fi/rest/1.1/regions",
-        "evidencia": "json_largo"
+        "url": "https://sotkanet.fi/rest/1.1/regions"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-28T17:47:28Z",
+        "resultado": "ok",
+        "http": 200,
+        "evidencia": {
+          "regiones": 540
+        }
       }
     },
     {
@@ -581,8 +763,15 @@
       "uso_potencial": "Matrícula y titulación por municipio.",
       "razon": "Oficial y abierta. La licencia se confirmó en documentación de terceros (rOpenGov), no en el sitio del productor: reconfirmar antes de integrar.",
       "prueba": {
-        "url": "https://api.vipunen.fi/api/resources",
-        "evidencia": "json_largo"
+        "url": "https://api.vipunen.fi/api/resources"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-28T17:47:28Z",
+        "resultado": "ok",
+        "http": 200,
+        "evidencia": {
+          "conjuntos": 47
+        }
       }
     },
     {
@@ -605,8 +794,16 @@
       "uso_potencial": "Ninguno: duplicado.",
       "razon": "El valor (694.392 al 2025-12-31) coincide con StatFin porque lo copia. Cualquiera puede editarlo, no tiene dueño institucional ni garantía de actualización. Si coincide, sobra; si no coincide, está mal. Se cita la fuente original.",
       "prueba": {
-        "url": "https://query.wikidata.org/sparql?query=SELECT%20%3Fp%20%3Ft%20WHERE%20%7Bwd%3AQ1757%20p%3AP1082%20%5Bps%3AP1082%20%3Fp%3B%20pq%3AP585%20%3Ft%5D%7D%20ORDER%20BY%20DESC(%3Ft)%20LIMIT%201&format=json",
-        "evidencia": "wikidata"
+        "url": "https://query.wikidata.org/sparql?query=SELECT%20%3Fp%20%3Ft%20WHERE%20%7Bwd%3AQ1757%20p%3AP1082%20%5Bps%3AP1082%20%3Fp%3B%20pq%3AP585%20%3Ft%5D%7D%20ORDER%20BY%20DESC(%3Ft)%20LIMIT%201&format=json"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-28T17:47:29Z",
+        "resultado": "ok",
+        "http": 200,
+        "evidencia": {
+          "valor": "694392",
+          "fecha": "2025-12-31T00:00:00Z"
+        }
       }
     },
     {
@@ -629,8 +826,12 @@
       "uso_potencial": "Costo de vida.",
       "razon": "Crowdsourcing sin muestreo ni metodología verificable, sin vigencia por cifra, términos que impiden la ingesta por script y API paga. Para precios usar Statistics Finland (vivienda) o Paavo (ingreso).",
       "prueba": {
-        "url": "https://www.numbeo.com/cost-of-living/in/Helsinki",
-        "evidencia": "estado"
+        "url": "https://www.numbeo.com/cost-of-living/in/Helsinki"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-28T17:47:29Z",
+        "resultado": "ok",
+        "http": 200
       }
     },
     {
@@ -653,9 +854,15 @@
       "uso_potencial": "Alquiler de corta estancia.",
       "razon": "La página de descargas (2026-09-28) no lista ninguna ciudad finlandesa. Aunque existiera, sería rojo: datos obtenidos por scraping y con nombres de anfitriones. Hueco declarado: no hay fuente abierta de alquiler de corta estancia para Helsinki.",
       "prueba": {
-        "url": "https://insideairbnb.com/get-the-data/",
-        "evidencia": "contiene",
-        "arg": "helsinki"
+        "url": "https://insideairbnb.com/get-the-data/"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-28T17:47:34Z",
+        "resultado": "ok",
+        "http": 200,
+        "evidencia": {
+          "contiene_helsinki": false
+        }
       }
     },
     {
@@ -678,10 +885,17 @@
       "uso_potencial": "Estructura empresarial por sector y municipio.",
       "razon": "Oficial y abierta; la condición es agregar antes de publicar. El filtro location=Helsinki trae 89.936 resultados en la prueba del 2026-09-28; hay que confirmar si filtra por domicilio o por dirección postal.",
       "prueba": {
-        "url": "https://avoindata.prh.fi/opendata-ytj-api/v3/companies?location=Helsinki&page=1",
-        "evidencia": "json_ruta",
-        "arg": "totalResults"
-      }
+        "url": "https://avoindata.prh.fi/opendata-ytj-api/v3/companies?location=Helsinki&page=1"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-28T17:47:34Z",
+        "resultado": "ok",
+        "http": 200,
+        "evidencia": {
+          "totalResults": 89936
+        }
+      },
+      "ficha_catalogo": "catalogo/prh-ytj-v3.md"
     },
     {
       "id": "hsl-gtfs-stops",
@@ -704,8 +918,16 @@
       "razon": "Operador oficial, formato estándar, sin llave.",
       "prueba": {
         "url": "https://infopalvelut.storage.hsldev.com/gtfs/hsl.zip",
-        "metodo": "HEAD",
-        "evidencia": "cabeceras"
+        "metodo": "HEAD"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-28T17:47:36Z",
+        "resultado": "ok",
+        "http": 200,
+        "evidencia": {
+          "content_length": "81055960",
+          "last_modified": "Sat, 26 Sep 2026 05:03:04 GMT"
+        }
       }
     },
     {
@@ -729,8 +951,14 @@
       "razon": "Ya integrada vía proxy; sin llave.",
       "prueba": {
         "url": "https://realtime.hsl.fi/realtime/vehicle-positions/v2/hsl",
-        "cabeceras": {"Accept": "application/x-protobuf"},
-        "evidencia": "estado"
+        "cabeceras": {
+          "Accept": "application/x-protobuf"
+        }
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-28T17:47:37Z",
+        "resultado": "ok",
+        "http": 200
       }
     },
     {
@@ -753,8 +981,14 @@
       "uso_potencial": "Posiciones más frecuentes y eventos de puertas/paradas.",
       "razon": "El puerto 8883 aceptó conexión TCP (2026-09-28), pero MQTT necesita una conexión persistente que las funciones serverless de Vercel no mantienen, y el volumen es alto. GTFS-RT cubre la necesidad. Queda como segunda herramienta anotada para el tramo, no como fuente.",
       "prueba": {
-        "tcp": "mqtt.hsl.fi:8883",
-        "evidencia": "tcp"
+        "tcp": "mqtt.hsl.fi:8883"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-28T17:47:38Z",
+        "resultado": "ok",
+        "evidencia": {
+          "tcp": "conexión aceptada"
+        }
       }
     },
     {
@@ -779,9 +1013,18 @@
       "prueba": {
         "url": "https://api.digitransit.fi/routing/v2/hsl/gtfs/v1",
         "metodo": "POST",
-        "cabeceras": {"Content-Type": "application/json"},
-        "cuerpo": {"query": "{stops(name:\"Kamppi\"){gtfsId}}"},
-        "evidencia": "estado"
+        "cabeceras": {
+          "Content-Type": "application/json"
+        },
+        "cuerpo": {
+          "query": "{stops(name:\"Kamppi\"){gtfsId}}"
+        }
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-28T17:47:38Z",
+        "resultado": "falla",
+        "http": 401,
+        "error": "HTTP 401 Unauthorized"
       }
     },
     {
@@ -794,18 +1037,23 @@
       "formato": "CSV",
       "cobertura": "Helsinki y Espoo",
       "vigencia": "No verificable",
-      "licencia": "No verificable",
-      "licencia_verificada_en": null,
+      "licencia": "CC BY 4.0 (ficha HRI «Helsingin ja Espoon kaupunkipyörillä ajetut matkat», modificada 2025-12-19)",
+      "licencia_verificada_en": "https://hri.fi/data/fi/dataset/helsingin-ja-espoon-kaupunkipyorilla-ajatut-matkat",
       "llave": "ninguna",
       "personas": "Viajes origen-destino con hora exacta: potencialmente reidentificables.",
       "proteccion": "Solo agregados por estación y hora.",
       "estado": "caida",
       "semaforo": "rojo",
       "uso_potencial": "Uso de bicicleta compartida.",
-      "razon": "La ruta https://dev.hsl.fi/citybikes/od-trips-2021/ la propuso la IA de memoria y devolvió HTTP 404 (NoSuchKey, XML de almacenamiento). No se encontró una ruta vigente. Registrado en la bitácora de IA como corrección.",
+      "razon": "La ruta que la IA propuso de memoria (dev.hsl.fi/citybikes/od-trips-2021/) dio 404 «The specified blob does not exist.». La ficha HRI existe (CC BY 4.0) y remite a https://www.hsl.fi/hsl/avoin-data#kaupunkipyorilla-ajetut-matkat, página que carga los enlaces con JavaScript: falta abrirla en un navegador y registrar la URL de descarga. Aun así serían viajes con hora exacta: solo agregados por estación y hora.",
       "prueba": {
-        "url": "https://dev.hsl.fi/citybikes/od-trips-2021/",
-        "evidencia": "estado"
+        "url": "https://dev.hsl.fi/citybikes/od-trips-2021/"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-28T17:47:39Z",
+        "resultado": "falla",
+        "http": 404,
+        "error": "HTTP 404 The specified blob does not exist."
       }
     },
     {
@@ -829,10 +1077,20 @@
       "razon": "Oficial y abierta. Sin Accept-Encoding: gzip responde HTTP 406: la ingesta debe enviarlo. Cobertura limitada a vías estatales (declararlo).",
       "prueba": {
         "url": "https://tie.digitraffic.fi/api/tms/v1/stations",
-        "cabeceras": {"Accept-Encoding": "gzip", "Digitraffic-User": "CerebroHelsinki/EAFIT"},
-        "evidencia": "json_largo",
-        "arg": "features"
-      }
+        "cabeceras": {
+          "Accept-Encoding": "gzip",
+          "Digitraffic-User": "CerebroHelsinki/EAFIT"
+        }
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-28T17:47:40Z",
+        "resultado": "ok",
+        "http": 200,
+        "evidencia": {
+          "estaciones": 518
+        }
+      },
+      "ficha_catalogo": "catalogo/digitraffic-tms.md"
     },
     {
       "id": "digitraffic-rail",
@@ -855,8 +1113,18 @@
       "razon": "Oficial y abierta; mismo requisito de gzip que TMS.",
       "prueba": {
         "url": "https://rata.digitraffic.fi/api/v1/metadata/stations",
-        "cabeceras": {"Accept-Encoding": "gzip", "Digitraffic-User": "CerebroHelsinki/EAFIT"},
-        "evidencia": "json_largo"
+        "cabeceras": {
+          "Accept-Encoding": "gzip",
+          "Digitraffic-User": "CerebroHelsinki/EAFIT"
+        }
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-28T17:47:41Z",
+        "resultado": "ok",
+        "http": 200,
+        "evidencia": {
+          "estaciones": 563
+        }
       }
     },
     {
@@ -879,9 +1147,18 @@
       "uso_potencial": "Temperatura y clima observados.",
       "razon": "Servicio meteorológico nacional; fuente primaria frente a Open-Meteo.",
       "prueba": {
-        "url": "https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=getFeature&storedquery_id=fmi::observations::weather::simple&fmisid=100971&parameters=t2m&timestep=60",
-        "evidencia": "fmi_ultimo"
-      }
+        "url": "https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=getFeature&storedquery_id=fmi::observations::weather::simple&fmisid=100971&parameters=t2m&timestep=60"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-28T17:47:42Z",
+        "resultado": "ok",
+        "http": 200,
+        "evidencia": {
+          "ultimo_tiempo": "2026-09-28T17:00:00Z",
+          "t2m": "13.6"
+        }
+      },
+      "ficha_catalogo": "catalogo/fmi-open-data.md"
     },
     {
       "id": "fmi-air-quality",
@@ -903,8 +1180,16 @@
       "uso_potencial": "NO2, PM2.5, PM10 por estación.",
       "razon": "Oficial y abierta; se contrasta con HSY Ilmanlaatu_nyt (quien mide). Elegir una y anotar por qué.",
       "prueba": {
-        "url": "https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=getFeature&storedquery_id=urban::observations::airquality::hourly::simple&place=Helsinki&parameters=NO2_PT1H_avg",
-        "evidencia": "fmi_ultimo"
+        "url": "https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=getFeature&storedquery_id=urban::observations::airquality::hourly::simple&place=Helsinki&parameters=NO2_PT1H_avg"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-28T17:47:43Z",
+        "resultado": "ok",
+        "http": 200,
+        "evidencia": {
+          "ultimo_tiempo": "2026-09-28T17:00:00Z",
+          "NO2_PT1H_avg": "31.8"
+        }
       }
     },
     {
@@ -927,9 +1212,13 @@
       "uso_potencial": "Áreas protegidas y calidad de aguas.",
       "razon": "Responde HTTP 200 pero el cuerpo es un ows:ExceptionReport con código ServiceUnavailable (dos intentos, 2026-09-28). Un 200 no significa que funcione: el script lo cuenta como falla.",
       "prueba": {
-        "url": "https://paikkatiedot.ymparisto.fi/geoserver/wfs?SERVICE=WFS&REQUEST=GetCapabilities&VERSION=2.0.0",
-        "evidencia": "regex_cuenta",
-        "arg": "<FeatureType>"
+        "url": "https://paikkatiedot.ymparisto.fi/geoserver/wfs?SERVICE=WFS&REQUEST=GetCapabilities&VERSION=2.0.0"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-28T17:49:22Z",
+        "resultado": "falla",
+        "http": 200,
+        "error": "OWS ExceptionReport: ServiceUnavailable"
       }
     },
     {
@@ -952,8 +1241,12 @@
       "uso_potencial": "Clima.",
       "razon": "Responde (HTTP 200), pero es un intermediario que entrega salidas de modelo, no observaciones, y no documenta en sus términos qué fuente usa para Finlandia. La fuente primaria (FMI) está abierta y sin llave.",
       "prueba": {
-        "url": "https://api.open-meteo.com/v1/forecast?latitude=60.17&longitude=24.94&current=temperature_2m",
-        "evidencia": "estado"
+        "url": "https://api.open-meteo.com/v1/forecast?latitude=60.17&longitude=24.94&current=temperature_2m"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-28T17:47:45Z",
+        "resultado": "ok",
+        "http": 200
       }
     },
     {
@@ -976,8 +1269,13 @@
       "uso_potencial": "Calidad del aire.",
       "razon": "HTTP 401: 'A valid API key must be provided in the X-API-Key header'. Además redistribuye datos que ya se obtienen directo de HSY y FMI sin llave.",
       "prueba": {
-        "url": "https://api.openaq.org/v3/locations?limit=1",
-        "evidencia": "estado"
+        "url": "https://api.openaq.org/v3/locations?limit=1"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-28T17:47:46Z",
+        "resultado": "falla",
+        "http": 401,
+        "error": "HTTP 401 Unauthorized"
       }
     },
     {
@@ -1000,8 +1298,13 @@
       "uso_potencial": "Energía.",
       "razon": "HTTP 401 'missing subscription key'. Y aunque se tuviera, es nacional: no responde nada sobre la ciudad. Para energía urbana, ver nuuka-energy.",
       "prueba": {
-        "url": "https://data.fingrid.fi/api/datasets/1",
-        "evidencia": "estado"
+        "url": "https://data.fingrid.fi/api/datasets/1"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-28T17:47:46Z",
+        "resultado": "falla",
+        "http": 401,
+        "error": "HTTP 401 Access Denied"
       }
     },
     {
@@ -1014,19 +1317,27 @@
       "formato": "REST JSON",
       "cobertura": "Unos 1.700 edificios de servicio de la ciudad (escuelas, bibliotecas, etc.), solo Helsinki",
       "vigencia": "Consumo horario",
-      "licencia": "No confirmada: la ficha en HRI (hri.fi) respondió 403",
-      "licencia_verificada_en": null,
+      "licencia": "CC BY 4.0 (ficha HRI modificada 2023-06-01)",
+      "licencia_verificada_en": "https://hri.fi/data/fi/dataset/helsingin-kaupungin-palvelukiinteistojen-energiankulutustietoja",
       "llave": "ninguna",
       "personas": "No (edificios públicos).",
       "proteccion": "Ninguna.",
-      "estado": "condicionada",
-      "semaforo": "amarillo",
+      "estado": "candidata",
+      "semaforo": "verde",
       "uso_potencial": "Consumo de electricidad y calor de edificios públicos.",
-      "razon": "La API responde sin llave y trae código de predio, pero no se pudo leer la licencia: solo hay un comunicado de prensa. No se integra hasta leer la licencia en la ficha de HRI o avoindata.",
+      "razon": "La API responde sin llave (1.810 inmuebles). Corrección 2026-09-28: la licencia figuraba como no verificada porque HRI daba 403; con el User-Agent de curl la API de HRI responde y la ficha declara CC BY 4.0. Condición: la ficha es de 2023; comprobar vigencia pidiendo series de consumo.",
       "prueba": {
-        "url": "https://helsinki-openapi.nuuka.cloud/api/v1.0/Property/List",
-        "evidencia": "json_largo"
-      }
+        "url": "https://helsinki-openapi.nuuka.cloud/api/v1.0/Property/List"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-28T17:47:46Z",
+        "resultado": "ok",
+        "http": 200,
+        "evidencia": {
+          "inmuebles": 1810
+        }
+      },
+      "ficha_catalogo": "catalogo/hel-nuuka-energia.md"
     },
     {
       "id": "helsinki-service-map",
@@ -1038,7 +1349,7 @@
       "formato": "REST JSON",
       "cobertura": "Servicios públicos y algunos privados del área metropolitana",
       "vigencia": "Continua",
-      "licencia": "CC BY 4.0 salvo que se indique otra cosa",
+      "licencia": "CC BY 4.0: la ficha HRI (modificada 2025-10-14) cubre la REST v4; para la v2 la declaración está en dev.hel.fi",
       "licencia_verificada_en": "https://dev.hel.fi/apis/service-map-backend-api/",
       "llave": "ninguna",
       "personas": "El bloque connections trae los campos contact_person, email y phone (vacíos en la muestra, pero existen).",
@@ -1048,10 +1359,17 @@
       "uso_potencial": "Colegios, salud, bibliotecas, deporte por área.",
       "razon": "Oficial, abierta y regional (21.514 unidades). La página de la API v4 no declara licencia; la declaración CC BY 4.0 está en dev.hel.fi. Condición: quitar los campos de contacto personal.",
       "prueba": {
-        "url": "https://api.hel.fi/servicemap/v2/unit/?page_size=1",
-        "evidencia": "json_ruta",
-        "arg": "count"
-      }
+        "url": "https://api.hel.fi/servicemap/v2/unit/?page_size=1"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-28T17:47:48Z",
+        "resultado": "ok",
+        "http": 200,
+        "evidencia": {
+          "count": 21514
+        }
+      },
+      "ficha_catalogo": "catalogo/hel-servicemap-v2.md"
     },
     {
       "id": "linked-events",
@@ -1063,7 +1381,7 @@
       "formato": "REST JSON-LD",
       "cobertura": "Helsinki y región",
       "vigencia": "Continua",
-      "licencia": "CC BY 4.0; imágenes con licencia event_only solo se usan para su evento",
+      "licencia": "CC BY 4.0; imágenes con licencia event_only solo se usan para su evento (ficha HRI modificada 2025-04-01)",
       "licencia_verificada_en": "https://api.hel.fi/linkedevents/v1/",
       "llave": "ninguna para lectura",
       "personas": "El campo provider_contact_info puede traer contacto de una persona organizadora.",
@@ -1073,9 +1391,15 @@
       "uso_potencial": "Actividad cultural por zona.",
       "razon": "Oficial y abierta (407.244 eventos en la prueba); condición sobre contactos e imágenes.",
       "prueba": {
-        "url": "https://api.hel.fi/linkedevents/v1/event/?page_size=1",
-        "evidencia": "json_ruta",
-        "arg": "meta.count"
+        "url": "https://api.hel.fi/linkedevents/v1/event/?page_size=1"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-28T17:47:49Z",
+        "resultado": "ok",
+        "http": 200,
+        "evidencia": {
+          "meta.count": 407244
+        }
       }
     },
     {
@@ -1098,9 +1422,15 @@
       "uso_potencial": "Bibliotecas y horarios.",
       "razon": "Responde, pero la licencia de los datos no está declarada donde se buscó, y Service Map ya incluye las bibliotecas de la ciudad con licencia CC BY 4.0. Redundante.",
       "prueba": {
-        "url": "https://api.kirjastot.fi/v4/library?city.name=helsinki&limit=1",
-        "evidencia": "json_ruta",
-        "arg": "total"
+        "url": "https://api.kirjastot.fi/v4/library?city.name=helsinki&limit=1"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-28T17:47:50Z",
+        "resultado": "ok",
+        "http": 200,
+        "evidencia": {
+          "total": 92
+        }
       }
     },
     {
@@ -1123,9 +1453,15 @@
       "uso_potencial": "Oferta de servicios públicos por municipio; contraste con Service Map.",
       "razon": "Oficial y abierta. La respuesta para Helsinki pesa 1,4 MB por página: hay que paginar. Solapa con Service Map; sirve como segunda fuente para la misma pregunta.",
       "prueba": {
-        "url": "https://api.palvelutietovaranto.suomi.fi/api/v11/ServiceChannel/list/area/Municipality/code/091?page=1",
-        "evidencia": "json_ruta",
-        "arg": "totalCount"
+        "url": "https://api.palvelutietovaranto.suomi.fi/api/v11/ServiceChannel/list/area/Municipality/code/091?page=1"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-28T17:49:23Z",
+        "resultado": "ok",
+        "http": 200,
+        "evidencia": {
+          "pageCount": 80
+        }
       }
     },
     {
@@ -1134,22 +1470,34 @@
       "familia": "servicios",
       "productor": "Ciudad de Helsinki",
       "tipo_fuente": "primaria",
-      "documentacion": "https://dev.hel.ninja/apis/open311/",
+      "documentacion": "https://www.hel.fi/static/avoindata/kanslia/Open311_rajapintakuvaus_011025.pdf",
       "formato": "Open311 JSON",
       "cobertura": "Helsinki, últimos 12 meses",
       "vigencia": "No verificable",
-      "licencia": "No verificable",
-      "licencia_verificada_en": null,
+      "licencia": "CC BY 4.0 (ficha HRI modificada 2026-06-01)",
+      "licencia_verificada_en": "https://hri.fi/data/fi/dataset/helsingin-kaupungin-palauterajapinta",
       "llave": "ninguna para leer; llave y convenio para enviar",
-      "personas": "Texto libre escrito por ciudadanos, con ubicación. La ciudad publica menos de una décima parte por protección de datos.",
+      "personas": "Cada reporte trae description (texto libre del ciudadano), media_url (foto), address, lat y long.",
       "proteccion": "N/A",
       "estado": "descartada",
       "semaforo": "rojo",
       "uso_potencial": "Problemas reportados por zona.",
-      "razon": "Dos motivos: (1) caída: curl (6) Could not resolve host asiointi.hel.fi (2026-09-28); (2) aunque vuelva, el texto libre puede identificar personas, y la propia ciudad filtra la mayoría. No compensa el riesgo.",
+      "razon": "Corrección 2026-09-28: el host antiguo asiointi.hel.fi no resuelve (DNS), pero la documentación vigente (PDF de 2025-10-01) apunta a palautteet.hel.fi/public-api/open311-public-service/v1/, que responde: 198 reportes desde 2026-09-20. Sigue descartada por personas: texto libre, fotos y dirección exacta, y la ciudad publica menos de una décima parte por protección de datos. Si el grupo la quiere, solo conteos por service_code y área, sin description, media_url ni address.",
       "prueba": {
-        "url": "https://asiointi.hel.fi/palautews/rest/v1/services.json",
-        "evidencia": "estado"
+        "url": "https://palautteet.hel.fi/public-api/open311-public-service/v1/services.json"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-28T18:15:00Z",
+        "resultado": "ok",
+        "http": 200,
+        "evidencia": {
+          "reportes_desde_2026-09-20": 198
+        },
+        "antes": {
+          "recurso": "https://asiointi.hel.fi/palautews/rest/v1/services.json",
+          "resultado": "falla",
+          "error": "DNS: no resuelve el host"
+        }
       }
     },
     {
@@ -1172,8 +1520,12 @@
       "uso_potencial": "Decisiones municipales por tema.",
       "razon": "dev.hel.fi: curl (7) Failed to connect port 443. El proxy paatokset.hel.fi/fi/ahjo-proxy respondió 403. La API nueva requiere autenticación. Hueco declarado.",
       "prueba": {
-        "url": "https://dev.hel.fi/paatokset/v1/",
-        "evidencia": "estado"
+        "url": "https://dev.hel.fi/paatokset/v1/"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-28T17:47:58Z",
+        "resultado": "falla",
+        "error": "conexión rechazada (puerto 443)"
       }
     },
     {
@@ -1191,14 +1543,23 @@
       "llave": "ninguna (según documentación)",
       "personas": "N/A",
       "proteccion": "N/A",
-      "estado": "caida",
+      "estado": "candidata",
       "semaforo": "amarillo",
       "uso_potencial": "Encontrar conjuntos y leer su licencia.",
-      "razon": "La raíz responde 302, pero la API y las páginas devuelven HTTP 403 Forbidden desde Colombia, con User-Agent de script y de navegador, y también desde WebFetch. Consecuencia: licencias que solo aparecen en HRI (Nuuka) quedan sin confirmar. Es un catálogo, no una fuente: los datos se bajan del productor.",
+      "razon": "Corrección 2026-09-28: no está caído. Responde 403 al User-Agent descriptivo del script y a «Mozilla/5.0», pero 200 al User-Agent por defecto de curl (lo había detectado catalogo/README.md). Condición: decidir y dejar escrito qué User-Agent se usa. Es un catálogo, no una fuente: sirve para leer licencias; los datos se bajan del productor.",
       "prueba": {
-        "url": "https://hri.fi/data/api/3/action/package_search?rows=0",
-        "evidencia": "json_ruta",
-        "arg": "result.count"
+        "url": "https://hri.fi/data/api/3/action/package_search?rows=0"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-28T17:47:58Z",
+        "resultado": "falla",
+        "http": 403,
+        "error": "HTTP 403 Forbidden",
+        "con_user_agent_curl": {
+          "probado": "2026-09-28T18:05:00Z",
+          "resultado": "ok",
+          "http": 200
+        }
       }
     },
     {
@@ -1216,14 +1577,467 @@
       "llave": "ninguna (según documentación)",
       "personas": "N/A",
       "proteccion": "N/A",
-      "estado": "caida",
+      "estado": "candidata",
       "semaforo": "amarillo",
       "uso_potencial": "Encontrar conjuntos y leer su licencia.",
-      "razon": "HTTP 403 en www.avoindata.fi y en el dominio nuevo avoindata.suomi.fi (2026-09-28). Mismo patrón que HRI: bloqueo desde fuera de Finlandia o del User-Agent. Es catálogo, no fuente.",
+      "razon": "Corrección 2026-09-28: no está caído. Responde 403 al User-Agent descriptivo del script y a «Mozilla/5.0», pero 200 al User-Agent por defecto de curl (lo había detectado catalogo/README.md). Condición: decidir y dejar escrito qué User-Agent se usa. Es un catálogo, no una fuente: sirve para leer licencias; los datos se bajan del productor.",
       "prueba": {
-        "url": "https://avoindata.suomi.fi/data/api/3/action/package_search?rows=0",
-        "evidencia": "json_ruta",
-        "arg": "result.count"
+        "url": "https://avoindata.suomi.fi/data/api/3/action/package_search?rows=0"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-28T17:47:59Z",
+        "resultado": "falla",
+        "http": 403,
+        "error": "HTTP 403 Forbidden",
+        "con_user_agent_curl": {
+          "probado": "2026-09-28T18:05:00Z",
+          "resultado": "ok",
+          "http": 200
+        }
+      }
+    },
+    {
+      "tipo_fuente": "primaria",
+      "llave": "ninguna",
+      "proteccion": "Ninguna.",
+      "id": "hsl-citybike-stations",
+      "nombre": "Estaciones de bicicleta compartida de Helsinki y Espoo",
+      "familia": "movilidad",
+      "productor": "HSL",
+      "documentacion": "https://hri.fi/data/fi/dataset/hsl-n-kaupunkipyoraasemat",
+      "formato": "GeoJSON / CSV (ArcGIS Hub)",
+      "cobertura": "Helsinki y Espoo",
+      "vigencia": "Ficha HRI modificada 2026-06-05",
+      "licencia": "CC BY 4.0",
+      "licencia_verificada_en": "https://hri.fi/data/fi/dataset/hsl-n-kaupunkipyoraasemat",
+      "personas": "No.",
+      "estado": "candidata",
+      "semaforo": "verde",
+      "uso_potencial": "Cobertura de bicicleta compartida (llena en parte el hueco que dejó Digitransit).",
+      "razon": "Nueva 2026-09-28, encontrada al leer HRI. Oficial, abierta y sin llave. Solo ubicación y capacidad de estaciones, no disponibilidad en vivo. El archivo está en ArcGIS Hub (servidor de terceros): anotarlo.",
+      "prueba": {
+        "url": "https://opendata.arcgis.com/datasets/726277c507ef4914b0aec3cbcfcbfafc_0.geojson"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-28T18:12:00Z",
+        "resultado": "ok",
+        "http": 200,
+        "evidencia": {
+          "bytes": 169978
+        }
+      }
+    },
+    {
+      "tipo_fuente": "primaria",
+      "llave": "ninguna",
+      "proteccion": "Ninguna.",
+      "id": "statfin-ashi-13mu",
+      "nombre": "Precio por m² de vivienda usada por código postal (StatFin 13mu)",
+      "familia": "economia",
+      "productor": "Statistics Finland",
+      "documentacion": "https://pxdata.stat.fi/PxWeb/pxweb/en/StatFin/StatFin__ashi/",
+      "formato": "PxWeb API",
+      "cobertura": "Códigos postales",
+      "vigencia": "Por verificar",
+      "licencia": "CC BY 4.0",
+      "licencia_verificada_en": "https://stat.fi/en/about-us/get-to-know-statistics-finland/legislation/terms-of-use",
+      "personas": "Agregado; los códigos postales con pocas transacciones suelen suprimirse (verificar).",
+      "estado": "candidata",
+      "semaforo": "verde",
+      "uso_potencial": "Costo de vivienda por zona (reemplaza a Numbeo).",
+      "razon": "Oficial y abierta; solo se probaron los metadatos de la tabla, falta una consulta de datos.",
+      "ficha_catalogo": "catalogo/statfin-ashi-13mu.md",
+      "prueba": {
+        "url": "https://pxdata.stat.fi/PxWeb/api/v1/en/StatFin/ashi/13mu.px"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-21",
+        "resultado": "ok",
+        "probado_con": "etl/helsinki/probe_candidates.py (data/metadata/candidate_probes.json)",
+        "http": 200
+      }
+    },
+    {
+      "tipo_fuente": "primaria",
+      "llave": "ninguna",
+      "proteccion": "999999999 = sin dato → nulo.",
+      "id": "hsy-rakennustietoruudukko-2025",
+      "nombre": "Rejilla de edificación 250 m 2025 (Rakennustietoruudukko)",
+      "familia": "territorio",
+      "productor": "HSY",
+      "documentacion": "https://hri.fi/data/fi/dataset/rakennustietoruudukko",
+      "formato": "WFS",
+      "cobertura": "Área metropolitana",
+      "vigencia": "2025; paivitys_pvm 2026-08-04",
+      "licencia": "CC BY 4.0 (ficha HRI modificada 2026-08-04)",
+      "licencia_verificada_en": "https://hri.fi/data/fi/dataset/rakennustietoruudukko",
+      "personas": "Agregado por celda.",
+      "estado": "candidata",
+      "semaforo": "verde",
+      "uso_potencial": "Intensidad de edificación, m² residenciales y no residenciales.",
+      "razon": "Oficial y abierta; el centinela va al contrato.",
+      "ficha_catalogo": "catalogo/hsy-rakennustietoruudukko-2025.md",
+      "prueba": {
+        "url": "https://kartta.hsy.fi/geoserver/wfs (asuminen_ja_maankaytto:Rakennustietoruudukko_2025)"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-21",
+        "resultado": "ok",
+        "probado_con": "etl/helsinki/probe_candidates.py (data/metadata/candidate_probes.json)",
+        "http": 200,
+        "evidencia": {
+          "numberMatched": 8663
+        }
+      }
+    },
+    {
+      "tipo_fuente": "primaria",
+      "llave": "ninguna",
+      "proteccion": "-1 → nulo; publicar solo niveles agregados.",
+      "id": "hsy-tyopaikkaruudukko-2024",
+      "nombre": "Rejilla de empleo 2024 (Työpaikkaruudukko)",
+      "familia": "economia",
+      "productor": "HSY",
+      "documentacion": "https://hri.fi/data/fi/dataset/helsingin-seudun-tyopaikkaruudukko",
+      "formato": "WFS",
+      "cobertura": "Región de Helsinki",
+      "vigencia": "2024",
+      "licencia": "CC BY 4.0 (ficha HRI modificada 2026-08-26)",
+      "licencia_verificada_en": "https://hri.fi/data/fi/dataset/helsingin-seudun-tyopaikkaruudukko",
+      "personas": "Agregado; -1 en celdas con pocos empleos. Una celda con 1–2 empleos puede señalar a un solo empleador.",
+      "estado": "condicionada",
+      "semaforo": "amarillo",
+      "uso_potencial": "Dónde está el empleo y de qué sector.",
+      "razon": "Oficial y abierta; condición por empleadores identificables en celdas pequeñas.",
+      "ficha_catalogo": "catalogo/hsy-tyopaikkaruudukko-2024.md",
+      "prueba": {
+        "url": "https://kartta.hsy.fi/geoserver/wfs (asuminen_ja_maankaytto:Tyopaikkaruudukko_2024)"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-21",
+        "resultado": "ok",
+        "probado_con": "etl/helsinki/probe_candidates.py (data/metadata/candidate_probes.json)",
+        "http": 200,
+        "evidencia": {
+          "numberMatched": 15445
+        }
+      }
+    },
+    {
+      "tipo_fuente": "primaria",
+      "llave": "ninguna",
+      "proteccion": "Ninguna. Trampa: bloques repetidos con unidades distintas; no publicar cifras sin identificar la unidad.",
+      "id": "hsy-energiankulutus-pks",
+      "nombre": "Consumo de energía del área metropolitana 1990, 2000–2025",
+      "familia": "ambiente",
+      "productor": "HSY",
+      "documentacion": "https://hri.fi/data/fi/dataset/paakaupunkiseudun-energiankulutus",
+      "formato": "XLSX",
+      "cobertura": "Área metropolitana y cada municipio",
+      "vigencia": "Hasta 2025; calefacción suavizada con media móvil de 5 años",
+      "licencia": "CC BY 4.0 (ficha HRI modificada 2026-06-12)",
+      "licencia_verificada_en": "https://hri.fi/data/fi/dataset/paakaupunkiseudun-energiankulutus",
+      "personas": "No.",
+      "estado": "candidata",
+      "semaforo": "verde",
+      "uso_potencial": "Energía por sector y municipio.",
+      "razon": "Oficial y abierta; no hay dato espacial fino.",
+      "ficha_catalogo": "catalogo/hsy-energiankulutus-pks.md",
+      "prueba": {
+        "url": "https://avoidatastr.blob.core.windows.net/avoindata/AvoinData/3_Ilmanlaatu_ja_ilmasto/Ilmasto/Energiankulutus/Paakaupunkiseudun_energiankulutus_1990_ja_2000-2025.xlsx"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-21",
+        "resultado": "ok",
+        "probado_con": "etl/helsinki/probe_candidates.py (data/metadata/candidate_probes.json)",
+        "http": 200,
+        "evidencia": {
+          "filas": 3947,
+          "columnas": 62
+        }
+      }
+    },
+    {
+      "tipo_fuente": "primaria",
+      "llave": "ninguna",
+      "proteccion": "Ninguna.",
+      "id": "hsy-sahkonkulutus-pks",
+      "nombre": "Consumo eléctrico por sector del área metropolitana",
+      "familia": "ambiente",
+      "productor": "HSY",
+      "documentacion": "https://hri.fi/data/fi/dataset/sahkon-kaytto-paakaupunkiseudulla",
+      "formato": "XLSX",
+      "cobertura": "Área metropolitana",
+      "vigencia": "Hasta 2025",
+      "licencia": "CC BY 4.0 (ficha HRI modificada 2026-06-12)",
+      "licencia_verificada_en": "https://hri.fi/data/fi/dataset/sahkon-kaytto-paakaupunkiseudulla",
+      "personas": "No.",
+      "estado": "descartada",
+      "semaforo": "verde",
+      "uso_potencial": "Electricidad por sector.",
+      "razon": "Abierta y oficial, pero es un subconjunto de hsy-energiankulutus-pks: redundante mientras se use aquella.",
+      "ficha_catalogo": "catalogo/hsy-sahkonkulutus-pks.md",
+      "prueba": {
+        "url": "XLSX Sahkonkulutus_PKS_1990_2000-2025.xlsx (ver ficha)"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-21",
+        "resultado": "ok",
+        "probado_con": "etl/helsinki/probe_candidates.py (data/metadata/candidate_probes.json)",
+        "http": 200
+      }
+    },
+    {
+      "tipo_fuente": "primaria",
+      "llave": "ninguna",
+      "proteccion": "Distinguir 0 real de «no calculado».",
+      "id": "hsy-aurinkosahkopotentiaali",
+      "nombre": "Potencial solar fotovoltaico por edificio",
+      "familia": "ambiente",
+      "productor": "HSY",
+      "documentacion": "https://hri.fi/data/fi/dataset/paakaupunkiseudun-aurinkosahkopotentiaali",
+      "formato": "WFS",
+      "cobertura": "Área metropolitana",
+      "vigencia": "Ficha de 2021; dato modelado",
+      "licencia": "CC BY 4.0 (ficha HRI modificada 2021-10-15)",
+      "licencia_verificada_en": "https://hri.fi/data/fi/dataset/paakaupunkiseudun-aurinkosahkopotentiaali",
+      "personas": "No (sin dirección en la capa).",
+      "estado": "candidata",
+      "semaforo": "verde",
+      "uso_potencial": "Potencial de generación solar por zona.",
+      "razon": "Es un modelo, no una medición: mostrarlo como tal y con su vigencia antigua.",
+      "ficha_catalogo": "catalogo/hsy-aurinkosahkopotentiaali.md",
+      "prueba": {
+        "url": "https://kartta.hsy.fi/geoserver/wfs (ilmasto_ja_energia:rakennukset_aurinkosahkopotentiaali)"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-21",
+        "resultado": "ok",
+        "probado_con": "etl/helsinki/probe_candidates.py (data/metadata/candidate_probes.json)",
+        "http": 200,
+        "evidencia": {
+          "numberMatched": 154586
+        }
+      }
+    },
+    {
+      "tipo_fuente": "primaria",
+      "llave": "ninguna",
+      "proteccion": "Ninguna.",
+      "id": "hsy-rakennukset-polttoaine",
+      "nombre": "Combustible de calefacción por edificio",
+      "familia": "ambiente",
+      "productor": "HSY",
+      "documentacion": "https://kartta.hsy.fi/",
+      "formato": "WFS",
+      "cobertura": "Área metropolitana",
+      "vigencia": "Sin fecha en la capa",
+      "licencia": "Por verificar: no se encontró ficha HRI para esta capa",
+      "licencia_verificada_en": null,
+      "personas": "Indirectamente, si se cruza con direcciones.",
+      "estado": "descartada",
+      "semaforo": "amarillo",
+      "uso_potencial": "Mezcla de calefacción por zona.",
+      "razon": "Licencia sin confirmar, sin fecha, y duplica el campo lammitysaine_s de hsy-buildings. Se prefiere aquella.",
+      "ficha_catalogo": "catalogo/hsy-rakennukset-polttoaine.md",
+      "prueba": {
+        "url": "https://kartta.hsy.fi/geoserver/wfs (ilmasto_ja_energia:rakennukset_polttoaine)"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-21",
+        "resultado": "ok",
+        "probado_con": "etl/helsinki/probe_candidates.py (data/metadata/candidate_probes.json)",
+        "http": 200,
+        "evidencia": {
+          "numberMatched": 154586
+        }
+      }
+    },
+    {
+      "tipo_fuente": "primaria",
+      "llave": "ninguna",
+      "proteccion": "Ninguna.",
+      "id": "hel-energia-ilmastoatlas",
+      "nombre": "Atlas de energía y clima de Helsinki (datos de edificios)",
+      "familia": "ambiente",
+      "productor": "Ciudad de Helsinki",
+      "documentacion": "https://hri.fi/data/fi/dataset/helsingin-3d-kaupunkimalli",
+      "formato": "XLSX",
+      "cobertura": "Solo Helsinki",
+      "vigencia": "Sin fecha explícita; ficha HRI modificada 2025-10-27",
+      "licencia": "CC BY 4.0 (ficha HRI del modelo 3D)",
+      "licencia_verificada_en": "https://hri.fi/data/fi/dataset/helsingin-3d-kaupunkimalli",
+      "personas": "Identificador permanente de edificio (VTJ_PRT).",
+      "estado": "descartada",
+      "semaforo": "amarillo",
+      "uso_potencial": "Clase energética por edificio.",
+      "razon": "Clase energética solo en 422 de 77.267 edificios (0,5 %): un mapa de eficiencia sería engañoso. Pisos en el 64 %, solo Helsinki.",
+      "ficha_catalogo": "catalogo/hel-energia-ilmastoatlas.md",
+      "prueba": {
+        "url": "https://www.hel.fi/hel2/tietokeskus/data/helsinki/kaupunginkanslia/3D-malli/data_atlas.xlsx"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-21",
+        "resultado": "ok",
+        "probado_con": "etl/helsinki/probe_candidates.py (data/metadata/candidate_probes.json)",
+        "http": 200,
+        "evidencia": {
+          "edificios": 77267,
+          "con_clase_energetica": 422
+        }
+      }
+    },
+    {
+      "tipo_fuente": "primaria",
+      "llave": "ninguna",
+      "proteccion": "Ninguna.",
+      "id": "hel-3d-citygml-kalasatama",
+      "nombre": "CityGML Kalasatama 2019 (piloto)",
+      "familia": "territorio",
+      "productor": "Ciudad de Helsinki",
+      "documentacion": "https://hri.fi/data/fi/dataset/helsingin-3d-kaupunkimalli",
+      "formato": "CityGML (ZIP)",
+      "cobertura": "Solo el barrio Kalasatama",
+      "vigencia": "2019-03-26",
+      "licencia": "CC BY 4.0 (ficha HRI)",
+      "licencia_verificada_en": "https://hri.fi/data/fi/dataset/helsingin-3d-kaupunkimalli",
+      "personas": "No.",
+      "estado": "descartada",
+      "semaforo": "verde",
+      "uso_potencial": "3D de un barrio.",
+      "razon": "Un barrio y de 2019: no responde preguntas metropolitanas.",
+      "ficha_catalogo": "catalogo/hel-3d-citygml-kalasatama.md",
+      "prueba": {
+        "url": "https://3d.hel.ninja/data/citygml/Helsinki3D_CityGML_Kalasatama_20190326.zip"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-21",
+        "resultado": "ok",
+        "probado_con": "etl/helsinki/probe_candidates.py (data/metadata/candidate_probes.json)",
+        "http": 206
+      }
+    },
+    {
+      "tipo_fuente": "primaria",
+      "llave": "ninguna",
+      "proteccion": "Ninguna.",
+      "id": "hel-3d-citydb-wfs",
+      "nombre": "Modelo 3D de Helsinki — WFS CityGML (alturas por edificio)",
+      "familia": "territorio",
+      "productor": "Ciudad de Helsinki",
+      "documentacion": "https://hri.fi/data/fi/dataset/helsingin-3d-kaupunkimalli",
+      "formato": "WFS CityGML",
+      "cobertura": "Solo Helsinki",
+      "vigencia": "No verificable",
+      "licencia": "CC BY 4.0 (ficha HRI)",
+      "licencia_verificada_en": "https://hri.fi/data/fi/dataset/helsingin-3d-kaupunkimalli",
+      "personas": "No.",
+      "estado": "caida",
+      "semaforo": "amarillo",
+      "uso_potencial": "Altura oficial por edificio en Helsinki.",
+      "razon": "Timeout a 40 s (curl) y 45 s (script) el 2026-09-21; mismo servidor kartta.hel.fi que falla desde Colombia. Sería la mejor fuente de alturas: reintentar desde otra red.",
+      "ficha_catalogo": "catalogo/hel-3d-citydb-wfs.md",
+      "prueba": {
+        "url": "https://kartta.hel.fi/3d/citydb-wfs/wfs?SERVICE=WFS&REQUEST=GetCapabilities"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-21",
+        "resultado": "falla",
+        "probado_con": "etl/helsinki/probe_candidates.py (data/metadata/candidate_probes.json)",
+        "error": "timeout (40 s curl, 45 s script)"
+      }
+    },
+    {
+      "tipo_fuente": "secundaria",
+      "llave": "ninguna",
+      "proteccion": "Ninguna.",
+      "id": "ms-global-ml-buildings",
+      "nombre": "Microsoft Global ML Building Footprints",
+      "familia": "territorio",
+      "productor": "Microsoft",
+      "documentacion": "https://github.com/microsoft/GlobalMLBuildingFootprints",
+      "formato": "GeoJSONL por tesela",
+      "cobertura": "352 teselas de Finlandia",
+      "vigencia": "2026-02-03",
+      "licencia": "ODbL (según la atribución de Overture)",
+      "licencia_verificada_en": "https://docs.overturemaps.org/attribution/",
+      "personas": "No.",
+      "estado": "descartada",
+      "semaforo": "verde",
+      "uso_potencial": "Huellas de edificios.",
+      "razon": "Ya está incluida en Overture; no aporta nada propio para alturas.",
+      "ficha_catalogo": "catalogo/ms-global-ml-buildings.md",
+      "prueba": {
+        "url": "https://minedbuildings.z5.web.core.windows.net/global-buildings/dataset-links.csv"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-21",
+        "resultado": "ok",
+        "probado_con": "etl/helsinki/probe_candidates.py (data/metadata/candidate_probes.json)",
+        "http": 200,
+        "evidencia": {
+          "teselas_finlandia": 352
+        }
+      }
+    },
+    {
+      "tipo_fuente": "secundaria",
+      "llave": "ninguna",
+      "proteccion": "—",
+      "id": "google-open-buildings",
+      "nombre": "Google Open Buildings (incluye 2.5D)",
+      "familia": "territorio",
+      "productor": "Google Research",
+      "documentacion": "https://sites.research.google/gr/open-buildings/",
+      "formato": "—",
+      "cobertura": "África, Asia del Sur y Sudeste, Latinoamérica y Caribe",
+      "vigencia": "—",
+      "licencia": "CC BY 4.0 / ODbL (no aplica)",
+      "licencia_verificada_en": null,
+      "personas": "—",
+      "estado": "no_existe",
+      "semaforo": "rojo",
+      "uso_potencial": "Alturas de edificios.",
+      "razon": "La página del proyecto no incluye Finlandia ni Europa. Sustituto: Overture.",
+      "ficha_catalogo": "catalogo/google-open-buildings.md",
+      "prueba": {
+        "url": "https://sites.research.google/gr/open-buildings/"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-21",
+        "resultado": "ok",
+        "probado_con": "etl/helsinki/probe_candidates.py (data/metadata/candidate_probes.json)",
+        "http": 200
+      }
+    },
+    {
+      "tipo_fuente": "secundaria",
+      "llave": "ninguna",
+      "proteccion": "—",
+      "id": "eubucco",
+      "nombre": "EUBUCCO — stock de edificios europeo",
+      "familia": "territorio",
+      "productor": "EUBUCCO (proyecto académico)",
+      "documentacion": "https://eubucco.com/",
+      "formato": "—",
+      "cobertura": "Europa",
+      "vigencia": "—",
+      "licencia": "No verificable",
+      "licencia_verificada_en": null,
+      "personas": "—",
+      "estado": "caida",
+      "semaforo": "amarillo",
+      "uso_potencial": "Alturas de edificios en Europa.",
+      "razon": "DNS «Name or service not known» (también www. y docs.) el 2026-09-21.",
+      "ficha_catalogo": "catalogo/eubucco.md",
+      "prueba": {
+        "url": "https://eubucco.com/"
+      },
+      "ultima_prueba": {
+        "probado": "2026-09-21",
+        "resultado": "falla",
+        "probado_con": "etl/helsinki/probe_candidates.py (data/metadata/candidate_probes.json)",
+        "error": "DNS: Name or service not known"
       }
     }
   ]

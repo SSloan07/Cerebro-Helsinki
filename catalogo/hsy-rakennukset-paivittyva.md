@@ -10,7 +10,7 @@
 | **probado** | 2026-09-21 (`python3 -m etl.helsinki.probe_candidates`, ver `data/metadata/candidate_probes.json`) |
 | Estado | candidata · probada OK |
 | Resultado de la prueba | HTTP 200 · 154.154 edificios · MultiPolygon EPSG:3879 · muestra con `poimintapvm` 20240419 |
-| Licencia | Por verificar para esta capa concreta (HSY publica sus datos en HRI con CC BY 4.0, pero no se encontró la ficha HRI de esta capa) |
+| Licencia | CC BY 4.0 — verificado 2026-09-28 en la ficha HRI «Pääkaupunkiseudun rakennukset» https://hri.fi/data/fi/dataset/paakaupunkiseudun-rakennukset (modificada 2026-04-02; su recurso WFS es kartta.hsy.fi) |
 | **personas** | Sí, indirectamente: dirección (`katu`, `osno1`), código postal e identificador permanente de edificio (`vtj_prt`) junto a sistema de calefacción, año, material. En casas unifamiliares eso describe un hogar identificable. |
 | Semáforo | 🟡 amarillo — solo agregados; no publicar punto/polígono con dirección |
 | Vigencia | Extracción 2024-04-19 en la muestra (verificar si varía por municipio) |
