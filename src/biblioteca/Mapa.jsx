@@ -236,7 +236,8 @@ export function MapaAreas({ areas, municipios, valor, escala, tresD = false, sel
     const map = mapa.current
     if (!listo) return
     map.setLayoutProperty('areas-3d', 'visibility', tresD ? 'visible' : 'none')
-    map.easeTo({ pitch: tresD ? 52 : 0, bearing: tresD ? -12 : 0, duration: 700 })
+    // Al inclinar, el área se aleja y queda pequeña: se acerca medio nivel para compensar.
+    map.easeTo({ pitch: tresD ? 52 : 0, bearing: tresD ? -12 : 0, zoom: map.getZoom() + (tresD ? 0.3 : -0.3) * (map.getPitch() > 1 === tresD ? 0 : 1), duration: 700 })
   }, [listo, tresD])
 
   useEffect(() => {
