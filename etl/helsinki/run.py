@@ -21,6 +21,8 @@ import zipfile
 from collections import Counter
 from pathlib import Path
 
+from etl.helsinki.sources import paavo, poblacion
+
 ROOT = Path(__file__).resolve().parents[2]
 RAW = ROOT / "data/raw"
 PROCESSED = ROOT / "data/processed"
@@ -83,7 +85,44 @@ def refresh_sources() -> list[str]:
         }, indent=2) + "\n", encoding="utf-8")
     except Exception as error:
         failures.append(f"{HSL_GTFS_URL}: {type(error).__name__}: {error}")
+    for module, refresh in ((paavo, lambda: paavo.refresh(RAW, fetch_bytes)), (poblacion, lambda: poblacion.refresh(RAW, HSL_USER_AGENT))):
+        try:
+            refresh()
+            raw = RAW / module.RAW_NAME
+            (METADATA / f"{module.SOURCE_ID}.json").write_text(json.dumps({
+                "source_id": module.SOURCE_ID, "url": module.URL, "retrieved_at": dt.datetime.now(dt.timezone.utc).isoformat(),
+                "raw_file": f"data/raw/{module.RAW_NAME}", "bytes": raw.stat().st_size, "sha256": sha256(raw),
+            }, indent=2) + "\n", encoding="utf-8")
+        except Exception as error:  # keep the previous raw snapshot
+            failures.append(f"{module.SOURCE_ID}: {type(error).__name__}: {error}")
     return failures
+
+
+# Sources added for the migrant app. Each module reads data/raw and returns
+# (published document, report counts, registry entry); see etl/helsinki/sources/.
+EXTRA_SOURCES = (paavo, poblacion)
+
+
+def build_extra_sources(errors: list[str]) -> tuple[dict, list[dict], dict]:
+    counts, registry, outputs = {}, [], {}
+    for module in EXTRA_SOURCES:
+        try:
+            document, module_counts, entry = module.build(RAW)
+        except Exception as error:
+            errors.append(f"{module.SOURCE_ID}: {type(error).__name__}: {error}")
+            continue
+        processed = PROCESSED / module.OUTPUT_NAME
+        processed.write_text(json.dumps(document, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
+        (PUBLIC / module.OUTPUT_NAME).write_bytes(processed.read_bytes())
+        counts.update(module_counts)
+        entry["sha256"] = sha256(RAW / module.RAW_NAME)
+        try:  # the probe date is when the raw input was downloaded, not when the ETL ran
+            entry["consulted_at"] = json.loads((METADATA / f"{module.SOURCE_ID}.json").read_text(encoding="utf-8"))["retrieved_at"][:10]
+        except (OSError, KeyError, json.JSONDecodeError):
+            entry["consulted_at"] = None
+        registry.append(entry)
+        outputs[module.OUTPUT_NAME] = {"sha256": sha256(processed), "record_count": entry["record_count"]}
+    return counts, registry, outputs
 
 
 def coord_rings(geometry: dict):
@@ -304,17 +343,21 @@ def main() -> None:
             (PUBLIC / name).write_bytes((PROCESSED / name).read_bytes())
     except Exception as error:
         errors.append(f"normalization: {type(error).__name__}: {error}")
+    extra_counts, extra_registry, extra_outputs = build_extra_sources(errors)
+    if counts is not None:
+        counts.update(extra_counts)
     if refresh_failures:
         warnings.extend(f"Source refresh failed; retained the previous snapshot: {failure}" for failure in refresh_failures)
     registry = source_registry(consulted, sha256(RAW / "municipalities.geojson"), sha256(RAW / "hsl_stops.txt"), counts or {
         "service_period_start": "unknown", "service_period_end": "unknown", "feed_version": "unknown", "mapped_stop_count": 0,
         "outside_metro_records": 0, "invalid_coordinate_records": 0, "stops_by_municipality": {},
     }, refresh_failures)
+    registry["sources"].extend(extra_registry)
     (PUBLIC / "sources.json").write_text(json.dumps(registry, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     report = {"generated_at": dt.datetime.now(dt.timezone.utc).isoformat(),
               "status": "failed" if counts is None else "partial" if errors or refresh_failures or any(s["integration_status"] in ("candidate", "failed", "not_available") for s in registry["sources"]) else "ok",
               "counts": counts, "errors": errors, "warnings": warnings,
-              "notes": ["Population, buildings, local 3D tiles, services, climate, energy, innovation institutions and research are not counted unless integrated from verified sources.",
+              "notes": ["Buildings, local 3D tiles, services, climate, energy, innovation institutions and research are not counted unless integrated from verified sources.",
                         "HSL GTFS stop snapshots are static. Realtime observations come only from the separate GTFS-RT protobuf endpoint."],
               "source_statuses": {source["id"]: source["integration_status"] for source in registry["sources"]}}
     (PUBLIC / "update-report.json").write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
@@ -328,6 +371,7 @@ def main() -> None:
         "transit_stops.geojson": {"sha256": sha256(stops_output), "record_count": counts["mapped_stop_count"] if counts else None,
                                   "invalid_record_count": counts["invalid_coordinate_records"] if counts else None},
     }
+    outputs.update(extra_outputs)
     snapshot = {"generated_at": report["generated_at"], "status": report["status"],
                 "inputs": {"municipalities.geojson": {"sha256": sha256(RAW / "municipalities.geojson"), "bytes": (RAW / "municipalities.geojson").stat().st_size},
                            "hsl_stops.txt": {"sha256": sha256(RAW / "hsl_stops.txt"), "bytes": (RAW / "hsl_stops.txt").stat().st_size}},
