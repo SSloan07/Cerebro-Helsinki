@@ -1,0 +1,8 @@
+{
+  "source_id": "statfin-rents-15fa",
+  "url": "https://pxdata.stat.fi/PxWeb/api/v1/en/StatFin/asvu/15fa.px",
+  "retrieved_at": "2026-10-30T18:22:43.303069+00:00",
+  "raw_file": "data/raw/statfin_15fa.json",
+  "bytes": 4244,
+  "sha256": "b6ea233918d5f9dd5edcaed81a66d1170abbf74dae1c4f8a73563b40c15b57ba"
+}

@@ -1,0 +1,8 @@
+{
+  "source_id": "prh-ytj-companies",
+  "url": "https://avoindata.prh.fi/opendata-ytj-api/v3/companies",
+  "retrieved_at": "2026-10-30T19:10:19.238499+00:00",
+  "raw_file": "data/raw/prh_company_counts.json",
+  "bytes": 4982,
+  "sha256": "754cd69f068d8cfe16f1803bbc886a9df77b497a24e67da95e2e565b502dbd8b"
+}

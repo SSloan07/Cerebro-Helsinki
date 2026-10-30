@@ -200,7 +200,7 @@
       "llave": "ninguna",
       "personas": "No.",
       "proteccion": "Ninguna.",
-      "estado": "candidata",
+      "estado": "integrada",
       "semaforo": "verde",
       "uso_potencial": "Verde urbano y superficie impermeable por área; serie de cinco cortes para ver cambio.",
       "razon": "Más reciente y más fina que Copernicus Urban Atlas 2021 para la misma pregunta.",
@@ -231,7 +231,7 @@
       "llave": "ninguna",
       "personas": "No.",
       "proteccion": "Ninguna.",
-      "estado": "candidata",
+      "estado": "integrada",
       "semaforo": "verde",
       "uso_potencial": "Índice de calidad del aire por estación. Segunda herramienta/fuente frente a FMI para el mismo dato.",
       "razon": "HSY es quien mide; FMI redistribuye. Tener las dos permite contrastar y elegir. La hora viene en texto finés en hora local (campo Aika): convertir a ISO con zona.",
@@ -772,10 +772,10 @@
       "llave": "ninguna",
       "personas": "Agregados; algunos conjuntos son por institución.",
       "proteccion": "Ninguna adicional.",
-      "estado": "candidata",
+      "estado": "descartada",
       "semaforo": "verde",
       "uso_potencial": "Matrícula y titulación por municipio.",
-      "razon": "Oficial y abierta. La licencia se confirmó en documentación de terceros (rOpenGov), no en el sitio del productor: reconfirmar antes de integrar.",
+      "razon": "Sondeada el 2026-10-30: los conjuntos de estudiantes y titulados traen la institución (nombre) y el sector, pero ningún código de municipio; cruzar por el nombre de la institución está prohibido. Se reemplazó por StatFin 11c4.",
       "prueba": {
         "url": "https://api.vipunen.fi/api/resources"
       },
@@ -894,7 +894,7 @@
       "llave": "ninguna",
       "personas": "PRH no publica datos personales de empresarios individuales, pero el nombre comercial de una empresa unipersonal puede ser el nombre de una persona.",
       "proteccion": "Publicar solo conteos por municipio y sector (TOL/NACE), nunca listados de nombres.",
-      "estado": "condicionada",
+      "estado": "integrada",
       "semaforo": "amarillo",
       "uso_potencial": "Estructura empresarial por sector y municipio.",
       "razon": "Oficial y abierta; la condición es agregar antes de publicar. El filtro location=Helsinki trae 89.936 resultados en la prueba del 2026-09-28; hay que confirmar si filtra por domicilio o por dirección postal.",
@@ -1085,7 +1085,7 @@
       "llave": "ninguna; se pide cabecera Digitraffic-User",
       "personas": "No (conteos de vehículos).",
       "proteccion": "Ninguna.",
-      "estado": "candidata",
+      "estado": "integrada",
       "semaforo": "verde",
       "uso_potencial": "Volumen de tráfico vehicular en accesos a la ciudad.",
       "razon": "Oficial y abierta. Sin Accept-Encoding: gzip responde HTTP 406: la ingesta debe enviarlo. Cobertura limitada a vías estatales (declararlo).",
@@ -1121,7 +1121,7 @@
       "llave": "ninguna; se pide cabecera Digitraffic-User",
       "personas": "No.",
       "proteccion": "Ninguna.",
-      "estado": "candidata",
+      "estado": "integrada",
       "semaforo": "verde",
       "uso_potencial": "Puntualidad de trenes de cercanías.",
       "razon": "Oficial y abierta; mismo requisito de gzip que TMS.",
@@ -1156,7 +1156,7 @@
       "llave": "ninguna",
       "personas": "No.",
       "proteccion": "Ninguna.",
-      "estado": "candidata",
+      "estado": "integrada",
       "semaforo": "verde",
       "uso_potencial": "Temperatura y clima observados.",
       "razon": "Servicio meteorológico nacional; fuente primaria frente a Open-Meteo.",
@@ -2052,6 +2052,122 @@
         "resultado": "falla",
         "probado_con": "etl/helsinki/probe_candidates.py (data/metadata/candidate_probes.json)",
         "error": "DNS: Name or service not known"
+      }
+    },
+    {
+      "familia": "poblacion",
+      "productor": "Statistics Finland (Tilastokeskus)",
+      "tipo_fuente": "primaria",
+      "formato": "PxWeb API (JSON-stat2)",
+      "licencia": "CC BY 4.0",
+      "licencia_verificada_en": "https://stat.fi/en/about-us/get-to-know-statistics-finland/legislation/terms-of-use",
+      "llave": "ninguna",
+      "proteccion": "Ninguna.",
+      "estado": "integrada",
+      "semaforo": "verde",
+      "id": "statfin-rents-15fa",
+      "nombre": "StatFin 15fa – Alquileres medios por m² por ciudad",
+      "documentacion": "https://stat.fi/en/statistics/asvu",
+      "vigencia": "Trimestral 2025T1–2026T3",
+      "cobertura": "Helsinki, Espoo-Kauniainen (juntas), Vantaa y Gran Helsinki",
+      "personas": "No. Agregados.",
+      "uso_potencial": "Alquiler medio por m² del mercado libre (Habitar 5).",
+      "razon": "Cierra parte del hueco «alquiler»: llega a ciudad, no a área postal.",
+      "prueba": {
+        "url": "https://pxdata.stat.fi/PxWeb/api/v1/en/StatFin/asvu/15fa.px",
+        "metodo": "POST"
+      },
+      "ultima_prueba": {
+        "probado": "2026-10-30T00:00:00Z",
+        "resultado": "ok",
+        "http": 200
+      }
+    },
+    {
+      "familia": "poblacion",
+      "productor": "Statistics Finland (Tilastokeskus)",
+      "tipo_fuente": "primaria",
+      "formato": "PxWeb API (JSON-stat2)",
+      "licencia": "CC BY 4.0",
+      "licencia_verificada_en": "https://stat.fi/en/about-us/get-to-know-statistics-finland/legislation/terms-of-use",
+      "llave": "ninguna",
+      "proteccion": "Ninguna.",
+      "estado": "integrada",
+      "semaforo": "verde",
+      "id": "statfin-earnings-15b2",
+      "nombre": "StatFin 15b2 – Salarios de asalariados a tiempo completo por región",
+      "documentacion": "https://stat.fi/en/statistics/pra",
+      "vigencia": "Año 2024",
+      "cobertura": "Región Uusimaa (no municipio)",
+      "personas": "No. Agregados.",
+      "uso_potencial": "Salario mediano mensual de Uusimaa (Habitar 5).",
+      "razon": "Cierra parte del hueco «salario»: solo región, no zona.",
+      "prueba": {
+        "url": "https://pxdata.stat.fi/PxWeb/api/v1/en/StatFin/pra/15b2.px",
+        "metodo": "POST"
+      },
+      "ultima_prueba": {
+        "probado": "2026-10-30T00:00:00Z",
+        "resultado": "ok",
+        "http": 200
+      }
+    },
+    {
+      "familia": "poblacion",
+      "productor": "Statistics Finland (Tilastokeskus)",
+      "tipo_fuente": "primaria",
+      "formato": "PxWeb API (JSON-stat2)",
+      "licencia": "CC BY 4.0",
+      "licencia_verificada_en": "https://stat.fi/en/about-us/get-to-know-statistics-finland/legislation/terms-of-use",
+      "llave": "ninguna",
+      "proteccion": "Ninguna.",
+      "estado": "integrada",
+      "semaforo": "verde",
+      "id": "statfin-employment-nationality-115f",
+      "nombre": "StatFin 115f – Población 18–64 por actividad principal y nacionalidad",
+      "documentacion": "https://stat.fi/en/statistics/tyokay",
+      "vigencia": "Año 2024",
+      "cobertura": "Región Uusimaa (no municipio)",
+      "personas": "No. Agregados.",
+      "uso_potencial": "Tasa de empleo y desempleo por nacionalidad (Aprender 3).",
+      "razon": "Sustituye parcialmente a «empleo por lengua materna»: es nacionalidad y región, no lengua ni municipio.",
+      "prueba": {
+        "url": "https://pxdata.stat.fi/PxWeb/api/v1/en/StatFin/tyokay/115f.px",
+        "metodo": "POST"
+      },
+      "ultima_prueba": {
+        "probado": "2026-10-30T00:00:00Z",
+        "resultado": "ok",
+        "http": 200
+      }
+    },
+    {
+      "familia": "poblacion",
+      "productor": "Statistics Finland (Tilastokeskus)",
+      "tipo_fuente": "primaria",
+      "formato": "PxWeb API (JSON-stat2)",
+      "licencia": "CC BY 4.0",
+      "licencia_verificada_en": "https://stat.fi/en/about-us/get-to-know-statistics-finland/legislation/terms-of-use",
+      "llave": "ninguna",
+      "proteccion": "Ninguna.",
+      "estado": "integrada",
+      "semaforo": "verde",
+      "id": "statfin-education-11c4",
+      "nombre": "StatFin 11c4 – Estudiantes por región de la institución y sector",
+      "documentacion": "https://stat.fi/en/statistics/opiskt",
+      "vigencia": "Año 2025",
+      "cobertura": "Helsinki, Espoo, Vantaa y Kauniainen por código",
+      "personas": "No. Agregados.",
+      "uso_potencial": "Estudiantes totales, extranjeros y de lengua extranjera por sector (Aprender 2).",
+      "razon": "Sustituye a Vipunen para cifras municipales: Vipunen no trae municipio.",
+      "prueba": {
+        "url": "https://pxdata.stat.fi/PxWeb/api/v1/en/StatFin/opiskt/11c4.px",
+        "metodo": "POST"
+      },
+      "ultima_prueba": {
+        "probado": "2026-10-30T00:00:00Z",
+        "resultado": "ok",
+        "http": 200
       }
     }
   ]

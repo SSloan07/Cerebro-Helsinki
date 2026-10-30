@@ -1,0 +1,8 @@
+{
+  "source_id": "statfin-employment-nationality-115f",
+  "url": "https://pxdata.stat.fi/PxWeb/api/v1/en/StatFin/tyokay/115f.px",
+  "retrieved_at": "2026-10-30T18:22:44.957579+00:00",
+  "raw_file": "data/raw/statfin_115f.json",
+  "bytes": 3575,
+  "sha256": "c2e2afff406ac7937bcc8b651989f1e867e72b4d3fc3f0727a6b3863484ebfd3"
+}

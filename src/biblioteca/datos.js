@@ -134,3 +134,34 @@ function useArchivo(ruta) {
 export const useParadas = () => useArchivo('/data/transit_stops.geojson')
 export const useAreas = () => useArchivo('/data/postal_areas.geojson')
 export const usePoblacion = () => useArchivo('/data/population.json')
+export const useRentas = () => useArchivo('/data/rents.json')
+export const useSalarios = () => useArchivo('/data/earnings.json')
+export const useNacionalidad = () => useArchivo('/data/employment_nationality.json')
+export const useEducacion = () => useArchivo('/data/education.json')
+export const useEmpresas = () => useArchivo('/data/companies.json')
+export const useSuelo = () => useArchivo('/data/land_cover.json')
+
+// Un endpoint en vivo (/api/live-*). Si falla, el estado es «caído»: nunca se conserva el último número como si fuera de ahora.
+export function useEnVivo(ruta, cadaMs = 60000) {
+  const [estado, setEstado] = useState({ estado: 'consultando' })
+  useEffect(() => {
+    let vivo = true
+    const consultar = async () => {
+      try {
+        const respuesta = await fetch(ruta, { cache: 'no-store' })
+        const carga = await respuesta.json()
+        if (!vivo) return
+        setEstado(!respuesta.ok || carga.status !== 'live' ? { estado: 'caido', motivo: carga.reason || `HTTP ${respuesta.status}` } : { estado: 'vivo', datos: carga })
+      } catch (error) {
+        if (vivo) setEstado({ estado: 'caido', motivo: error.message })
+      }
+    }
+    consultar()
+    const reloj = setInterval(consultar, cadaMs)
+    return () => { vivo = false; clearInterval(reloj) }
+  }, [ruta, cadaMs])
+  return estado
+}
+
+const formatoHora = new Intl.DateTimeFormat('es-ES', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Helsinki' })
+export const horaHelsinki = iso => (iso ? `${formatoHora.format(new Date(iso))} (hora de Helsinki)` : 'sin hora')

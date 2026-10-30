@@ -1,9 +1,17 @@
 import liveMobilityHandler from './live-mobility.js'
 import stopsHandler from './stops.js'
+import liveAirHandler from './live-air.js'
+import liveTrainsHandler from './live-trains.js'
+import liveTrafficHandler from './live-traffic.js'
+import liveWeatherHandler from './live-weather.js'
 
 const handlers = new Map([
   ['/api/live-mobility', liveMobilityHandler],
   ['/api/stops', stopsHandler],
+  ['/api/live-air', liveAirHandler],
+  ['/api/live-traffic', liveTrafficHandler],
+  ['/api/live-trains', liveTrainsHandler],
+  ['/api/live-weather', liveWeatherHandler],
 ])
 
 export function createApiDevMiddleware() {

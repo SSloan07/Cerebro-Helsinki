@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-27T22:33:39.661474+00:00",
+  "generated_at": "2026-10-30T19:11:04.549108+00:00",
   "status": "partial",
   "counts": {
     "source_record_count": 8389,
@@ -32,6 +32,34 @@
       "091": 694392,
       "092": 252956,
       "235": 10318
+    },
+    "rent_latest_quarter": "2026Q3",
+    "rent_areas": 4,
+    "earnings_year": 2024,
+    "earnings_median_uusimaa": 3967,
+    "nationality_year": 2024,
+    "nationality_groups": 6,
+    "education_year": 2025,
+    "company_count_total": 141304,
+    "company_cells_suppressed": 9,
+    "land_cover_years": [
+      2016,
+      2018,
+      2020,
+      2022,
+      2024
+    ],
+    "impermeable_km2_by_municipality": {
+      "091": 68.727,
+      "049": 47.055,
+      "092": 49.745,
+      "235": 1.62
+    },
+    "impermeable_km2_start_by_municipality": {
+      "091": 62.07,
+      "049": 43.176,
+      "092": 43.751,
+      "235": 1.399
     }
   },
   "errors": [],
@@ -51,6 +79,12 @@
     "osm-basemap": "integrated",
     "osm-building-footprints": "failed",
     "stat-fi-postal-areas-paavo": "integrated",
-    "statfin-population-11ra": "integrated"
+    "statfin-population-11ra": "integrated",
+    "statfin-rents-15fa": "integrated",
+    "statfin-earnings-15b2": "integrated",
+    "statfin-employment-nationality-115f": "integrated",
+    "statfin-education-11c4": "integrated",
+    "prh-ytj-companies": "integrated",
+    "hsy-land-cover": "integrated"
   }
 }

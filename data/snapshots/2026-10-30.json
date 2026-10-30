@@ -1,0 +1,64 @@
+{
+  "generated_at": "2026-10-30T19:11:04.549108+00:00",
+  "status": "partial",
+  "inputs": {
+    "municipalities.geojson": {
+      "sha256": "d22591423195b78bdc115dd1c0352412caeef517033bc173baf3fe769352afea",
+      "bytes": 40829
+    },
+    "hsl_stops.txt": {
+      "sha256": "20609f67a6f687d7fa2e1df29cb01d2a3b3ace115e3afc0706b1459322ef8eee",
+      "bytes": 1127168
+    }
+  },
+  "outputs": {
+    "municipalities.geojson": {
+      "sha256": "ba698927bf7b1a6da8388a22e958a6adfe7a5ca216307c255cd3fa43b3ba9ad0",
+      "record_count": 4
+    },
+    "transit_stops.geojson": {
+      "sha256": "95504d5020f297512265a3b3357c30247fc616849e1a18c7f8ec151bfdfbe117",
+      "record_count": 6027,
+      "invalid_record_count": 0
+    },
+    "postal_areas.geojson": {
+      "sha256": "b293621b6be86c68a1961bdebd33fad36d5edb4d1edb0fb7d0211bcb6b11ee20",
+      "record_count": 167
+    },
+    "population.json": {
+      "sha256": "f955b0a2447b65000b35e2e11d71b42811c1a1d885658a22ab729c9d162b9b82",
+      "record_count": 4
+    },
+    "rents.json": {
+      "sha256": "e35ef32e66a85a3db6a8d66d6ce677cc4f200bba295f3c88e2e9d51605c2ee88",
+      "record_count": 28
+    },
+    "earnings.json": {
+      "sha256": "c0fde98fc6f46d1fb2a15642fb612a410e6bfc8605c69060539c0bbb07b7dd2d",
+      "record_count": 3
+    },
+    "employment_nationality.json": {
+      "sha256": "bb2aecd638e0efbd82cce2d69fe9488fd50db569f1f85ea4bd519e5bb3b636da",
+      "record_count": 6
+    },
+    "education.json": {
+      "sha256": "f377bc0f912ad7c9fa4a9c8757a8cf0600b007596e17e46826827d88521b9e49",
+      "record_count": 20
+    },
+    "companies.json": {
+      "sha256": "957cecba14ebdc86c154b3997790a5bc25c078d7c66a46e2d710fa95b7391821",
+      "record_count": 4
+    },
+    "land_cover.json": {
+      "sha256": "879234b2f3a9319c99002665799c3c4953fc8e92214e8f0b310272b715752eb9",
+      "record_count": 20
+    }
+  },
+  "change_from_previous_snapshot": {
+    "snapshot_date": "2026-10-27",
+    "municipality_count_delta": 0,
+    "hsl_stop_count_delta": 0,
+    "municipality_geometry_changed": false,
+    "stops_dataset_changed": false
+  }
+}

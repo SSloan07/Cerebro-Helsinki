@@ -1,0 +1,8 @@
+{
+  "source_id": "hsy-land-cover",
+  "url": "https://kartta.hsy.fi/geoserver/wfs?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=asuminen_ja_maankaytto:maanpeite_<clase>_<a\u00f1o>",
+  "retrieved_at": "2026-10-30T18:35:38.469161+00:00",
+  "raw_file": "data/raw/hsy_land_cover.json",
+  "bytes": 4746,
+  "sha256": "57520c70caee5f29f36321d6fd714bd89f37c719181317f2410ea959bc9df52b"
+}

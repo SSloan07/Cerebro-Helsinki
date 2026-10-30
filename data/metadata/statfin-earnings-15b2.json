@@ -1,0 +1,8 @@
+{
+  "source_id": "statfin-earnings-15b2",
+  "url": "https://pxdata.stat.fi/PxWeb/api/v1/en/StatFin/pra/15b2.px",
+  "retrieved_at": "2026-10-30T18:22:44.171062+00:00",
+  "raw_file": "data/raw/statfin_15b2.json",
+  "bytes": 3324,
+  "sha256": "1bda91bbe5dc707ba40cda0ea25605c7844bcd760396b0fb6c3d98149103702c"
+}

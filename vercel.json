@@ -2,6 +2,9 @@
   "functions": {
     "api/stops.js": {
       "includeFiles": "public/data/**"
+    },
+    "api/live-traffic.js": {
+      "includeFiles": "public/data/municipalities.geojson"
     }
   },
   "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]

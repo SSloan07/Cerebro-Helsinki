@@ -392,3 +392,19 @@ button { cursor: pointer; }
   .barras.sectores .barra { width: 30%; }
   .leyenda-trama { margin-left: 0; }
 }
+
+/* ── Pliegos con datos nuevos: deslizadores, tiempo real, huecos de celdas protegidas ── */
+.deslizador { display: grid; gap: 8px; max-width: 360px; margin-top: 12px; font-size: 15px; font-weight: 600; }
+.deslizador input { width: 100%; accent-color: var(--c-fuerte, var(--tinta)); }
+.barras th.sr, .barras .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.barras thead th { padding-bottom: 6px; font-size: 13px; font-weight: 600; color: var(--tinta-2); }
+.barras .valor.ancho { width: auto; white-space: nowrap; }
+.barras .oculto { display: inline-block; padding: 1px 6px; border: 1px dashed var(--tinta-2); border-radius: 2px; color: var(--tinta-2); font-size: 13px; font-weight: 400; }
+.mapa-vivo { width: 100%; height: auto; max-height: 440px; }
+.mapa-vivo .contorno { fill: var(--papel-mapa); stroke: var(--regla); stroke-width: 1.2; }
+.mapa-vivo .estacion { stroke: var(--papel); stroke-width: 1.2; fill-opacity: .9; }
+.linea-municipio polyline { fill: none; stroke: var(--linea); stroke-width: 2; }
+.linea-municipio circle { fill: var(--linea); }
+.linea-municipio.apagada { opacity: .25; }
+.barra-grupo { fill: var(--lavanda-fuerte); } .barra-grupo.base { fill: var(--verde-fuerte); }
+.leyenda input[type="radio"] { accent-color: var(--vivo); margin-right: 6px; }

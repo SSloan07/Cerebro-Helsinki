@@ -1,0 +1,230 @@
+{
+ "retrieved_at": "2026-10-30T18:35:38.458061+00:00",
+ "layers": {
+  "maanpeite_rakennus_2016": {
+   "area_m2": {
+    "Kauniainen": 489299.0,
+    "Helsinki": 17539836.7,
+    "Espoo": 11677559.6,
+    "Vantaa": 11867157.1
+   },
+   "features": {
+    "Kauniainen": 2255,
+    "Helsinki": 49538,
+    "Espoo": 66829,
+    "Vantaa": 52673
+   },
+   "features_in_layer": 196334
+  },
+  "maanpeite_paallystetty_tie_2016": {
+   "area_m2": {
+    "Kauniainen": 283456.7,
+    "Helsinki": 20097773.3,
+    "Espoo": 12569761.5,
+    "Vantaa": 15827114.6
+   },
+   "features": {
+    "Kauniainen": 32,
+    "Helsinki": 2689,
+    "Espoo": 1423,
+    "Vantaa": 198
+   },
+   "features_in_layer": 4580
+  },
+  "maanpeite_muu_vetta_lapaisematon_pinta_2016": {
+   "area_m2": {
+    "Kauniainen": 626988.9,
+    "Helsinki": 24432329.8,
+    "Espoo": 18928193.0,
+    "Vantaa": 16056697.6
+   },
+   "features": {
+    "Kauniainen": 5169,
+    "Helsinki": 96006,
+    "Espoo": 163455,
+    "Vantaa": 108451
+   },
+   "features_in_layer": 418413
+  },
+  "maanpeite_rakennus_2018": {
+   "area_m2": {
+    "Helsinki": 18333145.7,
+    "Espoo": 11639792.6,
+    "Kauniainen": 503515.7,
+    "Vantaa": 12153540.1
+   },
+   "features": {
+    "Helsinki": 70809,
+    "Espoo": 58731,
+    "Kauniainen": 2232,
+    "Vantaa": 53080
+   },
+   "features_in_layer": 221412
+  },
+  "maanpeite_paallystetty_tie_2018": {
+   "area_m2": {
+    "Espoo": 11369200.8,
+    "Helsinki": 18290211.6,
+    "Vantaa": 11506511.5,
+    "Kauniainen": 377991.7
+   },
+   "features": {
+    "Espoo": 755,
+    "Helsinki": 1579,
+    "Vantaa": 359,
+    "Kauniainen": 19
+   },
+   "features_in_layer": 3065
+  },
+  "maanpeite_muu_vetta_lapaisematon_pinta_2018": {
+   "area_m2": {
+    "Espoo": 20754183.3,
+    "Helsinki": 26433903.5,
+    "Vantaa": 23379927.2,
+    "Kauniainen": 1028090.3
+   },
+   "features": {
+    "Espoo": 51737,
+    "Helsinki": 67907,
+    "Vantaa": 43467,
+    "Kauniainen": 3350
+   },
+   "features_in_layer": 201873
+  },
+  "maanpeite_rakennus_2020": {
+   "area_m2": {
+    "Espoo": 12012716.1,
+    "Helsinki": 18508867.8,
+    "Vantaa": 12351798.1,
+    "Kauniainen": 485252.1
+   },
+   "features": {
+    "Espoo": 59794,
+    "Helsinki": 74466,
+    "Vantaa": 53915,
+    "Kauniainen": 2361
+   },
+   "features_in_layer": 218089
+  },
+  "maanpeite_paallystetty_tie_2020": {
+   "area_m2": {
+    "Espoo": 12354360.2,
+    "Helsinki": 18579008.4,
+    "Vantaa": 14630760.6,
+    "Kauniainen": 370224.6
+   },
+   "features": {
+    "Espoo": 495,
+    "Helsinki": 1518,
+    "Vantaa": 557,
+    "Kauniainen": 13
+   },
+   "features_in_layer": 2789
+  },
+  "maanpeite_muu_vetta_lapaisematon_pinta_2020": {
+   "area_m2": {
+    "Espoo": 14631271.5,
+    "Helsinki": 20862129.0,
+    "Vantaa": 15492626.6,
+    "Kauniainen": 521989.2
+   },
+   "features": {
+    "Espoo": 36428,
+    "Helsinki": 56795,
+    "Vantaa": 38283,
+    "Kauniainen": 2433
+   },
+   "features_in_layer": 142366
+  },
+  "maanpeite_rakennus_2022": {
+   "area_m2": {
+    "Espoo": 12494032.9,
+    "Helsinki": 18836209.4,
+    "Vantaa": 11258703.9,
+    "Kauniainen": 459837.0
+   },
+   "features": {
+    "Espoo": 61135,
+    "Helsinki": 74634,
+    "Vantaa": 44541,
+    "Kauniainen": 1723
+   },
+   "features_in_layer": 225600
+  },
+  "maanpeite_paallystetty_tie_2022": {
+   "area_m2": {
+    "Espoo": 13450410.0,
+    "Helsinki": 18972274.9,
+    "Vantaa": 14706079.4,
+    "Kauniainen": 385327.7
+   },
+   "features": {
+    "Espoo": 1530,
+    "Helsinki": 1255,
+    "Vantaa": 520,
+    "Kauniainen": 33
+   },
+   "features_in_layer": 3955
+  },
+  "maanpeite_muu_vetta_lapaisematon_pinta_2022": {
+   "area_m2": {
+    "Espoo": 16031631.1,
+    "Vantaa": 20504011.4,
+    "Helsinki": 26104888.1,
+    "Kauniainen": 546499.9
+   },
+   "features": {
+    "Espoo": 56866,
+    "Vantaa": 59092,
+    "Helsinki": 60912,
+    "Kauniainen": 2386
+   },
+   "features_in_layer": 209397
+  },
+  "maanpeite_rakennus_2024": {
+   "area_m2": {
+    "Espoo": 12805870.4,
+    "Vantaa": 11552967.4,
+    "Helsinki": 19122975.9,
+    "Kauniainen": 460839.2
+   },
+   "features": {
+    "Espoo": 61755,
+    "Vantaa": 45276,
+    "Helsinki": 73526,
+    "Kauniainen": 1759
+   },
+   "features_in_layer": 291383
+  },
+  "maanpeite_paallystetty_tie_2024": {
+   "area_m2": {
+    "Espoo": 13400751.3,
+    "Helsinki": 19464019.5,
+    "Vantaa": 12997329.9,
+    "Kauniainen": 400014.7
+   },
+   "features": {
+    "Espoo": 564,
+    "Helsinki": 980,
+    "Vantaa": 449,
+    "Kauniainen": 12
+   },
+   "features_in_layer": 2702
+  },
+  "maanpeite_muu_vetta_lapaisematon_pinta_2024": {
+   "area_m2": {
+    "Espoo": 20847980.5,
+    "Helsinki": 30140493.7,
+    "Vantaa": 25195074.2,
+    "Kauniainen": 759455.3
+   },
+   "features": {
+    "Espoo": 42794,
+    "Helsinki": 50003,
+    "Vantaa": 42990,
+    "Kauniainen": 2006
+   },
+   "features_in_layer": 201385
+  }
+ }
+}

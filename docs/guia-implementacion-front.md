@@ -1,6 +1,6 @@
 # Guía de implementación del front · «Biblioteca de una nueva vida»
 
-Para el grupo y para la IA de cada uno. Estado al **2026-10-27** (Paavo y StatFin 11ra integradas; ver `docs/registro-integracion.md`).
+Para el grupo y para la IA de cada uno. Estado al **2026-10-30** (Paavo, StatFin 11ra, alquileres, salarios, nacionalidad, educación, PRH y suelo HSY integradas, más cuatro fuentes en vivo; ver `docs/registro-integracion.md`).
 Este documento explica qué hay construido, cómo está organizado y, sobre todo, **cómo conectar los datos reales sin romper las reglas del taller**.
 
 > **Si eres una IA leyendo esto:** antes de tocar código, lee en este orden:
@@ -40,20 +40,21 @@ La metáfora viene del Figma del grupo («Cerebro Helsinki — Biblioteca de una
 |---|---|---|---|---|
 | Llegar | 1 | Cuatro municipios (mapa + lista) | **datos** | `municipalities.geojson` |
 | Llegar | 2 | Población por municipio | **datos** | `population.json` (`statfin-population-11ra`, 31-12-2025) |
+| Llegar | 3 | Ahora mismo: tiempo, aire, carreteras y trenes | **datos (en vivo)** | `/api/live-weather`, `/api/live-air`, `/api/live-traffic`, `/api/live-trains` |
 | Habitar | 1 | Ingreso disponible por área: mapa 2D/3D, comparación A·B y ranking | **datos** | `postal_areas.geojson` (`stat-fi-postal-areas-paavo`, 2024) |
 | Habitar | 2 | Distribución de las 167 áreas | **datos** | Paavo |
 | Habitar | 3 | Ingreso × % alquiler | **datos** | Paavo (`rented_share`) |
 | Habitar | 4 | Moverse: paradas por municipio y zona, vehículos en vivo | **datos** | `update-report.json`, `transit_stops.geojson`, `/api/live-mobility` |
-| Habitar | 5 | Salario y alquiler | hueco | ver `fuentes-por-consultar.md` filas 1–2 |
+| Habitar | 5 | Salario y alquiler | **datos** (parcial) | `rents.json` (ciudad) y `earnings.json` (Uusimaa); no llegan a barrio ni a zona |
 | Investigar | 1 | Empleo por sector en el mapa (3D) | **datos** | Paavo (`jobs_by_sector`, en lugar de la rejilla HSY) |
 | Investigar | 2 | Peso de cada sector | **datos** | Paavo |
 | Investigar | 3 | Desempleo por área | **datos** | Paavo (`unemployment_rate`) |
-| Investigar | 4 | Empresas por sector | pendiente | `prh-ytj-companies` (solo conteos) |
-| Investigar | 5 | Expansión 2016 → 2024 | pendiente | `hsy-land-cover` |
+| Investigar | 4 | Empresas por sector | **datos** | `companies.json` (`prh-ytj-companies`, solo conteos) |
+| Investigar | 5 | Expansión 2016 → 2024 | **datos** | `land_cover.json` (`hsy-land-cover`, superficie impermeable) |
 | Investigar | 6 | Innovación, vacantes, 15 minutos | hueco | filas 5, 6 y 10 |
 | Aprender | 1 | Nivel educativo por zona | **datos** | Paavo (`higher_education_share`) |
-| Aprender | 2 | Oferta educativa | pendiente | `vipunen-education` |
-| Aprender | 3 | Empleo por lengua materna | hueco | filas 3–4 |
+| Aprender | 2 | Oferta educativa | **datos** | `education.json` (`statfin-education-11c4`; Vipunen se descartó) |
+| Aprender | 3 | Empleo según nacionalidad | **datos** (parcial) | `employment_nationality.json` (Uusimaa; nacionalidad, no lengua) |
 | Aprender | 4 | Lo que estos datos no pueden decirte | texto | — |
 | Fuentes | 1 | El catálogo (49 cuadros por estado y semáforo) | **datos** | `docs/catalogo/fuentes.json` |
 | Fuentes | 2 | Todas las fichas (tabla con filtros) | **datos** | `docs/catalogo/fuentes.json` |
@@ -62,10 +63,9 @@ La metáfora viene del Figma del grupo («Cerebro Helsinki — Biblioteca de una
 **Prioridad recomendada (lo que queda):**
 1. ~~Paavo~~ y ~~StatFin 11ra~~: integradas el 2026-10-27.
 2. ~~La rejilla de empleo de HSY~~: la reemplaza Paavo `tp_*`.
-3. Rastreo de P1 y P3 (`fuentes-por-consultar.md` §1).
-4. La cobertura del suelo.
-5. PRH.
-6. Vipunen.
+3. Rastreo de P1 y P3 que quedó pendiente (`fuentes-por-consultar.md` §1): salario por ocupación (`pra/15au`), alquiler por barrio, empleo por lengua.
+4. ~~Cobertura del suelo~~, ~~PRH~~ y ~~Vipunen~~: integradas o descartadas el 2026-10-30.
+5. Alertas de servicio de HSL en vivo (hace falta un decodificador de alertas).
 
 ---
 
@@ -271,6 +271,10 @@ Al terminar:
 - **`fuentes.json` no trae fecha de prueba por fuente.** La UI lo dice («catálogo revisado el 28 sep 2026»). Para tener la fecha, prueba la fuente con `etl/helsinki/probe_candidates.py`.
 
 ---
+
+- **PRH: ni `location` ni `mainBusinessLine` sirven para contar.** `location=Kauniainen` devuelve también direcciones de Espoo, y `mainBusinessLine=62` devuelve también los códigos 86 y 96 (es una búsqueda de texto). `empresas.py` pagina el registro y cuenta por el código de municipio de la dirección y por la actividad principal exacta. Tarda unos 35 min.
+- **HSY suelo: las ediciones no son comparables año a año.** En 2020 la superficie sellada baja en los cuatro municipios a la vez; el pliego lo avisa. Hay polígonos con área 0 (se omiten).
+- **Los endpoints en vivo no funcionan con `vite preview`**, solo con `npm run dev` o desplegados en Vercel; sin ellos el pliego muestra «errata», no cifras.
 
 ## 9. Pendientes (backlog)
 

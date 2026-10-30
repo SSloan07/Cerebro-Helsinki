@@ -21,7 +21,7 @@ import zipfile
 from collections import Counter
 from pathlib import Path
 
-from etl.helsinki.sources import paavo, poblacion
+from etl.helsinki.sources import alquiler, educacion, empresas, nacionalidad, paavo, poblacion, salarios, suelo
 
 ROOT = Path(__file__).resolve().parents[2]
 RAW = ROOT / "data/raw"
@@ -33,6 +33,11 @@ MUNICIPALITIES = {"049": "Espoo", "091": "Helsinki", "092": "Vantaa", "235": "Ka
 BOUNDARY_URL = "https://geo.stat.fi/geoserver/tilastointialueet/wfs?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=tilastointialueet%3Akunta1000k_2025&OUTPUTFORMAT=application%2Fjson&SRSNAME=EPSG%3A4326&CQL_FILTER=kunta%20IN%20(%27049%27%2C%27091%27%2C%27092%27%2C%27235%27)"
 HSL_GTFS_URL = "https://infopalvelut.storage.hsldev.com/gtfs/hsl.zip"
 HSL_USER_AGENT = "CerebroHelsinki/0.1 (open-data ETL; contact configured in README)"
+
+
+# Sources added for the migrant app. Each module reads data/raw and returns
+# (published document, report counts, registry entry); see etl/helsinki/sources/.
+EXTRA_SOURCES = (paavo, poblacion, alquiler, salarios, nacionalidad, educacion, empresas, suelo)
 
 
 def sha256(path: Path) -> str:
@@ -54,9 +59,10 @@ def fetch_bytes(url: str, *, limit: int = 180_000_000) -> bytes:
     return body
 
 
-def refresh_sources() -> list[str]:
+def refresh_sources(only: set[str] | None = None) -> list[str]:
+    """Download new snapshots. `only` limits the refresh to the given source ids (the base inputs are skipped)."""
     failures = []
-    for url, target in ((BOUNDARY_URL, RAW / "municipalities.geojson"),):
+    for url, target in (() if only else ((BOUNDARY_URL, RAW / "municipalities.geojson"),)):
         try:
             body = fetch_bytes(url, limit=20_000_000)
             json.loads(body)
@@ -64,6 +70,8 @@ def refresh_sources() -> list[str]:
         except Exception as error:  # preserve latest known-good input
             failures.append(f"{url}: {type(error).__name__}: {error}")
     try:
+        if only:
+            raise StopIteration
         archive_bytes = fetch_bytes(HSL_GTFS_URL)
         with zipfile.ZipFile(io.BytesIO(archive_bytes)) as archive:
             bad = archive.testzip()
@@ -83,9 +91,15 @@ def refresh_sources() -> list[str]:
             "retained_members": ["stops.txt", "feed_info.txt"],
             "omitted_members": ["stop_times.txt", "shapes.txt", "trips.txt", "other feed tables"],
         }, indent=2) + "\n", encoding="utf-8")
+    except StopIteration:
+        pass
     except Exception as error:
         failures.append(f"{HSL_GTFS_URL}: {type(error).__name__}: {error}")
-    for module, refresh in ((paavo, lambda: paavo.refresh(RAW, fetch_bytes)), (poblacion, lambda: poblacion.refresh(RAW, HSL_USER_AGENT))):
+    refreshers = {paavo: lambda: paavo.refresh(RAW, fetch_bytes)}
+    refreshers.update({module: (lambda module=module: module.refresh(RAW, HSL_USER_AGENT)) for module in EXTRA_SOURCES if module is not paavo})
+    for module, refresh in refreshers.items():
+        if only and module.SOURCE_ID not in only:
+            continue
         try:
             refresh()
             raw = RAW / module.RAW_NAME
@@ -96,11 +110,6 @@ def refresh_sources() -> list[str]:
         except Exception as error:  # keep the previous raw snapshot
             failures.append(f"{module.SOURCE_ID}: {type(error).__name__}: {error}")
     return failures
-
-
-# Sources added for the migrant app. Each module reads data/raw and returns
-# (published document, report counts, registry entry); see etl/helsinki/sources/.
-EXTRA_SOURCES = (paavo, poblacion)
 
 
 def build_extra_sources(errors: list[str]) -> tuple[dict, list[dict], dict]:
@@ -322,10 +331,11 @@ def source_registry(consulted_at: str, boundaries_sha: str, stops_sha: str, coun
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--refresh", action="store_true", help="Download new official snapshots")
+    parser.add_argument("--only", help="With --refresh, comma-separated source ids to download (skips the base inputs)")
     args = parser.parse_args()
     for directory in (RAW, PROCESSED, METADATA, SNAPSHOTS, PUBLIC):
         directory.mkdir(parents=True, exist_ok=True)
-    refresh_failures = refresh_sources() if args.refresh else []
+    refresh_failures = refresh_sources(set(args.only.split(",")) if args.only else None) if args.refresh else []
     consulted = dt.datetime.now(dt.timezone.utc).date().isoformat()
     errors, warnings = [], []
     counts = None

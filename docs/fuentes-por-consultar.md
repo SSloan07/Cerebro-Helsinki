@@ -1,6 +1,6 @@
 # Fuentes por consultar
 
-Estado al 2026-10-26. Lista de trabajo para el tramo de **Rastreo**, que es una vuelta atrás legítima: hay preguntas sin fuente.
+Estado al 2026-10-30. Lista de trabajo para el tramo de **Rastreo**, que es una vuelta atrás legítima: hay preguntas sin fuente.
 Cada fila dice qué necesita la app, dónde buscar y qué confirmar al abrir la fuente.
 
 > **La IA propone, el enlace dispone.** Las fuentes de la sección 1 **no se han abierto**. Los nombres de portales y
@@ -15,12 +15,12 @@ En la app, cada fila de este documento tiene su página en blanco («hueco decla
 
 | # | Qué necesita la app | Dónde buscar (sin confirmar) | Qué verificar al abrirla | Pregunta | Prioridad |
 |---|---|---|---|---|---|
-| 1 | **Salario por ocupación** | Statistics Finland (StatFin), estadística de estructura salarial | ¿Desglose por ocupación y región (Uusimaa o municipio)? Año, licencia, y si trae mediana o solo media. Casi seguro **no** llega a código postal. | P1 | Alta |
-| 2 | **Alquiler por zona** | StatFin, estadística de alquileres de vivienda | ¿Llega a código postal o solo a municipio o grupo de códigos? Libre mercado frente a subsidiado. La fuente ya catalogada (`statfin-ashi-13mu`) es de compraventa, no de alquiler. | P1 | Alta |
-| 3 | **Empleo por lengua materna u origen** | StatFin, estadística de empleo (*työssäkäynti*) | Tasa de empleo y desempleo por lengua materna (fi/sv/otras) y municipio. Revisar la supresión de celdas pequeñas. | P3 | Alta |
+| 1 | **Salario por ocupación** (parcial: ya hay el salario mediano de Uusimaa por sexo, `statfin-earnings-15b2`, 2026-10-30; falta por ocupación: tabla `pra/15au`, ya localizada) | Statistics Finland (StatFin), estadística de estructura salarial | ¿Desglose por ocupación y región (Uusimaa o municipio)? Año, licencia, y si trae mediana o solo media. Casi seguro **no** llega a código postal. | P1 | Alta |
+| 2 | **Alquiler por zona** (parcial: ya hay alquiler medio por m² por ciudad, `statfin-rents-15fa`, 2026-10-30; sigue sin llegar a área postal) | StatFin, estadística de alquileres de vivienda | ¿Llega a código postal o solo a municipio o grupo de códigos? Libre mercado frente a subsidiado. La fuente ya catalogada (`statfin-ashi-13mu`) es de compraventa, no de alquiler. | P1 | Alta |
+| 3 | **Empleo por lengua materna u origen** (parcial: ya hay empleo por nacionalidad en Uusimaa, `statfin-employment-nationality-115f`; la tabla por lengua, `tyokay/115g`, es nacional y no tiene región) | StatFin, estadística de empleo (*työssäkäynti*) | Tasa de empleo y desempleo por lengua materna (fi/sv/otras) y municipio. Revisar la supresión de celdas pequeñas. | P3 | Alta |
 | 4 | **Población de origen extranjero por zona** | stat.hel.fi, series regionales (`helsinki-region-statistics`, ya en el catálogo) | La ficha dice «empleo por distrito»: confirmar si se desglosa por lengua u origen y si cubre Espoo, Vantaa y Kauniainen. | P3 | Alta |
 | 5 | **Vacantes por ocupación** | Portal público de empleo Työmarkkinatori, o la estadística de vacantes de StatFin o del Ministerio de Empleo (TEM) | ¿API sin llave? Licencia. ¿Agregados por ocupación y región, o avisos individuales? Los avisos individuales pueden traer nombres de contacto: solo conteos. | P2 | Media |
-| 6 | **Investigación e instituciones** | OpenAlex (instituciones y publicaciones con sede en Helsinki); Crossref como contraste | Licencia (OpenAlex declara CC0; confirmar). Filtrar por ubicación de la institución, no de autores. Publicar por área temática y año, nunca por persona. | P2 | Media |
+| 6 | **Investigación e instituciones** (sondeada el 2026-10-30: OpenAlex responde, pero pide llave gratuita para uso estable y sin ella comparte un cupo mínimo; no se integra) | OpenAlex (instituciones y publicaciones con sede en Helsinki); Crossref como contraste | Licencia (OpenAlex declara CC0; confirmar). Filtrar por ubicación de la institución, no de autores. Publicar por área temática y año, nunca por persona. | P2 | Media |
 | 7 | **Permisos de residencia por trabajo** | Servicio de Inmigración de Finlandia (Migri), estadísticas abiertas | Permisos concedidos por motivo (trabajo, estudio, familia) y nacionalidad. ¿Hay nivel municipal? Sirve para contextualizar P3, no para predecir. | P3 | Media |
 | 8 | **Reconocimiento de títulos extranjeros** | Agencia Nacional de Educación (OPH) | ¿Publica estadísticas de decisiones de reconocimiento por campo? Si no existe abierta, queda como hueco y se dice. | P3 | Baja |
 | 9 | **Permisos de construcción** (expansión) | StatFin, estadística de permisos de construcción | Por municipio y año, para contrastar la cobertura del suelo. | P2 | Baja |
@@ -36,12 +36,16 @@ Estas tienen ficha y prueba. Lo que falta es ingesta, contrato y `verificar.py`.
 
 | Fuente (id) | Probada | Resultado de la prueba | Qué alimenta en la app | Siguiente paso |
 |---|---|---|---|---|
-| `hsy-tyopaikkaruudukko-2024` | 2026-09-21 | HTTP 200 · 15.445 celdas | Ya no hace falta para Investigar 1–2 (lo cubre Paavo `tp_*`). Queda como alternativa de 250 m. | Si se usa: agregar antes de publicar; `-1` es supresión, nunca cero. |
-| `prh-ytj-v3` | 2026-09-21 | HTTP 200 · 89.816 para `location=Helsinki` | Investigar 3 (empresas por sector) | Confirmar la licencia en avoindata.prh.fi. El script guarda solo conteos y no pasa nombres a la IA. |
-| `hsy-land-cover` | catálogo revisado el 2026-09-28 | sin prueba con fecha propia | Investigar 4 (expansión 2016 → 2024) | Probar los dos cortes y elegir la variable (superficie impermeable). |
+| `hsy-tyopaikkaruudukko-2024` | 2026-09-21 | HTTP 200 · 15.445 celdas | Alternativa de 250 m a Paavo `tp_*` | Si se usa: agregar antes de publicar; `-1` es supresión, nunca cero. |
 | `hsy-rakennukset-paivittyva` | 2026-09-21 | HTTP 200 · 154.154 edificios | Edificación por década (aún sin pliego) | Licencia de esta capa por confirmar. Solo agregados por área postal. |
-| `vipunen-education` | catálogo revisado el 2026-09-28 | sin prueba con fecha propia | Aprender 2 (oferta educativa) | Reconfirmar la licencia y elegir el conjunto (de 47). |
-| `overture-buildings` | 2026-09-21 | 258.743 edificios en el bbox; 66 % con altura | Capa 3D de edificios (opcional) | Revisar la distribución de alturas (media ≈ 5 m, sospechosa) frente a los pisos de HSY antes de mostrar nada. ODbL. |
+| `overture-buildings` | 2026-09-21 | 258.743 edificios en el bbox; 66 % con altura | Capa 3D de edificios (opcional) | Revisar la distribución de alturas (media ≈ 5 m, sospechosa) antes de mostrar nada. ODbL. |
+
+> **Integradas el 2026-10-30** (salieron de esta tabla): `prh-ytj-companies` (conteos por municipio y sector TOL), `hsy-land-cover` (superficie impermeable 2016–2024), `statfin-education-11c4` (reemplaza a Vipunen), `statfin-rents-15fa`, `statfin-earnings-15b2`, `statfin-employment-nationality-115f`.
+> **Descartada:** `vipunen-education`. Sus conjuntos de estudiantes traen el nombre de la institución y ningún código de municipio, y cruzar por nombre está prohibido.
+
+**Tiempo real integrado el 2026-10-30** (endpoints `/api/live-*`, sin llave, CC BY 4.0): `fmi-weather`, `hsy-air-quality-now`, `digitraffic-road-tms`, `digitraffic-rail`. Detalle en `registro-integracion.md`.
+
+**Tiempo real sondeado y no integrado:** alertas de servicio de HSL (`realtime.hsl.fi/realtime/service-alerts/v2/hsl`, protobuf, HTTP 200 el 2026-10-30; falta un decodificador de alertas: el del proyecto solo lee posiciones de vehículos), actualizaciones de viaje de HSL (`trip-updates/v2/hsl`, HTTP 200, 711 kB por consulta) y estaciones de clima de carretera de Digitraffic (`tie.digitraffic.fi/api/weather/v1/stations`, HTTP 200). Bicicletas compartidas en vivo: la ruta GBFS que se probó (`gbfs.urbansharing.com/kaupunkipyorat.hsl.fi`) respondió 404; no se encontró otra confirmada.
 
 ---
 

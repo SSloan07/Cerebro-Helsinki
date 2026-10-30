@@ -118,12 +118,122 @@ def verificar_poblacion(lago: Path, v: Verificacion) -> None:
         v.comprobar(valores["091"] > valores["235"], "population: Helsinki aparece con menos habitantes que Kauniainen")
 
 
+def _todos_positivos(valores) -> bool:
+    return all(isinstance(x, (int, float)) and x > 0 for x in valores)
+
+
+def verificar_alquileres(lago: Path, v: Verificacion) -> None:
+    datos = leer(lago, "rents.json", v)
+    if not datos:
+        return
+    serie = datos.get("series") or {}
+    v.comprobar(set(serie) == {"091", "049", "092", "pks"}, f"rents: áreas {sorted(serie)}")
+    ultimo = datos.get("latest_quarter")
+    v.comprobar(bool(re.fullmatch(r"\d{4}Q[1-4]", ultimo or "")), f"rents: trimestre {ultimo!r}")
+    valores = {a: (serie.get(a, {}).get(ultimo) or {}).get("eur_per_m2") for a in serie}
+    v.comprobar(all(x is not None for x in valores.values()), f"rents: falta el último trimestre en {valores}")
+    for area, celdas in serie.items():
+        for trimestre, celda in celdas.items():
+            x = celda.get("eur_per_m2")
+            v.comprobar(x is None or 5 < x < 60, f"rents {area} {trimestre}: {x} €/m² fuera de 5–60")
+    ciudades = [valores[a] for a in ("091", "049", "092") if valores.get(a)]
+    if valores.get("pks") and ciudades:
+        v.comprobar(min(ciudades) <= valores["pks"] <= max(ciudades), "rents: el Gran Helsinki queda fuera del rango de sus ciudades")
+
+
+def verificar_salarios(lago: Path, v: Verificacion) -> None:
+    datos = leer(lago, "earnings.json", v)
+    if not datos:
+        return
+    total = (datos.get("earnings") or {}).get("total") or {}
+    v.comprobar(_todos_positivos(total.get(k) for k in ("earners", "mean", "p10", "median", "p90")), "earnings: faltan o no son positivos los valores del total")
+    if _todos_positivos(total.get(k) for k in ("p10", "median", "p90")):
+        v.comprobar(total["p10"] < total["median"] < total["p90"], "earnings: los deciles no están ordenados")
+        v.comprobar(1000 < total["median"] < 10000, f"earnings: mediana {total['median']} fuera de 1.000–10.000 €")
+    v.comprobar(set(datos.get("earnings", {})) == {"total", "men", "women"}, "earnings: faltan desgloses por sexo")
+
+
+def verificar_nacionalidad(lago: Path, v: Verificacion) -> None:
+    datos = leer(lago, "employment_nationality.json", v)
+    if not datos:
+        return
+    grupos = datos.get("groups") or {}
+    v.comprobar(set(grupos) == {"246", "EUR", "AFR", "AME", "AAS", "MUU"}, f"employment_nationality: grupos {sorted(grupos)}")
+    for codigo, g in grupos.items():
+        poblacion, ocupados, desempleados = g.get("population_18_64"), g.get("employed"), g.get("unemployed")
+        if None not in (poblacion, ocupados, desempleados):
+            v.comprobar(ocupados + desempleados <= poblacion, f"employment_nationality {codigo}: ocupados + desempleados superan la población")
+        for campo in ("employment_rate", "unemployment_rate"):
+            v.comprobar(g.get(campo) is None or 0 <= g[campo] <= 100, f"employment_nationality {codigo}: {campo} fuera de 0–100")
+    v.comprobar(bool(grupos.get("246", {}).get("employment_rate")), "employment_nationality: sin tasa de empleo para la ciudadanía finlandesa")
+
+
+def verificar_educacion(lago: Path, v: Verificacion) -> None:
+    datos = leer(lago, "education.json", v)
+    if not datos:
+        return
+    por_municipio = datos.get("by_municipality") or {}
+    v.comprobar(set(por_municipio) == MUNICIPIOS, f"education: municipios {sorted(por_municipio)}")
+    for codigo, sectores in por_municipio.items():
+        v.comprobar(set(sectores) == {"comprehensive", "upper_secondary", "vocational", "applied_sciences", "university"}, f"education {codigo}: sectores {sorted(sectores)}")
+        for sector, celda in sectores.items():
+            estudiantes = celda.get("students")
+            for campo in ("foreign_students", "foreign_language_students"):
+                if estudiantes is not None and celda.get(campo) is not None:
+                    v.comprobar(celda[campo] <= estudiantes, f"education {codigo}/{sector}: {campo} supera a los estudiantes")
+    if por_municipio.get("091") and por_municipio.get("235"):
+        total = lambda c: sum(s.get("students") or 0 for s in por_municipio[c].values())
+        v.comprobar(total("091") > total("235"), "education: Helsinki aparece con menos estudiantes que Kauniainen")
+
+
+def verificar_empresas(lago: Path, v: Verificacion) -> None:
+    datos = leer(lago, "companies.json", v)
+    if not datos:
+        return
+    por_municipio = datos.get("by_municipality") or {}
+    minimo = datos.get("min_cell", 5)
+    v.comprobar(set(por_municipio) == MUNICIPIOS, f"companies: municipios {sorted(por_municipio)}")
+    secciones = set("ABCDEFGHIJKLMNOPQRSTU")
+    for codigo, m in por_municipio.items():
+        v.comprobar(set(m.get("sections", {})) == secciones, f"companies {codigo}: secciones {sorted(m.get('sections', {}))}")
+        v.comprobar(m["classified"] + m["without_activity"] == m["total"], f"companies {codigo}: clasificadas + sin actividad no suman el total")
+        visibles = [x for x in m["sections"].values() if x is not None]
+        v.comprobar(sum(visibles) <= m["classified"], f"companies {codigo}: las secciones superan las empresas clasificadas")
+        v.comprobar(all(x >= minimo for x in visibles), f"companies {codigo}: hay una celda visible con menos de {minimo} empresas")
+        v.comprobar(set(m) <= {"name", "total", "classified", "without_activity", "sections"}, f"companies {codigo}: campos inesperados (¿registros de empresas?)")
+    if por_municipio.get("091") and por_municipio.get("235"):
+        v.comprobar(por_municipio["091"]["total"] > por_municipio["235"]["total"], "companies: Helsinki aparece con menos empresas que Kauniainen")
+
+
+def verificar_suelo(lago: Path, v: Verificacion) -> None:
+    datos = leer(lago, "land_cover.json", v)
+    if not datos:
+        return
+    por_municipio = datos.get("by_municipality") or {}
+    anios = [str(a) for a in datos.get("years", [])]
+    v.comprobar(set(por_municipio) == MUNICIPIOS and len(anios) >= 2, f"land_cover: municipios {sorted(por_municipio)}, años {anios}")
+    for codigo, series in por_municipio.items():
+        for anio in anios:
+            celda = series.get(anio) or {}
+            partes = [celda.get(k) for k in ("buildings", "paved_roads", "other_impermeable")]
+            v.comprobar(_todos_positivos(partes), f"land_cover {codigo} {anio}: alguna clase no es positiva")
+            if _todos_positivos(partes):
+                v.comprobar(abs(sum(partes) - celda.get("impermeable_km2", -1)) < 0.01, f"land_cover {codigo} {anio}: la superficie impermeable no suma sus clases")
+        if len(anios) >= 2 and all(series.get(a) for a in (anios[0], anios[-1])):
+            cambio = series[anios[-1]]["impermeable_km2"] / series[anios[0]]["impermeable_km2"] - 1
+            v.comprobar(abs(cambio) < 0.5, f"land_cover {codigo}: cambio de {cambio:+.0%} entre {anios[0]} y {anios[-1]} es inverosímil (¿cambio de método?)")
+    if por_municipio.get("091") and por_municipio.get("235"):
+        v.comprobar(por_municipio["091"][anios[-1]]["impermeable_km2"] > por_municipio["235"][anios[-1]]["impermeable_km2"], "land_cover: Helsinki aparece con menos superficie sellada que Kauniainen")
+
+
 def verificar_registro(lago: Path, v: Verificacion) -> None:
     registro = leer(lago, "sources.json", v)
     if not registro:
         return
     por_id = {s["id"]: s for s in registro["sources"]}
-    for archivo, fuente in (("postal_areas.geojson", "stat-fi-postal-areas-paavo"), ("population.json", "statfin-population-11ra")):
+    for archivo, fuente in (("postal_areas.geojson", "stat-fi-postal-areas-paavo"), ("population.json", "statfin-population-11ra"),
+                            ("rents.json", "statfin-rents-15fa"), ("earnings.json", "statfin-earnings-15b2"), ("employment_nationality.json", "statfin-employment-nationality-115f"),
+                            ("education.json", "statfin-education-11c4"), ("companies.json", "prh-ytj-companies"), ("land_cover.json", "hsy-land-cover")):
         if (lago / archivo).exists():
             entrada = por_id.get(fuente)
             v.comprobar(bool(entrada) and entrada.get("integration_status") == "integrated", f"sources.json: {fuente} publicado pero no registrado como integrado")
@@ -140,6 +250,8 @@ def main() -> int:
     reporte = verificar_paradas(lago, v)
     verificar_areas(lago, v, reporte)
     verificar_poblacion(lago, v)
+    for comprobacion in (verificar_alquileres, verificar_salarios, verificar_nacionalidad, verificar_educacion, verificar_empresas, verificar_suelo):
+        comprobacion(lago, v)
     verificar_registro(lago, v)
     for fallo in v.fallos:
         print(f"FALLA  {fallo}")

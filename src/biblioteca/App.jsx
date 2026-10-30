@@ -4,6 +4,7 @@ import { useLago, numero } from './datos.js'
 import { Flecha, Icono } from './iconos.jsx'
 import { FichaFuente, Hueco, Notas, Pendiente, VISTAS } from './pliegos.jsx'
 import { SECTORES, Seleccion, VISTAS_AREAS } from './pliegosAreas.jsx'
+import { VISTAS_NUEVAS } from './pliegosNuevos.jsx'
 
 const SIN_MOVIMIENTO = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
@@ -189,7 +190,7 @@ function Lectura({ libro, indice, lago, onPliego, onLibro, onVolver }) {
     if (arriba < 0) marco.current.scrollIntoView({ block: 'start', behavior: SIN_MOVIMIENTO ? 'auto' : 'smooth' })
   }, [indice])
 
-  const Vista = pliego.tipo === 'pendiente' ? Pendiente : pliego.tipo === 'hueco' ? Hueco : VISTAS[pliego.vista] || VISTAS_AREAS[pliego.vista]
+  const Vista = pliego.tipo === 'pendiente' ? Pendiente : pliego.tipo === 'hueco' ? Hueco : VISTAS[pliego.vista] || VISTAS_AREAS[pliego.vista] || VISTAS_NUEVAS[pliego.vista]
   return <section className="lectura-pagina">
     <div className="lectura-barra">
       <button type="button" className="volver" onClick={onVolver}><Flecha izquierda /> Devolver al estante</button>

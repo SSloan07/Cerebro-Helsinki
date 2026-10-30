@@ -221,3 +221,30 @@ test('StatFin population covers the four municipalities with positive totals', a
   assert.ok(Object.values(population.population_by_municipality).every(value => Number.isInteger(value) && value > 0))
   assert.equal(population.source_id, 'statfin-population-11ra')
 })
+
+test('New lake files keep lineage, suppression and internal consistency', async () => {
+  const [rents, earnings, nationality, education, registry] = await Promise.all([
+    readJson('../public/data/rents.json'), readJson('../public/data/earnings.json'), readJson('../public/data/employment_nationality.json'),
+    readJson('../public/data/education.json'), readJson('../public/data/sources.json'),
+  ])
+  for (const id of ['statfin-rents-15fa', 'statfin-earnings-15b2', 'statfin-employment-nationality-115f', 'statfin-education-11c4']) {
+    const entry = registry.sources.find(source => source.id === id)
+    assert.ok(entry && entry.integration_status === 'integrated' && entry.license && entry.consulted_at && entry.period_covered, id)
+  }
+  assert.ok(Object.values(rents.series).every(quarters => quarters[rents.latest_quarter].eur_per_m2 > 5))
+  assert.ok(earnings.earnings.total.p10 < earnings.earnings.total.median && earnings.earnings.total.median < earnings.earnings.total.p90)
+  for (const group of Object.values(nationality.groups)) assert.ok(group.employed + group.unemployed <= group.population_18_64)
+  for (const sectors of Object.values(education.by_municipality)) for (const cell of Object.values(sectors)) assert.ok(cell.foreign_language_students === null || cell.foreign_language_students <= cell.students)
+})
+
+test('Company counts never carry records and hide small cells; land cover sums its classes', async () => {
+  const [companies, landCover] = await Promise.all([readJson('../public/data/companies.json'), readJson('../public/data/land_cover.json')])
+  for (const entry of Object.values(companies.by_municipality)) {
+    assert.deepEqual(Object.keys(entry).sort(), ['classified', 'name', 'sections', 'total', 'without_activity'])
+    assert.ok(Object.values(entry.sections).every(count => count === null || count >= companies.min_cell))
+    assert.equal(entry.classified + entry.without_activity, entry.total)
+  }
+  for (const years of Object.values(landCover.by_municipality)) for (const cell of Object.values(years)) {
+    assert.ok(Math.abs(cell.buildings + cell.paved_roads + cell.other_impermeable - cell.impermeable_km2) < 0.01)
+  }
+})
